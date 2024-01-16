@@ -11,17 +11,17 @@ export default function Home() {
           backgroundImage: `url(${Background.src})`,
         }}
       >
-        <div className="hero-overlay bg-opacity-70"></div>
+        <div className="hero-overlay bg-opacity-60"></div>
         <div className="hero-content text-center text-slate-800">
           <div className="max-w-md">
             <h1 className="mb-5 text-5xl font-bold">Hello there</h1>
-            <p className="mb-5 text-slate-400">
+            <p className="mb-5 text-slate-200">
               Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
               excepturi exercitationem quasi. In deleniti eaque aut repudiandae
               et a id nisi.
             </p>
             <Link href="/tracker">
-              <button className="btn bg-slate-800 text-slate-400">
+              <button className="btn bg-slate-800 text-slate-200">
                 Get Started
               </button>
             </Link>
