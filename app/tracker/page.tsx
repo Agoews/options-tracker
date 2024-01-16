@@ -49,9 +49,14 @@ const Tracker = () => {
               </table>
             </div>
           </div>
-          <Link href="/">
+          <Link className="p-1" href="/">
             <button className="btn bg-slate-800 text-slate-200 mt-2">
               Home{" "}
+            </button>
+          </Link>
+          <Link className="p-1" href="/new-trade">
+            <button className="btn bg-slate-800 text-slate-200 mt-2">
+              Enter New Trade{" "}
             </button>
           </Link>
         </div>
