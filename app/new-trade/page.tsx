@@ -12,16 +12,13 @@ const NewTrade = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(ticker, strike, expiration, strategy);
     try {
+      console.log("try block:  ", ticker, strike, expiration, strategy);
       const response = await fetch("/api/new-trade", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+
         body: JSON.stringify({ ticker, strike, expiration, strategy }),
       });
-
       if (response.ok) {
         console.log("Trade submitted successfully!");
       } else {
@@ -31,6 +28,7 @@ const NewTrade = () => {
       console.error("Error submitting trade:", error);
     }
   };
+
   const handleTickerChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTicker(e.target.value);
   };
