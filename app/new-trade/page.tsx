@@ -3,6 +3,13 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import Background from "@/public/Background_1.png";
 import Link from "next/link";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+
+interface TileDisableProps {
+  date: Date;
+  view: string;
+}
 
 const NewTrade = () => {
   const [ticker, setTicker] = useState("");
@@ -37,12 +44,33 @@ const NewTrade = () => {
     setStrike(e.target.value);
   };
 
-  const handleExpirationChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setExpiration(e.target.value);
+  const handleExpirationChange = (e: string) => {
+    const date = new Date(e);
+    setExpiration(date.toISOString());
+    console.log(e, expiration);
+    // setExpiration(e.target.value);
   };
 
   const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setStrategy(e.target.value);
+  };
+
+  const disableDates = ({ date, view }: TileDisableProps) => {
+    if (view === "month") {
+      // Disable past dates
+      if (date < new Date(new Date().setHours(0, 0, 0, 0))) {
+        return true;
+      }
+
+      // Disable weekends (Saturday and Sunday)
+      const dayOfWeek = date.getDay();
+      if (dayOfWeek === 0 || dayOfWeek === 6) {
+        return true;
+      }
+    }
+
+    // Return false if none of the above conditions are met
+    return false;
   };
 
   return (
@@ -83,13 +111,21 @@ const NewTrade = () => {
             <div className="label">
               <span className="label-text text-slate-200">Expiration Date</span>
             </div>
-            <input
+            <div className="w-full h-full">
+              <Calendar
+                onChange={handleExpirationChange}
+                value={expiration}
+                tileDisabled={disableDates}
+                className="rounded-lg"
+              />
+            </div>
+            {/* <input
               type="text"
               placeholder="Type here"
               className="input input-bordered w-full max-w-xs"
               value={expiration}
               onChange={handleExpirationChange}
-            />
+            /> */}
           </label>
           <label>
             <div className="label">
@@ -103,8 +139,10 @@ const NewTrade = () => {
               <option disabled value="">
                 Please select...
               </option>
-              <option>Call</option>
-              <option>Put</option>
+              <option>CALL</option>
+              <option>PUT</option>
+              <option>COVERED CALL</option>
+              <option>CASH SECURED PUT</option>
             </select>
           </label>
 

@@ -1,14 +1,6 @@
 "use client";
 import useSWR from "swr";
 
-const fetcher = async (url: string) => {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error("An error occurred while fetching the data.");
-  }
-  return response.json();
-};
-
 interface Trade {
   tradeid: number;
   ticker: string;
@@ -19,6 +11,14 @@ interface Trade {
   open: boolean;
 }
 
+const fetcher = async (url: string) => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error("An error occurred while fetching the data.");
+  }
+  return response.json();
+};
+
 const Chart = () => {
   const { data, error, isLoading } = useSWR("/api/get-trades", fetcher);
 
@@ -26,14 +26,14 @@ const Chart = () => {
   if (isLoading) return <div>Loading...</div>;
 
   const trades: Trade[] = data.result.rows;
-  console.log(
-    trades.map((trade) => {
-      return trade.ticker;
-    })
-  );
 
   const formatDate = (dateString: string) => {
     return dateString.split("T")[0]; // Splits at 'T' and takes the first part (date)
+  };
+
+  const formatStatus = (statusBool: boolean) => {
+    if (statusBool) return "Open";
+    return "Closed";
   };
 
   return (
@@ -41,7 +41,9 @@ const Chart = () => {
       <thead>
         <tr className="bg-slate-400 text-slate-800">
           <td>Company</td>
+          <td>Strategy</td>
           <td>Strike Price</td>
+          <td>Status</td>
           <td>Expiration Date</td>
         </tr>
       </thead>
@@ -52,7 +54,9 @@ const Chart = () => {
             className="hover:bg-slate-700 hover:text-slate-200"
           >
             <td>{trade.ticker}</td>
+            <td>{trade.strategy}</td>
             <td>{trade.strike}</td>
+            <td>{formatStatus(trade.open)}</td>
             <td>{formatDate(trade.expirationdate)}</td>
           </tr>
         ))}
