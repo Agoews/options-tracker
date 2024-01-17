@@ -44,11 +44,9 @@ const NewTrade = () => {
     setStrike(e.target.value);
   };
 
-  const handleExpirationChange = (e: string) => {
-    const date = new Date(e);
+  const handleExpirationChange = (date: Date) => {
     setExpiration(date.toISOString());
-    console.log(e, expiration);
-    // setExpiration(e.target.value);
+    console.log(date, expiration);
   };
 
   const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -61,7 +59,6 @@ const NewTrade = () => {
       if (date < new Date(new Date().setHours(0, 0, 0, 0))) {
         return true;
       }
-
       // Disable weekends (Saturday and Sunday)
       const dayOfWeek = date.getDay();
       if (dayOfWeek === 0 || dayOfWeek === 6) {
@@ -113,7 +110,7 @@ const NewTrade = () => {
             </div>
             <div className="w-full h-full">
               <Calendar
-                onChange={handleExpirationChange}
+                onClickDay={handleExpirationChange}
                 value={expiration}
                 tileDisabled={disableDates}
                 className="rounded-lg"
