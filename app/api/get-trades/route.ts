@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     }
 
     const result = await sql`
-      SELECT TradeID, Ticker, Strategy, Strike, ClosingPrice, ExpirationDate, Open
+      SELECT TradeID, Ticker, Strategy, Strike, OptionPrice, ClosingPrice, ExpirationDate, Open
       FROM Trades
       WHERE UserID = ${userID};
     `;
