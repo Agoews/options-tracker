@@ -49,10 +49,11 @@ const Chart = () => {
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLElement>, // Change to a more generic type
     field: keyof Trade
   ) => {
-    setEditedTrade({ ...editedTrade, [field]: e.target.value });
+    const target = e.target as HTMLInputElement | HTMLSelectElement; // Type assertion
+    setEditedTrade({ ...editedTrade, [field]: target.value });
   };
 
   const handleSave = async () => {
