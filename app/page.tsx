@@ -16,9 +16,8 @@ export default function Home() {
           <div className="max-w-md">
             <h1 className="mb-5 text-5xl font-bold">Hello there</h1>
             <p className="mb-5 text-slate-200">
-              Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
-              excepturi exercitationem quasi. In deleniti eaque aut repudiandae
-              et a id nisi.
+              This is a work in progress! This will be the login page soon
+              enough but that is for future development.
             </p>
             <Link href="/tracker">
               <button className="btn bg-slate-800 text-slate-200">
