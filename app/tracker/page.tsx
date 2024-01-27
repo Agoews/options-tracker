@@ -20,12 +20,12 @@ const Tracker = () => {
           </div>
           <Link className="p-1" href="/">
             <button className="btn bg-slate-800 text-slate-200 mt-2">
-              Home{" "}
+              Home
             </button>
           </Link>
           <Link className="p-1" href="/new-trade">
             <button className="btn bg-slate-800 text-slate-200 mt-2">
-              Enter New Trade{" "}
+              Enter New Trade
             </button>
           </Link>
         </div>

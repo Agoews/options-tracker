@@ -49,15 +49,35 @@ const Chart = () => {
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLElement>, // Change to a more generic type
+    e: React.ChangeEvent<HTMLElement>,
     field: keyof Trade
   ) => {
-    const target = e.target as HTMLInputElement | HTMLSelectElement; // Type assertion
+    const target = e.target as HTMLInputElement | HTMLSelectElement;
     setEditedTrade({ ...editedTrade, [field]: target.value });
   };
 
   const handleSave = async () => {
-    console.log("save clicked", editedTrade);
+    const url = `/api/update-trades/`;
+    try {
+      const response = await fetch(url, {
+        method: "PUT", // or 'POST', depending on your API setup
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editedTrade),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update the trade.");
+      }
+
+      // Handle the successful response, e.g., refreshing the data
+      console.log("Trade updated successfully");
+      // You might want to re-fetch the trades here to update the UI
+    } catch (error) {
+      console.error("Error updating trade:", error);
+    }
+
     setEditingTradeId(null);
     setIsModalOpen(false);
   };
