@@ -53,14 +53,21 @@ const Chart = () => {
     field: keyof Trade
   ) => {
     const target = e.target as HTMLInputElement | HTMLSelectElement;
-    setEditedTrade({ ...editedTrade, [field]: target.value });
+    let value = target.value;
+
+    if (field === "closingprice") {
+      const parsedValue = parseFloat(value);
+      value = isNaN(parsedValue) ? "" : parsedValue.toFixed(2);
+    }
+
+    setEditedTrade({ ...editedTrade, [field]: value });
   };
 
   const handleSave = async () => {
     const url = `/api/update-trades/`;
     try {
       const response = await fetch(url, {
-        method: "PUT", // or 'POST', depending on your API setup
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -70,10 +77,7 @@ const Chart = () => {
       if (!response.ok) {
         throw new Error("Failed to update the trade.");
       }
-
-      // Handle the successful response, e.g., refreshing the data
-      console.log("Trade updated successfully");
-      // You might want to re-fetch the trades here to update the UI
+      // re-fetch the trades here to update the UI
     } catch (error) {
       console.error("Error updating trade:", error);
     }
@@ -83,7 +87,6 @@ const Chart = () => {
   };
 
   const handleCancel = () => {
-    console.log("cancel clicked");
     setEditingTradeId(null);
     setIsModalOpen(false);
   };
@@ -131,7 +134,11 @@ const Chart = () => {
               <td>{trade.closingprice}</td>
               <td>
                 {trade.closingprice
-                  ? (+trade.closingprice - +trade.optionprice) * 100
+                  ? (
+                      ((+trade.closingprice - +trade.optionprice) /
+                        +trade.optionprice) *
+                      100
+                    ).toFixed(2) + "%"
                   : null}
               </td>
               <td>{formatStatus(trade.open)}</td>
@@ -209,10 +216,11 @@ const Chart = () => {
                   Closing Price:
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   value={editedTrade.closingprice || ""}
                   onChange={(e) => handleInputChange(e, "closingprice")}
                   className="bg-slate-700 text-slate-200 rounded-md flex-1 col-span-2 text-center"
+                  step="0.01"
                 />
               </div>
             </div>
