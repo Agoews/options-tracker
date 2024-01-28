@@ -1,14 +1,14 @@
 "use client";
 import { useState } from "react";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 
 interface Trade {
   tradeid: number;
   ticker: string;
   strategy: string;
-  optionprice: number;
-  strike: number;
-  closingprice?: number;
+  optionprice: number | string;
+  strike: number | string;
+  closingprice?: number | null;
   expirationdate: string;
   open: boolean;
 }
@@ -32,6 +32,7 @@ const Chart = () => {
     expirationdate: "",
     open: false,
   };
+
   const { data, error, isLoading } = useSWR("/api/get-trades", fetcher);
   const [editingTradeId, setEditingTradeId] = useState<number | null>(null);
   const [editedTrade, setEditedTrade] = useState<Trade>(initialTradeState);
@@ -53,18 +54,27 @@ const Chart = () => {
     field: keyof Trade
   ) => {
     const target = e.target as HTMLInputElement | HTMLSelectElement;
-    let value = target.value;
+    let value: string | number | null = target.value;
 
-    if (field === "closingprice") {
+    if (
+      field === "closingprice" ||
+      field === "optionprice" ||
+      field === "strike"
+    ) {
       const parsedValue = parseFloat(value);
-      value = isNaN(parsedValue) ? "" : parsedValue.toFixed(2);
-    }
 
+      if (!isNaN(parsedValue)) {
+        value = parsedValue.toFixed(2);
+      } else {
+        value = null;
+      }
+    }
     setEditedTrade({ ...editedTrade, [field]: value });
   };
 
   const handleSave = async () => {
     const url = `/api/update-trades/`;
+    console.log(editedTrade);
     try {
       const response = await fetch(url, {
         method: "PUT",
@@ -77,7 +87,7 @@ const Chart = () => {
       if (!response.ok) {
         throw new Error("Failed to update the trade.");
       }
-      // re-fetch the trades here to update the UI
+      mutate("/api/get-trades");
     } catch (error) {
       console.error("Error updating trade:", error);
     }
@@ -103,9 +113,9 @@ const Chart = () => {
     <>
       <table className="table table-xs table-pin-rows table-pin-cols text-xs">
         <thead>
-          <tr className="bg-slate-400 text-slate-800">
+          <tr className="bg-slate-400 text-slate-800 text-center">
             <td>Ticker</td>
-            <td>Strategy</td>
+            <td>Action</td>
             <td>Strike</td>
             <td>Option Price</td>
             <td>Breakeven</td>
@@ -164,6 +174,7 @@ const Chart = () => {
                   type="text"
                   value={editedTrade.ticker}
                   onChange={(e) => handleInputChange(e, "ticker")}
+                  required
                   className="bg-slate-700 text-slate-200 rounded-md flex-1 col-span-2 text-center"
                 />
               </div>
@@ -176,6 +187,7 @@ const Chart = () => {
                   className="select select-bordered bg-slate-700 text-slate-200 flex-1 col-span-2 text-center"
                   value={editedTrade.strategy}
                   onChange={(e) => handleInputChange(e, "strategy")}
+                  required
                 >
                   <option disabled value="">
                     Please select...
@@ -195,6 +207,7 @@ const Chart = () => {
                   type="text"
                   value={editedTrade.strike}
                   onChange={(e) => handleInputChange(e, "strike")}
+                  required
                   className="bg-slate-700 text-slate-200 rounded-md flex-1 col-span-2 text-center"
                 />
               </div>
@@ -207,6 +220,7 @@ const Chart = () => {
                   type="text"
                   value={editedTrade.optionprice}
                   onChange={(e) => handleInputChange(e, "optionprice")}
+                  required
                   className="bg-slate-700 text-slate-200 rounded-md flex-1 col-span-2 text-center"
                 />
               </div>

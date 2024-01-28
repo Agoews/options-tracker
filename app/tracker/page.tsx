@@ -13,7 +13,7 @@ const Tracker = () => {
       >
         <div className="hero-overlay bg-opacity-60"></div>
         <div className="text-center text-slate-800">
-          <div className="max-w-2xl rounded border-4 border-slate-800">
+          <div className="rounded border-4 border-slate-800">
             <div className="overflow-x-auto">
               <Chart />
             </div>
