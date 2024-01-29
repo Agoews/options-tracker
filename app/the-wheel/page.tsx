@@ -4,7 +4,7 @@ import TheWheelChart from "@/components/wheel";
 
 const TheWheel = () => {
   return (
-    <main className="flex min-h-screen min-w-screen flex-col items-center">
+    <main className="flex min-h-screen min-w-screen items-center">
       <div
         className="hero min-h-screen"
         style={{

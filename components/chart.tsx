@@ -17,13 +17,14 @@ const Chart = () => {
 
   // fetch all data from /api/get-trades
   const { data, error, isLoading } = useSWR("/api/get-trades", fetcher);
-  if (error) return <div>Failed to load</div>;
-  if (isLoading) return <div>Loading...</div>;
-  const trades: Trade[] = data.result.rows;
 
   const [editingTradeId, setEditingTradeId] = useState<number | null>(null);
   const [editedTrade, setEditedTrade] = useState<Trade>(initialTradeState);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  if (error) return <div>Failed to load</div>;
+  if (isLoading) return <div>Loading...</div>;
+  const trades: Trade[] = data.result.rows;
 
   const handleRowClick = (trade: Trade) => {
     setEditingTradeId(trade.tradeid);
