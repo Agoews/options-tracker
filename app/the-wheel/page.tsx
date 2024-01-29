@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Background from "@/public/Background_1.png";
-import Chart from "@/components/chart";
+import TheWheelChart from "@/components/wheel";
 
-const Tracker = () => {
+const TheWheel = () => {
   return (
     <main className="flex min-h-screen min-w-screen flex-col items-center">
       <div
@@ -15,7 +15,7 @@ const Tracker = () => {
         <div className="text-center text-slate-800">
           <div className="rounded border-4 border-slate-800">
             <div className="overflow-x-auto">
-              <Chart />
+              <TheWheelChart />
             </div>
           </div>
           <Link className="p-1" href="/">
@@ -23,14 +23,9 @@ const Tracker = () => {
               Home
             </button>
           </Link>
-          <Link className="p-1" href="/new-trade">
+          <Link className="p-1" href="/tracker">
             <button className="btn bg-slate-800 text-slate-200 mt-2">
-              Enter New Trade
-            </button>
-          </Link>
-          <Link className="p-1" href="/the-wheel">
-            <button className="btn bg-slate-800 text-slate-200 mt-2">
-              The Wheel
+              All Trades
             </button>
           </Link>
         </div>
@@ -39,4 +34,4 @@ const Tracker = () => {
   );
 };
 
-export default Tracker;
+export default TheWheel;
