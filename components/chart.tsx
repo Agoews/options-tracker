@@ -1,12 +1,14 @@
 "use client";
 import { useState } from "react";
 import useSWR, { mutate } from "swr";
-import { fetcher, Trade } from "./fetcher";
+import { fetcher, Trade } from "./utils/fetcher";
+import { getActionAbbreviation } from "./utils/getActionAbbreviation";
 
 const Chart = () => {
   const initialTradeState: Trade = {
     tradeid: 0,
     ticker: "",
+    actions: "",
     strategy: "",
     optionprice: 0,
     strike: 0,
@@ -25,6 +27,8 @@ const Chart = () => {
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
   const trades: Trade[] = data.result.rows;
+
+  console.log(trades);
 
   const handleRowClick = (trade: Trade) => {
     setEditingTradeId(trade.tradeid);
@@ -99,6 +103,7 @@ const Chart = () => {
           <tr className="bg-slate-400 text-slate-800 text-center">
             <td>Ticker</td>
             <td>Action</td>
+            <td>Strategy</td>
             <td>Strike</td>
             <td>Option Price</td>
             <td>Breakeven</td>
@@ -116,13 +121,14 @@ const Chart = () => {
               onClick={() => handleRowClick(trade)}
             >
               <td>{trade.ticker}</td>
+              <td>{getActionAbbreviation(trade.actions)}</td>
               <td>{trade.strategy}</td>
-              <td>{trade.strike}</td>
-              <td>{trade.optionprice}</td>
+              <td>{Number(trade.strike).toFixed(2)}</td>
+              <td>{Number(trade.optionprice).toFixed(2)}</td>
               <td>
-                {trade.strategy === "COVERED CALL" || trade.strategy === "CALL"
-                  ? +trade.strike + +trade.optionprice
-                  : +trade.strike - +trade.optionprice}
+                {trade.actions === "COVERED CALL" || trade.actions === "CALL"
+                  ? Number(+trade.strike + +trade.optionprice).toFixed(2)
+                  : Number(+trade.strike - +trade.optionprice).toFixed(2)}
               </td>
               <td>{trade.closingprice}</td>
               <td>
@@ -164,12 +170,12 @@ const Chart = () => {
 
               <div className="grid grid-cols-3 gap-4 mb-4">
                 <span className="text-slate-200 text-left col-span-1 ">
-                  Strategy:
+                  Action:
                 </span>
                 <select
                   className="select select-bordered bg-slate-700 text-slate-200 flex-1 col-span-2 text-center"
-                  value={editedTrade.strategy}
-                  onChange={(e) => handleInputChange(e, "strategy")}
+                  value={editedTrade.actions}
+                  onChange={(e) => handleInputChange(e, "actions")}
                   required
                 >
                   <option disabled value="">

@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
 import useSWR, { mutate } from "swr";
-import { fetcher, Trade } from "./fetcher";
+import { fetcher, Trade } from "./utils/fetcher";
+import { getActionAbbreviation } from "./utils/getActionAbbreviation";
 
 const TheWheelChart = () => {
   // fetch all data from /api/get-trades
@@ -19,7 +20,7 @@ const TheWheelChart = () => {
   };
 
   return (
-    <div className="flex justify-center items-center space-x-10">
+    <div className="flex justify-center space-x-10">
       {/* Credits Table */}
       <div className="w-1/2">
         <h2 className="text-slate-200 mb-1">Credits</h2>
@@ -36,30 +37,25 @@ const TheWheelChart = () => {
             </tr>
           </thead>
           <tbody className="text-slate-200 text-center">
-            {trades.map((trade) => (
-              <tr
-                key={trade.tradeid}
-                className="hover:bg-slate-700 hover:text-slate-200 text-center"
-              >
-                <td>{trade.ticker}</td>
-                <td>
-                  {trade.strategy === "COVERED CALL"
-                    ? "CC"
-                    : trade.strategy === "CASH SECURED PUT"
-                    ? "CSP"
-                    : trade.strategy === "CALL"
-                    ? "CALL"
-                    : trade.strategy === "PUT"
-                    ? "PUT"
-                    : ""}
-                </td>
-                <td>{trade.strike}</td>
-                <td>{trade.optionprice}</td>
-                <td>{+trade.optionprice * +trade.strike * 100}</td>
-                <td>{formatStatus(trade.open)}</td>
-                <td>{formatDate(trade.expirationdate)}</td>
-              </tr>
-            ))}
+            {trades.map((trade) => {
+              if (trade.strategy === "WHEEL") {
+                return (
+                  <tr
+                    key={trade.tradeid}
+                    className="hover:bg-slate-700 hover:text-slate-200 text-center"
+                  >
+                    <td>{trade.ticker}</td>
+                    <td>{getActionAbbreviation(trade.actions)}</td>
+                    <td>{Number(trade.strike).toFixed(2)}</td>
+                    <td>{Number(trade.optionprice).toFixed(2)}</td>
+                    <td>${+trade.optionprice * +trade.strike * 100}</td>
+                    <td>{formatStatus(trade.open)}</td>
+                    <td>{formatDate(trade.expirationdate)}</td>
+                  </tr>
+                );
+              }
+              return null;
+            })}
           </tbody>
         </table>
       </div>
@@ -74,34 +70,30 @@ const TheWheelChart = () => {
               <th>Action</th>
               <th># of Options</th>
               <th>Debit</th>
-              <th>Total</th>
+              <th>P/L</th>
               <th>Date Closed</th>
             </tr>
           </thead>
           <tbody className="text-slate-200 text-center">
-            {trades.map((trade) => (
-              <tr
-                key={trade.tradeid}
-                className="hover:bg-slate-700 hover:text-slate-200 text-center"
-              >
-                <td>{trade.ticker}</td>
-                <td>
-                  {trade.strategy === "COVERED CALL"
-                    ? "CC"
-                    : trade.strategy === "CASH SECURED PUT"
-                    ? "CSP"
-                    : trade.strategy === "CALL"
-                    ? "CALL"
-                    : trade.strategy === "PUT"
-                    ? "PUT"
-                    : ""}
-                </td>
-                <td>{trade.strike}</td>
-                <td>{trade.optionprice}</td>
-                <td>{+trade.optionprice * +trade.strike * 100}</td>
-                <td>{formatDate(trade.expirationdate)}</td>
-              </tr>
-            ))}
+            {trades.map((trade) => {
+              if (trade.strategy === "WHEEL" && trade.closingprice) {
+                return (
+                  <tr
+                    key={trade.tradeid}
+                    className="hover:bg-slate-700 hover:text-slate-200 text-center"
+                  >
+                    <td>{trade.ticker}</td>
+                    <td>{getActionAbbreviation(trade.actions)}</td>
+                    <td>{trade.strike}</td>
+                    <td>{trade.closingprice}</td>
+                    <td>
+                      ${((+trade.closingprice ?? 0) - +trade.optionprice) * 100}
+                    </td>
+                    <td>{formatDate(trade.expirationdate)}</td>
+                  </tr>
+                );
+              }
+            })}
           </tbody>
         </table>
       </div>

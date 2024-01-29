@@ -17,27 +17,21 @@ const NewTrade = () => {
   const [optionprice, setOptionPrice] = useState("");
   const [expiration, setExpiration] = useState("");
   const [strategy, setStrategy] = useState("");
+  const [actions, setAction] = useState("");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      console.log(
-        "try block:  ",
-        ticker,
-        strike,
-        optionprice,
-        expiration,
-        strategy
-      );
       const response = await fetch("/api/new-trade", {
         method: "POST",
 
         body: JSON.stringify({
           ticker,
+          actions,
+          strategy,
           strike,
           optionprice,
           expiration,
-          strategy,
         }),
       });
       if (response.ok) {
@@ -67,7 +61,11 @@ const NewTrade = () => {
     console.log(date, expiration);
   };
 
-  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleActionChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setAction(e.target.value);
+  };
+
+  const handleStrategyChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setStrategy(e.target.value);
   };
 
@@ -154,12 +152,12 @@ const NewTrade = () => {
           </label>
           <label>
             <div className="label">
-              <span className="label-text text-slate-200">Strategy</span>
+              <span className="label-text text-slate-200">Action</span>
             </div>
             <select
               className="select select-bordered w-full max-w-xs"
-              value={strategy}
-              onChange={handleSelectChange}
+              value={actions}
+              onChange={handleActionChange}
             >
               <option disabled value="">
                 Please select...
@@ -168,6 +166,22 @@ const NewTrade = () => {
               <option>PUT</option>
               <option>COVERED CALL</option>
               <option>CASH SECURED PUT</option>
+            </select>
+          </label>
+
+          <label>
+            <div className="label">
+              <span className="label-text text-slate-200">Strategy</span>
+            </div>
+            <select
+              className="select select-bordered w-full max-w-xs"
+              value={strategy}
+              onChange={handleStrategyChange}
+            >
+              <option disabled value="">
+                Please select...
+              </option>
+              <option>WHEEL</option>
             </select>
           </label>
 

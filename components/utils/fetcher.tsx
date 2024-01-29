@@ -1,6 +1,7 @@
 export interface Trade {
   tradeid: number;
   ticker: string;
+  actions: string;
   strategy: string;
   optionprice: number | string;
   strike: number | string;
