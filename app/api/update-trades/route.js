@@ -8,7 +8,8 @@ export async function PUT(req, res) {
     strike,
     optionprice,
     closingprice,
-    expirationdate
+    expirationdate,
+    completiondate
   } = await req.json();
 
   const open = closingprice != null ? false : true;
@@ -24,7 +25,8 @@ export async function PUT(req, res) {
         optionprice = ${optionprice},
         closingprice = ${closingprice},
         expirationdate = ${expirationdate},
-        open = ${open}
+        open = ${open},
+        completiondate = CASE WHEN ${closingprice}::text IS NOT NULL THEN CURRENT_TIMESTAMP ELSE completiondate END
       WHERE tradeid = ${tradeid};
     `;
 

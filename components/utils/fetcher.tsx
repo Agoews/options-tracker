@@ -8,6 +8,7 @@ export interface Trade {
   closingprice?: number | null;
   expirationdate: string;
   open: boolean;
+  completiondate: string | null;
 }
 
 export const fetcher = async (url: string) => {

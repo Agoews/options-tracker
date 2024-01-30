@@ -15,6 +15,7 @@ const Chart = () => {
     closingprice: 0,
     expirationdate: "",
     open: false,
+    completiondate: "",
   };
 
   // fetch all data from /api/get-trades

@@ -11,6 +11,8 @@ const TheWheelChart = () => {
   if (isLoading) return <div>Loading...</div>;
   const trades: Trade[] = data.result.rows;
 
+  console.log("trades im wheel: ", trades);
+
   const formatDate = (dateString: string) => {
     return dateString.split("T")[0];
   };
@@ -87,9 +89,17 @@ const TheWheelChart = () => {
                     <td>{trade.strike}</td>
                     <td>{trade.closingprice}</td>
                     <td>
-                      ${((+trade.closingprice ?? 0) - +trade.optionprice) * 100}
+                      {(
+                        ((+trade.closingprice - +trade.optionprice) /
+                          +trade.optionprice) *
+                        100
+                      ).toFixed(2) + "%"}
                     </td>
-                    <td>{formatDate(trade.expirationdate)}</td>
+                    <td>
+                      {trade.completiondate
+                        ? formatDate(trade.completiondate)
+                        : "N/A"}
+                    </td>
                   </tr>
                 );
               }
