@@ -6,7 +6,6 @@ import { getActionAbbreviation } from "./utils/getActionAbbreviation";
 import TradeEditModal from "./utils/TradeEditModal";
 
 const TheWheelChart = () => {
-  // fetch all data from /api/get-trades
   const initialTradeState: Trade = {
     tradeid: 0,
     ticker: "",
@@ -54,8 +53,6 @@ const TheWheelChart = () => {
       const parsedValue = parseFloat(value);
 
       if (!isNaN(parsedValue)) {
-        value = parsedValue.toFixed(2);
-      } else {
         value = null;
       }
     }
