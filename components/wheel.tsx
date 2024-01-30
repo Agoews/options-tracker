@@ -1,16 +1,95 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import useSWR, { mutate } from "swr";
 import { fetcher, Trade } from "./utils/fetcher";
 import { getActionAbbreviation } from "./utils/getActionAbbreviation";
+import TradeEditModal from "./utils/TradeEditModal";
 
 const TheWheelChart = () => {
   // fetch all data from /api/get-trades
+  const initialTradeState: Trade = {
+    tradeid: 0,
+    ticker: "",
+    actions: "",
+    strategy: "",
+    optionprice: 0,
+    strike: 0,
+    closingprice: 0,
+    expirationdate: "",
+    open: false,
+    completiondate: "",
+  };
+
+  // fetch all data from /api/get-trades
   const { data, error, isLoading } = useSWR("/api/get-trades", fetcher);
+
+  const [editingTradeId, setEditingTradeId] = useState<number | null>(null);
+  const [editedTrade, setEditedTrade] = useState<Trade>(initialTradeState);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
   const trades: Trade[] = data.result.rows;
 
+  console.log(trades);
+
+  const handleRowClick = (trade: Trade) => {
+    setEditingTradeId(trade.tradeid);
+    setEditedTrade({ ...trade });
+    setIsModalOpen(true);
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLElement>,
+    field: keyof Trade
+  ) => {
+    const target = e.target as HTMLInputElement | HTMLSelectElement;
+    let value: string | number | null = target.value;
+
+    if (
+      field === "closingprice" ||
+      field === "optionprice" ||
+      field === "strike"
+    ) {
+      const parsedValue = parseFloat(value);
+
+      if (!isNaN(parsedValue)) {
+        value = parsedValue.toFixed(2);
+      } else {
+        value = null;
+      }
+    }
+    setEditedTrade({ ...editedTrade, [field]: value });
+  };
+
+  const handleSave = async () => {
+    const url = `/api/update-trades/`;
+    console.log(editedTrade);
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editedTrade),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update the trade.");
+      }
+      mutate("/api/get-trades");
+    } catch (error) {
+      console.error("Error updating trade:", error);
+    }
+
+    setEditingTradeId(null);
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setEditingTradeId(null);
+    setIsModalOpen(false);
+  };
   console.log("trades im wheel: ", trades);
 
   const formatDate = (dateString: string) => {
@@ -45,6 +124,7 @@ const TheWheelChart = () => {
                   <tr
                     key={trade.tradeid}
                     className="hover:bg-slate-700 hover:text-slate-200 text-center"
+                    onClick={() => handleRowClick(trade)}
                   >
                     <td>{trade.ticker}</td>
                     <td>{getActionAbbreviation(trade.actions)}</td>
@@ -83,6 +163,7 @@ const TheWheelChart = () => {
                   <tr
                     key={trade.tradeid}
                     className="hover:bg-slate-700 hover:text-slate-200 text-center"
+                    onClick={() => handleRowClick(trade)}
                   >
                     <td>{trade.ticker}</td>
                     <td>{getActionAbbreviation(trade.actions)}</td>
@@ -107,6 +188,13 @@ const TheWheelChart = () => {
           </tbody>
         </table>
       </div>
+      <TradeEditModal
+        editedTrade={editedTrade}
+        handleInputChange={handleInputChange}
+        handleSave={handleSave}
+        handleCancel={handleCancel}
+        isModalOpen={isModalOpen}
+      />
     </div>
   );
 };

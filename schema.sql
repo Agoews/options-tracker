@@ -32,7 +32,7 @@ INSERT INTO Users (Email, Name) VALUES
 -- Note: Assumes UserIDs from the Users table. Adjust UserIDs based on actual values in your Users table.
 INSERT INTO Trades (UserID, Ticker, Actions, Strategy, Strike, OptionPrice, ClosingPrice, ExpirationDate, Open, CreationDate, CompletionDate) VALUES
 (1, 'AAPL', 'COVERED CALL', 'WHEEL', 150.00, 1.21, NULL, '2023-12-31', TRUE, CURRENT_TIMESTAMP, NULL),
-(1, 'GOOGL', 'CALL', NULL, 1800.00, 2.34, 2.82, '2023-12-31', FALSE, CURRENT_TIMESTAMP, "024-01-30T08:56:10.980Z"),
+(1, 'GOOGL', 'CALL', NULL, 1800.00, 2.34, 2.82, '2023-12-31', FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 (1, 'MSFT', 'PUT', NULL, 300.00, 1.22, NULL, '2024-01-15', TRUE, CURRENT_TIMESTAMP, NULL),
 (2, 'MSFT', 'PUT', NULL, 300.00, 1.22, NULL, '2024-01-15', TRUE, CURRENT_TIMESTAMP, NULL),
 (1, 'TSLA', 'CASH SECURED PUT', 'WHEEL', 700.00, 1.00, NULL, '2024-02-01', TRUE, CURRENT_TIMESTAMP, NULL);
