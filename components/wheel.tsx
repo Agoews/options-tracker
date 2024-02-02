@@ -52,7 +52,7 @@ const TheWheelChart = () => {
     ) {
       const parsedValue = parseFloat(value);
 
-      if (!isNaN(parsedValue)) {
+      if (isNaN(parsedValue)) {
         value = null;
       }
     }
@@ -93,10 +93,6 @@ const TheWheelChart = () => {
     return dateString.split("T")[0];
   };
 
-  const formatStatus = (statusBool: boolean) => {
-    return statusBool ? "Open" : "Closed";
-  };
-
   return (
     <div className="flex justify-center space-x-10">
       {/* Credits Table */}
@@ -125,10 +121,10 @@ const TheWheelChart = () => {
                   >
                     <td>{trade.ticker}</td>
                     <td>{getActionAbbreviation(trade.actions)}</td>
-                    <td>{Number(trade.strike).toFixed(2)}</td>
+                    <td>{trade.strike}</td>
                     <td>{Number(trade.optionprice).toFixed(2)}</td>
                     <td>${+trade.optionprice * +trade.strike * 100}</td>
-                    <td>{formatStatus(trade.open)}</td>
+                    <td>{trade.closingprice ? "Closed" : "Open"}</td>
                     <td>{formatDate(trade.expirationdate)}</td>
                   </tr>
                 );

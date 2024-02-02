@@ -1,13 +1,13 @@
 import { sql } from "@vercel/postgres";
 
 export async function POST(req, res) {
-  const { ticker, actions, strike, optionprice, expiration, strategy } = await req.json();
+  const { ticker, actions, strike, totalquantity, optionprice, expiration, strategy } = await req.json();
 
   try {
     // Insert the new trade into the database
     await sql`
-      INSERT INTO Trades (userid, ticker, actions, strike, optionprice, expirationdate, strategy, open)
-      VALUES ('1', ${ticker}, ${actions}, ${strike}, ${optionprice}, ${expiration}, ${strategy}, 'true');
+      INSERT INTO OpenTrades (userid, ticker, actions, strike, totalquantity, optionprice, expirationdate, strategy)
+      VALUES ('1', ${ticker}, ${actions}, ${strike}, ${totalquantity}, ${optionprice}, ${expiration}, ${strategy});
     `;
 
     return new Response("Trade submitted successfully!", { status: 200 });

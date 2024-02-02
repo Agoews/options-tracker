@@ -16,6 +16,10 @@ const Chart = () => {
     expirationdate: "",
     open: false,
     completiondate: "",
+    sumClosingPrices: 0,
+    countClosingPrices: 0,
+    totalquantity: 0,
+    averageClosingPrice: 0,
   };
 
   // fetch all data from /api/get-trades
@@ -91,10 +95,43 @@ const Chart = () => {
     return dateString.split("T")[0];
   };
 
-  const formatStatus = (statusBool: boolean) => {
-    return statusBool ? "Open" : "Closed";
+  const formatTable = (trades: Trade[]) => {
+    const aggregated: { [key: number]: Trade } = {}; // Use an index signature for better type checking
+
+    trades.forEach((trade) => {
+      // Initialize the trade entry with a sum of closing prices and a count, for averaging later
+      if (!aggregated[trade.tradeid]) {
+        aggregated[trade.tradeid] = {
+          ...trade,
+          sumClosingPrices: 0,
+          countClosingPrices: 0,
+          averageClosingPrice: 0,
+        };
+      }
+
+      // Update sum and count for averaging
+      if (trade.closingprice) {
+        aggregated[trade.tradeid].sumClosingPrices += Number(
+          trade.closingprice
+        );
+        aggregated[trade.tradeid].countClosingPrices += 1;
+      }
+    });
+
+    // Calculate the average closing price for each trade
+    Object.keys(aggregated).forEach((tradeid: any) => {
+      const trade = aggregated[tradeid];
+      if (trade.countClosingPrices > 0) {
+        trade.averageClosingPrice =
+          trade.sumClosingPrices / trade.countClosingPrices;
+      }
+    });
+
+    return Object.values(aggregated);
   };
 
+  const aggregatedTrades: Trade[] = formatTable(trades);
+  console.log("aggregatedTrades: ", aggregatedTrades);
   return (
     <>
       <table className="table table-xs table-pin-rows table-pin-cols text-xs">
@@ -105,15 +142,16 @@ const Chart = () => {
             <td>Strategy</td>
             <td>Strike</td>
             <td>Option Price</td>
+            <td>Count</td>
             <td>Breakeven</td>
-            <td>Closing Price</td>
+            <td>Average Closing Price</td>
             <td>P/L</td>
             <td>Status</td>
             <td>Expiration Date</td>
           </tr>
         </thead>
         <tbody className="text-slate-200">
-          {trades.map((trade) => (
+          {aggregatedTrades.map((trade) => (
             <tr
               key={trade.tradeid}
               className="hover:bg-slate-700 hover:text-slate-200 text-center"
@@ -125,11 +163,20 @@ const Chart = () => {
               <td>{Number(trade.strike).toFixed(2)}</td>
               <td>{Number(trade.optionprice).toFixed(2)}</td>
               <td>
+                {trade.countClosingPrices !== null &&
+                trade.countClosingPrices > 0
+                  ? trade.countClosingPrices
+                  : trade.totalquantity - trade.countClosingPrices}
+              </td>
+              <td>
                 {trade.actions === "COVERED CALL" || trade.actions === "CALL"
                   ? Number(+trade.strike + +trade.optionprice).toFixed(2)
                   : Number(+trade.strike - +trade.optionprice).toFixed(2)}
               </td>
-              <td>{trade.closingprice}</td>
+              <td>
+                {trade.closingprice &&
+                  Number(trade.averageClosingPrice).toFixed(2)}
+              </td>
               <td>
                 {trade.closingprice
                   ? (
@@ -139,7 +186,7 @@ const Chart = () => {
                     ).toFixed(2) + "%"
                   : null}
               </td>
-              <td>{formatStatus(trade.open)}</td>
+              <td>{trade.closingprice ? "Closed" : "Open"}</td>
               <td>{formatDate(trade.expirationdate)}</td>
             </tr>
           ))}
@@ -218,11 +265,10 @@ const Chart = () => {
                   Closing Price:
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   value={editedTrade.closingprice || ""}
                   onChange={(e) => handleInputChange(e, "closingprice")}
                   className="bg-slate-700 text-slate-200 rounded-md flex-1 col-span-2 text-center"
-                  step="0.01"
                 />
               </div>
             </div>

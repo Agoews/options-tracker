@@ -14,6 +14,7 @@ interface TileDisableProps {
 const NewTrade = () => {
   const [ticker, setTicker] = useState("");
   const [strike, setStrike] = useState("");
+  const [totalquantity, setTotalQuantity] = useState("");
   const [optionprice, setOptionPrice] = useState("");
   const [expiration, setExpiration] = useState("");
   const [strategy, setStrategy] = useState("");
@@ -30,6 +31,7 @@ const NewTrade = () => {
           actions,
           strategy,
           strike,
+          totalquantity,
           optionprice,
           expiration,
         }),
@@ -51,6 +53,9 @@ const NewTrade = () => {
   const handleStrikeChange = (e: ChangeEvent<HTMLInputElement>) => {
     setStrike(e.target.value);
   };
+  const handleTotalQualityChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setTotalQuantity(e.target.value);
+  };
 
   const handleOptionPrice = (e: ChangeEvent<HTMLInputElement>) => {
     setOptionPrice(e.target.value);
@@ -58,7 +63,6 @@ const NewTrade = () => {
 
   const handleExpirationChange = (date: Date) => {
     setExpiration(date.toISOString());
-    console.log(date, expiration);
   };
 
   const handleActionChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -116,6 +120,18 @@ const NewTrade = () => {
               className="input input-bordered w-full max-w-xs"
               value={strike}
               onChange={handleStrikeChange}
+            />
+          </label>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="label-text text-slate-200">Quantity</span>
+            </div>
+            <input
+              type="text"
+              placeholder="Type here"
+              className="input input-bordered w-full max-w-xs"
+              value={totalquantity}
+              onChange={handleTotalQualityChange}
             />
           </label>
           <label className="form-control w-full max-w-xs">

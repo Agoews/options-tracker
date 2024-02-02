@@ -6,6 +6,7 @@ export async function PUT(req, res) {
     ticker,
     strategy,
     strike,
+    totalquantity,
     optionprice,
     closingprice,
     expirationdate,
@@ -17,11 +18,12 @@ export async function PUT(req, res) {
   try {
     // Update the specified trade details in the database
     await sql`
-      UPDATE Trades
+      UPDATE OpenTrades
       SET
         ticker = ${ticker},
         strategy = ${strategy},
         strike = ${strike},
+        totalquantity = ${totalquantity},
         optionprice = ${optionprice},
         closingprice = ${closingprice},
         expirationdate = ${expirationdate},

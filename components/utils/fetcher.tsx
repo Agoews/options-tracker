@@ -3,12 +3,16 @@ export interface Trade {
   ticker: string;
   actions: string;
   strategy: string;
-  optionprice: number | string;
-  strike: number | string;
-  closingprice?: number | null;
+  optionprice: number;
+  strike: number;
+  closingprice: number | null;
   expirationdate: string;
   open: boolean;
   completiondate: string | null;
+  totalquantity: number;
+  sumClosingPrices: number;
+  countClosingPrices: number;
+  averageClosingPrice: number | null;
 }
 
 export const fetcher = async (url: string) => {
