@@ -16,11 +16,25 @@ export async function GET(request: Request) {
     }
 
     const result = await sql`
-      SELECT o.TradeID, o.Ticker, o.Actions, o.Strategy, o.TotalQuantity, o.Strike, o.OptionPrice, o.ExpirationDate, o.CreationDate,
-             c.ClosingPrice, c.CompletionDate
-      FROM OpenTrades o
-      LEFT JOIN ClosedTrades c ON o.TradeID = c.TradeID
-      WHERE o.UserID = ${userID};
+      SELECT
+          ot.Tradeid,
+          ot.Ticker,
+          ot.Actions,
+          ot.Strategy,
+          ot.Strike,
+          ot.OpenQuantity,
+          ot.OptionPrice,
+          ot.ExpirationDate,
+          ot.CreationDate,
+          ct.ClosingPrice,
+          ct.CompletionDate,
+          ct.ClosedQuantity
+      FROM
+          OpenTrades ot
+      LEFT JOIN
+          ClosedTrades ct ON ot.TradeID = ct.TradeID
+      WHERE
+          ot.UserID = ${userID};
     `;
 
     return NextResponse.json({ result }, { status: 200 });

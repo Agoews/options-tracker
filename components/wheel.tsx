@@ -15,8 +15,14 @@ const TheWheelChart = () => {
     strike: 0,
     closingprice: 0,
     expirationdate: "",
-    open: false,
     completiondate: "",
+    openquantity: 0,
+    closedquantity: 0,
+    sumClosingPrices: 0,
+    countClosingPrices: 0,
+    averageClosingPrice: 0,
+    openTrades: [],
+    closedTrades: [],
   };
 
   // fetch all data from /api/get-trades

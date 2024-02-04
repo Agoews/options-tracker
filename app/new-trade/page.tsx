@@ -14,7 +14,7 @@ interface TileDisableProps {
 const NewTrade = () => {
   const [ticker, setTicker] = useState("");
   const [strike, setStrike] = useState("");
-  const [totalquantity, setTotalQuantity] = useState("");
+  const [openquantity, setTotalQuantity] = useState("");
   const [optionprice, setOptionPrice] = useState("");
   const [expiration, setExpiration] = useState("");
   const [strategy, setStrategy] = useState("");
@@ -31,7 +31,7 @@ const NewTrade = () => {
           actions,
           strategy,
           strike,
-          totalquantity,
+          openquantity,
           optionprice,
           expiration,
         }),
@@ -130,7 +130,7 @@ const NewTrade = () => {
               type="text"
               placeholder="Type here"
               className="input input-bordered w-full max-w-xs"
-              value={totalquantity}
+              value={openquantity}
               onChange={handleTotalQualityChange}
             />
           </label>

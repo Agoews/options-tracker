@@ -7,12 +7,14 @@ export interface Trade {
   strike: number;
   closingprice: number | null;
   expirationdate: string;
-  open: boolean;
   completiondate: string | null;
-  totalquantity: number;
+  openquantity: number;
+  closedquantity: number;
   sumClosingPrices: number;
   countClosingPrices: number;
   averageClosingPrice: number | null;
+  openTrades: Trade[];
+  closedTrades: Trade[];
 }
 
 export const fetcher = async (url: string) => {
