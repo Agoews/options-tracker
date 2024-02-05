@@ -10,12 +10,14 @@ interface AggregatedTrades {
     openTrades: Trade[];
     closedTrades: Trade[];
     averageClosingPrice?: number;
+    totalClosingQuantity?: number;
   };
 }
 
 const Chart = () => {
   const initialTradeState: Trade = {
     tradeid: 0,
+    closedtradeid: 0,
     ticker: "",
     actions: "",
     strategy: "",
@@ -27,8 +29,8 @@ const Chart = () => {
     openquantity: 0,
     closedquantity: 0,
     sumClosingPrices: 0,
-    countClosingPrices: 0,
     averageClosingPrice: 0,
+    totalClosingQuantity: 0,
     openTrades: [],
     closedTrades: [],
   };
@@ -107,13 +109,13 @@ const Chart = () => {
   //Continue working here. Trying to resolve trades and closed trades
   const formatTable = (trades: Trade[]): AggregatedTrades => {
     const aggregated: AggregatedTrades = {};
-    console.log(trades);
     trades.forEach((trade) => {
       if (!aggregated[trade.tradeid]) {
         aggregated[trade.tradeid] = {
           openTrades: [],
           closedTrades: [],
-          averageClosingPrice: undefined,
+          averageClosingPrice: 0,
+          totalClosingQuantity: 0,
         };
       }
 
@@ -122,6 +124,7 @@ const Chart = () => {
       }
       if (trade.closedquantity > 0) {
         aggregated[trade.tradeid].closedTrades.push(trade);
+        aggregated[trade.tradeid].totalClosingQuantity! += trade.closedquantity;
       }
     });
 
@@ -130,11 +133,12 @@ const Chart = () => {
       const tradeGroup = aggregated[tradeId];
       if (tradeGroup.closedTrades.length > 0) {
         const totalClosingPrice = tradeGroup.closedTrades.reduce(
-          (sum, trade) => sum + Number(trade.closingprice),
+          (sum, trade) =>
+            sum + Number(trade.closingprice) * trade.closedquantity,
           0
         );
         tradeGroup.averageClosingPrice =
-          totalClosingPrice / tradeGroup.closedTrades.length;
+          totalClosingPrice / (tradeGroup.totalClosingQuantity ?? 1);
       }
     });
 
@@ -142,8 +146,7 @@ const Chart = () => {
   };
 
   const aggregatedTrades: AggregatedTrades = formatTable(data.result.rows);
-  console.log("aggregatedTrades: ", aggregatedTrades);
-
+  console.log(aggregatedTrades);
   return (
     <>
       <div>
@@ -154,12 +157,9 @@ const Chart = () => {
               <td>Action</td>
               <td>Strategy</td>
               <td>Strike</td>
-              <td>Option Price</td>
+              <td>Entry Price</td>
               <td>Quantity</td>
               <td>Breakeven</td>
-              {/* <td>Average Closing Price</td>
-            <td>P/L</td> */}
-              <td>Status</td>
               <td>Expiration Date</td>
             </tr>
           </thead>
@@ -173,7 +173,7 @@ const Chart = () => {
                       className="hover:bg-slate-700 hover:text-slate-200 text-center"
                     >
                       <td>{openTrades[0].ticker}</td>
-                      <td>{openTrades[0].actions}</td>
+                      <td>{getActionAbbreviation(openTrades[0].actions)}</td>
                       <td>{openTrades[0].strategy}</td>
                       <td>{Number(openTrades[0].strike).toFixed(2)}</td>
                       <td>{Number(openTrades[0].optionprice).toFixed(2)}</td>
@@ -188,18 +188,6 @@ const Chart = () => {
                               +openTrades[0].strike - +openTrades[0].optionprice
                             ).toFixed(2)}
                       </td>
-                      {/* <td>{closedTrades[0]?.closingprice}</td>
-                  <td>
-                    {closedTrades[0]?.closingprice
-                      ? (
-                          ((+closedTrades[0]?.closingprice -
-                            +openTrades[0]?.optionprice) /
-                            +openTrades[0]?.optionprice) *
-                          100
-                        ).toFixed(2) + "%"
-                      : "N/A"}
-                  </td> */}
-                      <td>Open</td>
                       <td>{formatDate(openTrades[0].expirationdate)}</td>
                     </tr>
                   );
@@ -214,44 +202,54 @@ const Chart = () => {
       <div>
         <table className="table table-xs table-pin-rows table-pin-cols text-xs">
           <thead>
-            <tr className="bg-slate-400 text-slate-800 text-center">
+            <tr className="text-slate-300 text-center">
               <th>Ticker</th>
               <th>Action</th>
               <th>Strategy</th>
               <th>Strike</th>
-              <th>Closing Price</th>
               <th>Quantity</th>
               <th>Average Closing Price</th>
               <th>P/L</th>
-              <th>Status</th>
               <th>Completion Date</th>
             </tr>
           </thead>
           <tbody className="text-slate-200">
             {Object.entries(aggregatedTrades).map(
-              ([tradeId, { closedTrades }]) => {
-                return closedTrades.map((trade, index) => (
+              ([tradeId, { openTrades, closedTrades }]) => {
+                // Assuming you want to display only the first closed trade per tradeId
+                const trade = closedTrades[closedTrades.length - 1];
+                if (!trade) return null;
+
+                return (
                   <tr
-                    key={`${tradeId}-${index}`} // Unique key for each row
+                    key={`${tradeId}-0`}
                     className="hover:bg-slate-700 hover:text-slate-200 text-center"
                   >
                     <td>{trade.ticker}</td>
-                    <td>{trade.actions}</td>
+                    <td>{getActionAbbreviation(trade.actions)}</td>
                     <td>{trade.strategy}</td>
                     <td>{Number(trade.strike).toFixed(2)}</td>
-                    <td>{Number(trade.closingprice).toFixed(2)}</td>
-                    <td>{trade.closedquantity}</td>
-                    {/* Assuming calculation or retrieval of average closing price & P/L */}
-                    <td>N/A</td> {/* Placeholder for average closing price */}
-                    <td>N/A</td> {/* Placeholder for P/L calculation */}
-                    <td>Closed</td>
+                    <td>{aggregatedTrades[tradeId].totalClosingQuantity}</td>
+                    <td>
+                      {aggregatedTrades[tradeId].averageClosingPrice.toFixed(2)}
+                    </td>
+                    <td>
+                      {closedTrades[0]?.closingprice
+                        ? (
+                            ((+closedTrades[0]?.closingprice -
+                              +openTrades[0]?.optionprice) /
+                              +openTrades[0]?.optionprice) *
+                            100
+                          ).toFixed(2) + "%"
+                        : "N/A"}
+                    </td>
                     <td>
                       {trade.completiondate
                         ? formatDate(trade.completiondate)
                         : "N/A"}
                     </td>
                   </tr>
-                ));
+                );
               }
             )}
           </tbody>

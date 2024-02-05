@@ -26,6 +26,7 @@ export async function GET(request: Request) {
           ot.OptionPrice,
           ot.ExpirationDate,
           ot.CreationDate,
+          ct.ClosedTradeId,
           ct.ClosingPrice,
           ct.CompletionDate,
           ct.ClosedQuantity

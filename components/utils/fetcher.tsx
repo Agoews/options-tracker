@@ -1,5 +1,6 @@
 export interface Trade {
   tradeid: number;
+  closedtradeid: number;
   ticker: string;
   actions: string;
   strategy: string;
@@ -11,8 +12,8 @@ export interface Trade {
   openquantity: number;
   closedquantity: number;
   sumClosingPrices: number;
-  countClosingPrices: number;
   averageClosingPrice: number | null;
+  totalClosingQuantity: number;
   openTrades: Trade[];
   closedTrades: Trade[];
 }
