@@ -84,7 +84,7 @@ const TradeEditModal: React.FC<TradeEditModalProps> = ({
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-4 mb-4">
             <label className="text-slate-200 text-left col-span-1">
               Closing Price:
             </label>
@@ -97,9 +97,9 @@ const TradeEditModal: React.FC<TradeEditModalProps> = ({
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-4 mb-4">
             <label className="text-slate-200 text-left col-span-1">
-              Quantity:
+              Close Quantity:
             </label>
             <input
               type="number"
@@ -107,6 +107,11 @@ const TradeEditModal: React.FC<TradeEditModalProps> = ({
               onChange={(e) => handleInputChange(e, "closedquantity")}
               className="bg-slate-700 text-slate-200 rounded-md flex-1 col-span-2 text-center"
             />
+          </div>
+          <div className="gap-4 items-center">
+            <label className="text-slate-200 text-left col-span-1">
+              {`Current Open Quantity: ${editedTrade.openquantity}`}
+            </label>
           </div>
         </div>
 

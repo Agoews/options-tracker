@@ -33,6 +33,7 @@ CREATE TABLE OpenTrades (
     OpenQuantity INT NOT NULL,
     OptionPrice DECIMAL NOT NULL,
     ExpirationDate DATE NOT NULL,
+    isClosed BOOLEAN,
     CreationDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
@@ -60,11 +61,11 @@ INSERT INTO Trades (UserID, Ticker, Actions, Strategy, Strike, OpenQuantity, Rem
 (2, 'MSFT', 'PUT', NULL, 300.00, 3, 4, 1.22, NULL, '2024-01-15', TRUE, CURRENT_TIMESTAMP, NULL),
 (1, 'TSLA', 'CASH SECURED PUT', 'WHEEL', 700.00, 0, 1, 1.00, NULL, '2024-02-01', TRUE, CURRENT_TIMESTAMP, NULL);
 
-INSERT INTO OpenTrades (UserID, Ticker, Actions, Strategy, Strike, OpenQuantity, OptionPrice, ExpirationDate) VALUES
-(1, 'AAPL', 'CALL', '', 150.00, 10, 5.50, '2024-06-15'),
-(1, 'TSLA', 'CASH SECURED PUT', 'WHEEL', 900.00, 5, 30.00, '2024-07-20'),
-(1, 'MSFT', 'PUT', '', 200.00, 8, 10.00, '2024-08-30'),
-(1, 'GOOGL', 'CALL', '', 1800.00, 6, 45.00, '2024-09-10');
+INSERT INTO OpenTrades (UserID, Ticker, Actions, Strategy, Strike, OpenQuantity, OptionPrice, isClosed, ExpirationDate) VALUES
+(1, 'AAPL', 'CALL', '', 150.00, 10, 5.50, FALSE, '2024-06-15'),
+(1, 'TSLA', 'CASH SECURED PUT', 'WHEEL', 900.00, 5, 30.00, FALSE, '2024-07-20'),
+(1, 'MSFT', 'PUT', '', 200.00, 8, 10.00, FALSE, '2024-08-30'),
+(1, 'GOOGL', 'CALL', '', 1800.00, 6, 45.00, FALSE, '2024-09-10');
 
 INSERT INTO ClosedTrades (TradeID, ClosingPrice, CompletionDate, ClosedQuantity) VALUES
 (1, 6.00, '2024-06-01', 5),

@@ -30,12 +30,12 @@ export async function PUT(req, res) {
         WHERE tradeid = ${tradeid};
       `;
 
-      // Optionally, remove or mark the trade as closed if openquantity is 0
+      // Check if the open quantity is now 0 or below, and mark the trade as closed
       await sql`
-        DELETE FROM OpenTrades
+        UPDATE OpenTrades
+        SET isClosed = TRUE
         WHERE tradeid = ${tradeid} AND openquantity <= 0;
       `;
-      // OR, if marking as closed, you might update another column to indicate it's closed
     } else {
       // If not closing, just update the trade as before
       await sql`

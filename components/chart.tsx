@@ -28,6 +28,7 @@ const Chart = () => {
     completiondate: "",
     openquantity: 0,
     closedquantity: 0,
+    isclosed: false,
     sumClosingPrices: 0,
     averageClosingPrice: 0,
     totalClosingQuantity: 0,
@@ -45,7 +46,8 @@ const Chart = () => {
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
 
-  const handleRowClick = (trade: Trade) => {
+  const handleRowClick = (trade: AggregatedTrades) => {
+    console.log(trade);
     setEditingTradeId(trade.tradeid);
     setEditedTrade({ ...trade });
     setIsModalOpen(true);
@@ -74,15 +76,25 @@ const Chart = () => {
   };
 
   const handleSave = async () => {
+    let newOpenQuantity =
+      editedTrade.openquantity - (editedTrade.closedquantity || 0);
+
+    if (newOpenQuantity < 0) {
+      newOpenQuantity = 0;
+    }
+    const updatedTrade = {
+      ...editedTrade,
+      openquantity: newOpenQuantity,
+    };
+
     const url = `/api/update-trades/`;
-    console.log(editedTrade);
     try {
       const response = await fetch(url, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(editedTrade),
+        body: JSON.stringify(updatedTrade),
       });
 
       if (!response.ok) {
@@ -106,7 +118,6 @@ const Chart = () => {
     return dateString.split("T")[0];
   };
 
-  //Continue working here. Trying to resolve trades and closed trades
   const formatTable = (trades: Trade[]): AggregatedTrades => {
     const aggregated: AggregatedTrades = {};
     trades.forEach((trade) => {
@@ -146,7 +157,7 @@ const Chart = () => {
   };
 
   const aggregatedTrades: AggregatedTrades = formatTable(data.result.rows);
-  console.log(aggregatedTrades);
+  console.log("AggregatedTrades: ", aggregatedTrades);
   return (
     <>
       <div>
@@ -166,11 +177,12 @@ const Chart = () => {
           <tbody className="text-slate-200">
             {Object.entries(aggregatedTrades).map(
               ([tradeId, { openTrades }]) => {
-                if (openTrades.length > 0) {
+                if (openTrades.length > 0 && openTrades[0].isclosed !== true) {
                   return (
                     <tr
                       key={tradeId}
                       className="hover:bg-slate-700 hover:text-slate-200 text-center"
+                      onClick={() => handleRowClick(openTrades[0])}
                     >
                       <td>{openTrades[0].ticker}</td>
                       <td>{getActionAbbreviation(openTrades[0].actions)}</td>
@@ -216,7 +228,7 @@ const Chart = () => {
           <tbody className="text-slate-200">
             {Object.entries(aggregatedTrades).map(
               ([tradeId, { openTrades, closedTrades }]) => {
-                // Assuming you want to display only the first closed trade per tradeId
+                // Display only the first closed trade per tradeId
                 const trade = closedTrades[closedTrades.length - 1];
                 if (!trade) return null;
 

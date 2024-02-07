@@ -8,6 +8,7 @@ import TradeEditModal from "./utils/TradeEditModal";
 const TheWheelChart = () => {
   const initialTradeState: Trade = {
     tradeid: 0,
+    closedtradeid: 0,
     ticker: "",
     actions: "",
     strategy: "",
@@ -19,8 +20,8 @@ const TheWheelChart = () => {
     openquantity: 0,
     closedquantity: 0,
     sumClosingPrices: 0,
-    countClosingPrices: 0,
     averageClosingPrice: 0,
+    totalClosingQuantity: 0,
     openTrades: [],
     closedTrades: [],
   };

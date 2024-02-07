@@ -23,6 +23,7 @@ export async function GET(request: Request) {
           ot.Strategy,
           ot.Strike,
           ot.OpenQuantity,
+          ot.isClosed,
           ot.OptionPrice,
           ot.ExpirationDate,
           ot.CreationDate,
