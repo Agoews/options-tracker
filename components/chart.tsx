@@ -46,7 +46,7 @@ const Chart = () => {
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
 
-  const handleRowClick = (trade: AggregatedTrades) => {
+  const handleRowClick = (trade: Trade) => {
     console.log(trade);
     setEditingTradeId(trade.tradeid);
     setEditedTrade({ ...trade });
@@ -241,9 +241,13 @@ const Chart = () => {
                     <td>{getActionAbbreviation(trade.actions)}</td>
                     <td>{trade.strategy}</td>
                     <td>{Number(trade.strike).toFixed(2)}</td>
-                    <td>{aggregatedTrades[tradeId].totalClosingQuantity}</td>
                     <td>
-                      {aggregatedTrades[tradeId].averageClosingPrice.toFixed(2)}
+                      {aggregatedTrades[Number(tradeId)].totalClosingQuantity}
+                    </td>
+                    <td>
+                      {aggregatedTrades[
+                        Number(tradeId)
+                      ].averageClosingPrice?.toFixed(2)}
                     </td>
                     <td>
                       {closedTrades[0]?.closingprice
