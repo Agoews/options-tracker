@@ -105,6 +105,10 @@ const TheWheelChart = () => {
     throw new Error("Function not implemented.");
   }
 
+  function handleSaveClosedTrades(): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <div className="flex justify-center space-x-10">
       {/* Credits Table */}
@@ -197,6 +201,7 @@ const TheWheelChart = () => {
         editedTrade={editedTrade}
         handleInputChange={handleInputChange}
         handleSaveOpenTrades={handleSaveOpenTrades}
+        handleSaveClosedTrades={handleSaveClosedTrades}
         handleCancel={handleCancel}
         isModalOpen={isModalOpen}
       />
