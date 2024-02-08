@@ -4,6 +4,7 @@ import useSWR, { mutate } from "swr";
 import { fetcher, Trade } from "./utils/fetcher";
 import { getActionAbbreviation } from "./utils/getActionAbbreviation";
 import TradeEditModal from "./utils/TradeEditModal";
+import { tradeTableFormatter } from "./utils/tradeTableFormatter";
 
 const TheWheelChart = () => {
   const initialTradeState: Trade = {
@@ -38,8 +39,6 @@ const TheWheelChart = () => {
   if (isLoading) return <div>Loading...</div>;
   const trades: Trade[] = data.result.rows;
 
-  console.log(trades);
-
   const handleRowClick = (trade: Trade) => {
     setEditingTradeId(trade.tradeid);
     setEditedTrade({ ...trade });
@@ -67,16 +66,26 @@ const TheWheelChart = () => {
     setEditedTrade({ ...editedTrade, [field]: value });
   };
 
-  const handleSave = async () => {
-    const url = `/api/update-trades/`;
-    console.log(editedTrade);
+  const handleSaveOpenTrades = async () => {
+    let newOpenQuantity =
+      editedTrade.openquantity - (editedTrade.closedquantity || 0);
+
+    if (newOpenQuantity < 0) {
+      newOpenQuantity = 0;
+    }
+    const updatedTrade = {
+      ...editedTrade,
+      openquantity: newOpenQuantity,
+    };
+
+    const url = `/api/update-open-trades/`;
     try {
       const response = await fetch(url, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(editedTrade),
+        body: JSON.stringify(updatedTrade),
       });
 
       if (!response.ok) {
@@ -91,23 +100,49 @@ const TheWheelChart = () => {
     setIsModalOpen(false);
   };
 
+  const handleSaveClosedTrades = async () => {
+    const updatedTrade = {
+      ...editedTrade,
+      tradeid: editedTrade.tradeid,
+      closingprice: null,
+      completiondate: null,
+      reopenquantity: Number(editedTrade.closedquantity),
+      isClosed: false,
+    };
+
+    const url = `/api/update-closed-trades/`;
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedTrade),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update the closed trade.");
+      }
+      mutate("/api/get-trades");
+    } catch (error) {
+      console.error("Error updating closed trade:", error);
+    }
+
+    setEditingTradeId(null);
+    setIsModalOpen(false);
+  };
+
   const handleCancel = () => {
     setEditingTradeId(null);
     setIsModalOpen(false);
   };
-  console.log("trades im wheel: ", trades);
 
   const formatDate = (dateString: string) => {
     return dateString.split("T")[0];
   };
 
-  function handleSaveOpenTrades(): void {
-    throw new Error("Function not implemented.");
-  }
-
-  function handleSaveClosedTrades(): void {
-    throw new Error("Function not implemented.");
-  }
+  const aggregatedTrades = tradeTableFormatter(data.result.rows);
+  console.log("trades in wheel: ", aggregatedTrades);
 
   return (
     <div className="flex justify-center space-x-10">
@@ -127,26 +162,37 @@ const TheWheelChart = () => {
             </tr>
           </thead>
           <tbody className="text-slate-200 text-center">
-            {trades.map((trade) => {
-              if (trade.strategy === "WHEEL") {
-                return (
-                  <tr
-                    key={trade.tradeid}
-                    className="hover:bg-slate-700 hover:text-slate-200 text-center"
-                    onClick={() => handleRowClick(trade)}
-                  >
-                    <td>{trade.ticker}</td>
-                    <td>{getActionAbbreviation(trade.actions)}</td>
-                    <td>{trade.strike}</td>
-                    <td>{Number(trade.optionprice).toFixed(2)}</td>
-                    <td>${+trade.optionprice * +trade.strike * 100}</td>
-                    <td>{trade.closingprice ? "Closed" : "Open"}</td>
-                    <td>{formatDate(trade.expirationdate)}</td>
-                  </tr>
-                );
+            {Object.entries(aggregatedTrades).map(
+              ([tradeId, { openTrades }]) => {
+                if (
+                  openTrades.length > 0 &&
+                  openTrades[0].isclosed !== true &&
+                  openTrades[0].strategy === "WHEEL"
+                ) {
+                  return (
+                    <tr
+                      key={tradeId}
+                      className="hover:bg-slate-700 hover:text-slate-200 text-center"
+                      onClick={() => handleRowClick(openTrades[0])}
+                    >
+                      <td>{openTrades[0].ticker}</td>
+                      <td>{getActionAbbreviation(openTrades[0].actions)}</td>
+                      <td>{Number(openTrades[0].openquantity)}</td>
+                      <td>{Number(openTrades[0].optionprice).toFixed(2)}</td>
+                      <td>
+                        $
+                        {+openTrades[0].openquantity *
+                          +openTrades[0].optionprice *
+                          100}
+                      </td>
+                      <td>{openTrades[0].closingprice ? "Closed" : "Open"}</td>
+                      <td>{formatDate(openTrades[0].expirationdate)}</td>
+                    </tr>
+                  );
+                }
+                return null; // Skip rendering if there are no open trades
               }
-              return null;
-            })}
+            )}
           </tbody>
         </table>
       </div>
@@ -166,7 +212,51 @@ const TheWheelChart = () => {
             </tr>
           </thead>
           <tbody className="text-slate-200 text-center">
-            {trades.map((trade) => {
+            {Object.entries(aggregatedTrades).map(
+              ([tradeId, { openTrades, closedTrades }]) => {
+                // Display only the first closed trade per tradeId
+                if (!closedTrades[closedTrades.length - 1]) return null;
+
+                if (openTrades[0].strategy === "WHEEL") {
+                  return (
+                    <tr
+                      key={`${tradeId}-0`}
+                      className="hover:bg-slate-700 hover:text-slate-200 text-center"
+                      onClick={() => handleRowClick(closedTrades[0])}
+                    >
+                      <td>{openTrades[0].ticker}</td>
+                      <td>{getActionAbbreviation(openTrades[0].actions)}</td>
+                      <td>
+                        {aggregatedTrades[Number(tradeId)].totalClosingQuantity}
+                      </td>
+                      <td>
+                        {aggregatedTrades[
+                          Number(tradeId)
+                        ].averageClosingPrice?.toFixed(2)}
+                      </td>
+                      <td>
+                        {closedTrades[0]?.closingprice
+                          ? (
+                              ((aggregatedTrades[Number(tradeId)]
+                                .averageClosingPrice -
+                                +openTrades[0]?.optionprice) /
+                                +openTrades[0]?.optionprice) *
+                              100
+                            ).toFixed(2) + "%"
+                          : "N/A"}
+                      </td>
+                      <td>
+                        {closedTrades[0].completiondate
+                          ? formatDate(closedTrades[0].completiondate)
+                          : "N/A"}
+                      </td>
+                    </tr>
+                  );
+                }
+                return null; // Skip rendering if there are no open trades
+              }
+            )}
+            {/* {trades.map((trade) => {
               if (trade.strategy === "WHEEL" && trade.closingprice) {
                 return (
                   <tr
@@ -193,7 +283,7 @@ const TheWheelChart = () => {
                   </tr>
                 );
               }
-            })}
+            })} */}
           </tbody>
         </table>
       </div>
