@@ -101,6 +101,10 @@ const TheWheelChart = () => {
     return dateString.split("T")[0];
   };
 
+  function handleSaveOpenTrades(): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <div className="flex justify-center space-x-10">
       {/* Credits Table */}
@@ -192,7 +196,7 @@ const TheWheelChart = () => {
       <TradeEditModal
         editedTrade={editedTrade}
         handleInputChange={handleInputChange}
-        handleSave={handleSave}
+        handleSaveOpenTrades={handleSaveOpenTrades}
         handleCancel={handleCancel}
         isModalOpen={isModalOpen}
       />

@@ -7,10 +7,32 @@ import TradeEditModal from "./utils/TradeEditModal";
 
 interface AggregatedTrades {
   [key: number]: {
-    openTrades: Trade[];
-    closedTrades: Trade[];
-    averageClosingPrice?: number;
-    totalClosingQuantity?: number;
+    openTrades: Array<
+      Pick<
+        Trade,
+        | "tradeid"
+        | "ticker"
+        | "actions"
+        | "strategy"
+        | "strike"
+        | "openquantity"
+        | "isclosed"
+        | "optionprice"
+        | "expirationdate"
+      >
+    >;
+    closedTrades: Array<
+      Pick<
+        Trade,
+        | "tradeid"
+        | "closedtradeid"
+        | "closingprice"
+        | "completiondate"
+        | "closedquantity"
+      >
+    >;
+    averageClosingPrice: number;
+    totalClosingQuantity: number;
   };
 }
 
@@ -47,7 +69,6 @@ const Chart = () => {
   if (isLoading) return <div>Loading...</div>;
 
   const handleRowClick = (trade: Trade) => {
-    console.log(trade);
     setEditingTradeId(trade.tradeid);
     setEditedTrade({ ...trade });
     setIsModalOpen(true);
@@ -75,7 +96,7 @@ const Chart = () => {
     setEditedTrade({ ...editedTrade, [field]: value });
   };
 
-  const handleSave = async () => {
+  const handleSaveOpenTrades = async () => {
     let newOpenQuantity =
       editedTrade.openquantity - (editedTrade.closedquantity || 0);
 
@@ -87,7 +108,7 @@ const Chart = () => {
       openquantity: newOpenQuantity,
     };
 
-    const url = `/api/update-trades/`;
+    const url = `/api/update-open-trades/`;
     try {
       const response = await fetch(url, {
         method: "PUT",
@@ -103,6 +124,41 @@ const Chart = () => {
       mutate("/api/get-trades");
     } catch (error) {
       console.error("Error updating trade:", error);
+    }
+
+    setEditingTradeId(null);
+    setIsModalOpen(false);
+  };
+
+  const handleSaveClosedTrades = async () => {
+    // Assuming you track closing quantity and maybe a closing price for closed trades
+    // Adjust these properties as needed for your application's requirements
+    const updatedTrade = {
+      ...editedTrade,
+      tradeid: editedTrade.tradeid,
+      closingprice: null,
+      completiondate: null,
+      reopenquantity: Number(editedTrade.closedquantity),
+      isClosed: false,
+    };
+
+    console.log(updatedTrade);
+    const url = `/api/update-closed-trades/`; // Your endpoint for updating closed trades
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedTrade),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update the closed trade.");
+      }
+      mutate("/api/get-trades");
+    } catch (error) {
+      console.error("Error updating closed trade:", error);
     }
 
     setEditingTradeId(null);
@@ -131,11 +187,28 @@ const Chart = () => {
       }
 
       if (trade.openquantity !== null) {
-        aggregated[trade.tradeid].openTrades.push(trade);
+        aggregated[trade.tradeid].openTrades.push({
+          tradeid: trade.tradeid,
+          ticker: trade.ticker,
+          actions: trade.actions,
+          strategy: trade.strategy,
+          strike: trade.strike,
+          openquantity: trade.openquantity,
+          isclosed: trade.isclosed,
+          optionprice: trade.optionprice,
+          expirationdate: trade.expirationdate,
+        });
       }
+
       if (trade.closedquantity > 0) {
-        aggregated[trade.tradeid].closedTrades.push(trade);
-        aggregated[trade.tradeid].totalClosingQuantity! += trade.closedquantity;
+        aggregated[trade.tradeid].closedTrades.push({
+          tradeid: trade.tradeid,
+          closedtradeid: trade.closedtradeid,
+          closingprice: trade.closingprice,
+          completiondate: trade.completiondate,
+          closedquantity: trade.closedquantity,
+        });
+        aggregated[trade.tradeid].totalClosingQuantity += trade.closedquantity;
       }
     });
 
@@ -161,6 +234,7 @@ const Chart = () => {
   return (
     <>
       <div>
+        {/* OPEN TRADES */}
         <table className="table table-xs table-pin-rows table-pin-cols text-xs">
           <thead>
             <tr className="bg-slate-400 text-slate-800 text-center">
@@ -212,6 +286,7 @@ const Chart = () => {
       </div>
 
       <div>
+        {/* CLOSED TRADES */}
         <table className="table table-xs table-pin-rows table-pin-cols text-xs">
           <thead>
             <tr className="text-slate-300 text-center">
@@ -236,11 +311,12 @@ const Chart = () => {
                   <tr
                     key={`${tradeId}-0`}
                     className="hover:bg-slate-700 hover:text-slate-200 text-center"
+                    onClick={() => handleRowClick(closedTrades[0])}
                   >
-                    <td>{trade.ticker}</td>
-                    <td>{getActionAbbreviation(trade.actions)}</td>
-                    <td>{trade.strategy}</td>
-                    <td>{Number(trade.strike).toFixed(2)}</td>
+                    <td>{openTrades[0].ticker}</td>
+                    <td>{getActionAbbreviation(openTrades[0].actions)}</td>
+                    <td>{openTrades[0].strategy}</td>
+                    <td>{Number(openTrades[0].strike).toFixed(2)}</td>
                     <td>
                       {aggregatedTrades[Number(tradeId)].totalClosingQuantity}
                     </td>
@@ -275,7 +351,8 @@ const Chart = () => {
       <TradeEditModal
         editedTrade={editedTrade}
         handleInputChange={handleInputChange}
-        handleSave={handleSave}
+        handleSaveOpenTrades={handleSaveOpenTrades}
+        handleSaveClosedTrades={handleSaveClosedTrades}
         handleCancel={handleCancel}
         isModalOpen={isModalOpen}
       />
