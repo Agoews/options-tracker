@@ -21,15 +21,32 @@ const DebitModal: React.FC<DebitModalProps> = ({
 }) => {
   if (!closedTradeModalToggle) return null;
 
-  if (closedTradeModalToggle) {
-    console.log("Closed Modal Data: ", closedTrades);
-  }
   return (
     <div className="modal modal-open">
       <div className="modal-box max-w-sm bg-slate-600 opacity-95">
-        <h3 className="font-bold text-lg text-slate-200 mb-1">Update Trade</h3>
+        <h3 className="font-bold text-lg text-slate-200 mb-4">Closed Trades</h3>
+        <div className="overflow-x-auto">
+          <table className="table w-full text-slate-200">
+            <thead>
+              <tr>
+                <th>Ticker</th>
+                <th>Closing Price</th>
+                <th>Closed Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              {closedTrades.map((trade, index) => (
+                <tr key={index}>
+                  <td>{trade.ticker}</td>
+                  <td>{trade.closingprice}</td>
+                  <td>{trade.closedquantity}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-        <div className="modal-action">
+        <div className="modal-action mt-4">
           <button
             className="btn bg-slate-800 text-slate-200"
             onClick={handleSaveClosedTrades}

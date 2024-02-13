@@ -49,10 +49,11 @@ const TheWheelChart = () => {
     setOpenTradeModalToggle(true);
   };
 
-  const handleClosedTradeClick = () => {
-    const allClosedTrades = Object.values(aggregatedTrades).flatMap(
-      (aggregatedTrade) => aggregatedTrade.closedTrades
-    );
+  const handleClosedTradeClick = (tradeId: number) => {
+    console.log("TRADEID: ", tradeId);
+    const allClosedTrades = Object.values(aggregatedTrades)
+      .flatMap((aggregatedTrade) => aggregatedTrade.closedTrades)
+      .filter((closedTrade) => closedTrade.tradeid === tradeId);
     setClosedTrades(allClosedTrades);
     setClosedTradeModalToggle(true);
   };
@@ -162,7 +163,9 @@ const TheWheelChart = () => {
 
       <DebitTable
         aggregatedTrades={aggregatedTrades}
-        handleClosedTradeClick={handleClosedTradeClick}
+        handleClosedTradeClick={(tradeId) =>
+          handleClosedTradeClick(tradeId.tradeid)
+        }
       />
 
       <CreditModal
