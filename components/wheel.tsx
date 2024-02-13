@@ -2,9 +2,11 @@
 import React, { useState } from "react";
 import useSWR, { mutate } from "swr";
 import { fetcher, Trade } from "./utils/fetcher";
-import { getActionAbbreviation } from "./utils/getActionAbbreviation";
-import TradeEditModal from "./utils/TradeEditModal";
 import { tradeTableFormatter } from "./utils/tradeTableFormatter";
+import CreditTable from "./utils/wheelUtils/CreditTable";
+import DebitTable from "./utils/wheelUtils/DebitTable";
+import CreditModal from "./utils/wheelUtils/CreditModal";
+import DebitModal from "./utils/wheelUtils/DebitModal";
 
 const TheWheelChart = () => {
   const initialTradeState: Trade = {
@@ -33,16 +35,26 @@ const TheWheelChart = () => {
 
   const [editingTradeId, setEditingTradeId] = useState<number | null>(null);
   const [editedTrade, setEditedTrade] = useState<Trade>(initialTradeState);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [openTradeModalToggle, setOpenTradeModalToggle] = useState(false);
+  const [closedTradeModalToggle, setClosedTradeModalToggle] = useState(false);
+  const [closedTrades, setClosedTrades] = useState<Trade[]>([]);
 
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
   const trades: Trade[] = data.result.rows;
 
-  const handleRowClick = (trade: Trade) => {
+  const handleOpenTradeClick = (trade: Trade) => {
     setEditingTradeId(trade.tradeid);
     setEditedTrade({ ...trade });
-    setIsModalOpen(true);
+    setOpenTradeModalToggle(true);
+  };
+
+  const handleClosedTradeClick = () => {
+    const allClosedTrades = Object.values(aggregatedTrades).flatMap(
+      (aggregatedTrade) => aggregatedTrade.closedTrades
+    );
+    setClosedTrades(allClosedTrades);
+    setClosedTradeModalToggle(true);
   };
 
   const handleInputChange = (
@@ -97,7 +109,7 @@ const TheWheelChart = () => {
     }
 
     setEditingTradeId(null);
-    setIsModalOpen(false);
+    setOpenTradeModalToggle(false);
   };
 
   const handleSaveClosedTrades = async () => {
@@ -129,16 +141,13 @@ const TheWheelChart = () => {
     }
 
     setEditingTradeId(null);
-    setIsModalOpen(false);
+    setOpenTradeModalToggle(false);
   };
 
   const handleCancel = () => {
     setEditingTradeId(null);
-    setIsModalOpen(false);
-  };
-
-  const formatDate = (dateString: string) => {
-    return dateString.split("T")[0];
+    setOpenTradeModalToggle(false);
+    setClosedTradeModalToggle(false);
   };
 
   const aggregatedTrades = tradeTableFormatter(data.result.rows);
@@ -146,154 +155,30 @@ const TheWheelChart = () => {
 
   return (
     <div className="flex justify-center space-x-10">
-      {/* Credits Table */}
-      <div className="w-1/2">
-        <h2 className="text-slate-200 mb-1">Credits</h2>
-        <table className="table table-xs w-full text-xs">
-          <thead>
-            <tr className="bg-slate-400 text-slate-800 border-2 border-slate-800 text-center">
-              <th>Ticker</th>
-              <th>Action</th>
-              <th># of Options</th>
-              <th>Credit</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th>Expiration Date</th>
-            </tr>
-          </thead>
-          <tbody className="text-slate-200 text-center">
-            {Object.entries(aggregatedTrades).map(
-              ([tradeId, { openTrades }]) => {
-                if (
-                  openTrades.length > 0 &&
-                  openTrades[0].isclosed !== true &&
-                  openTrades[0].strategy === "WHEEL"
-                ) {
-                  return (
-                    <tr
-                      key={tradeId}
-                      className="hover:bg-slate-700 hover:text-slate-200 text-center"
-                      onClick={() => handleRowClick(openTrades[0])}
-                    >
-                      <td>{openTrades[0].ticker}</td>
-                      <td>{getActionAbbreviation(openTrades[0].actions)}</td>
-                      <td>{Number(openTrades[0].openquantity)}</td>
-                      <td>{Number(openTrades[0].optionprice).toFixed(2)}</td>
-                      <td>
-                        $
-                        {+openTrades[0].openquantity *
-                          +openTrades[0].optionprice *
-                          100}
-                      </td>
-                      <td>{openTrades[0].closingprice ? "Closed" : "Open"}</td>
-                      <td>{formatDate(openTrades[0].expirationdate)}</td>
-                    </tr>
-                  );
-                }
-                return null; // Skip rendering if there are no open trades
-              }
-            )}
-          </tbody>
-        </table>
-      </div>
+      <CreditTable
+        aggregatedTrades={aggregatedTrades}
+        handleOpenTradeClick={handleOpenTradeClick}
+      />
 
-      {/* Debits Table */}
-      <div className="w-1/2">
-        <h2 className="text-slate-200 mb-1">Debits</h2>
-        <table className="table table-xs w-full text-xs">
-          <thead>
-            <tr className="bg-slate-400 text-slate-800 border-2 border-slate-800 text-center">
-              <th>Ticker</th>
-              <th>Action</th>
-              <th># of Options</th>
-              <th>Debit</th>
-              <th>P/L</th>
-              <th>Date Closed</th>
-            </tr>
-          </thead>
-          <tbody className="text-slate-200 text-center">
-            {Object.entries(aggregatedTrades).map(
-              ([tradeId, { openTrades, closedTrades }]) => {
-                // Display only the first closed trade per tradeId
-                if (!closedTrades[closedTrades.length - 1]) return null;
+      <DebitTable
+        aggregatedTrades={aggregatedTrades}
+        handleClosedTradeClick={handleClosedTradeClick}
+      />
 
-                if (openTrades[0].strategy === "WHEEL") {
-                  return (
-                    <tr
-                      key={`${tradeId}-0`}
-                      className="hover:bg-slate-700 hover:text-slate-200 text-center"
-                      onClick={() => handleRowClick(closedTrades[0])}
-                    >
-                      <td>{openTrades[0].ticker}</td>
-                      <td>{getActionAbbreviation(openTrades[0].actions)}</td>
-                      <td>
-                        {aggregatedTrades[Number(tradeId)].totalClosingQuantity}
-                      </td>
-                      <td>
-                        {aggregatedTrades[
-                          Number(tradeId)
-                        ].averageClosingPrice?.toFixed(2)}
-                      </td>
-                      <td>
-                        {closedTrades[0]?.closingprice
-                          ? (
-                              ((aggregatedTrades[Number(tradeId)]
-                                .averageClosingPrice -
-                                +openTrades[0]?.optionprice) /
-                                +openTrades[0]?.optionprice) *
-                              100
-                            ).toFixed(2) + "%"
-                          : "N/A"}
-                      </td>
-                      <td>
-                        {closedTrades[0].completiondate
-                          ? formatDate(closedTrades[0].completiondate)
-                          : "N/A"}
-                      </td>
-                    </tr>
-                  );
-                }
-                return null; // Skip rendering if there are no open trades
-              }
-            )}
-            {/* {trades.map((trade) => {
-              if (trade.strategy === "WHEEL" && trade.closingprice) {
-                return (
-                  <tr
-                    key={trade.tradeid}
-                    className="hover:bg-slate-700 hover:text-slate-200 text-center"
-                    onClick={() => handleRowClick(trade)}
-                  >
-                    <td>{trade.ticker}</td>
-                    <td>{getActionAbbreviation(trade.actions)}</td>
-                    <td>{trade.strike}</td>
-                    <td>{trade.closingprice}</td>
-                    <td>
-                      {(
-                        ((+trade.closingprice - +trade.optionprice) /
-                          +trade.optionprice) *
-                        100
-                      ).toFixed(2) + "%"}
-                    </td>
-                    <td>
-                      {trade.completiondate
-                        ? formatDate(trade.completiondate)
-                        : "N/A"}
-                    </td>
-                  </tr>
-                );
-              }
-            })} */}
-          </tbody>
-        </table>
-      </div>
-      <TradeEditModal
+      <CreditModal
         editedTrade={editedTrade}
         handleInputChange={handleInputChange}
         handleSaveOpenTrades={handleSaveOpenTrades}
+        handleCancel={handleCancel}
+        openTradeModalToggle={openTradeModalToggle}
+      />
+
+      <DebitModal
+        closedTrades={closedTrades}
+        handleInputChange={handleInputChange}
         handleSaveClosedTrades={handleSaveClosedTrades}
         handleCancel={handleCancel}
-        isModalOpen={isModalOpen}
+        closedTradeModalToggle={closedTradeModalToggle}
       />
     </div>
   );

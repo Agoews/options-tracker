@@ -3,7 +3,7 @@ import { useState } from "react";
 import useSWR, { mutate } from "swr";
 import { fetcher, Trade } from "./utils/fetcher";
 import { getActionAbbreviation } from "./utils/getActionAbbreviation";
-import TradeEditModal from "./utils/TradeEditModal";
+import OpenTradeEditModal from "./utils/OpenTradeEditModal";
 import { tradeTableFormatter } from "./utils/tradeTableFormatter";
 
 const Chart = () => {
@@ -33,7 +33,7 @@ const Chart = () => {
 
   const [editingTradeId, setEditingTradeId] = useState<number | null>(null);
   const [editedTrade, setEditedTrade] = useState<Trade>(initialTradeState);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [openTradeModalToggle, setOpenTradeModalToggle] = useState(false);
 
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
@@ -41,7 +41,7 @@ const Chart = () => {
   const handleRowClick = (trade: Trade) => {
     setEditingTradeId(trade.tradeid);
     setEditedTrade({ ...trade });
-    setIsModalOpen(true);
+    setOpenTradeModalToggle(true);
   };
 
   const handleInputChange = (
@@ -97,7 +97,7 @@ const Chart = () => {
     }
 
     setEditingTradeId(null);
-    setIsModalOpen(false);
+    setOpenTradeModalToggle(false);
   };
 
   const handleSaveClosedTrades = async () => {
@@ -129,12 +129,12 @@ const Chart = () => {
     }
 
     setEditingTradeId(null);
-    setIsModalOpen(false);
+    setOpenTradeModalToggle(false);
   };
 
   const handleCancel = () => {
     setEditingTradeId(null);
-    setIsModalOpen(false);
+    setOpenTradeModalToggle(false);
   };
 
   const formatDate = (dateString: string) => {
@@ -261,13 +261,13 @@ const Chart = () => {
       </div>
 
       {/* Modal for editing trade */}
-      <TradeEditModal
+      <OpenTradeEditModal
         editedTrade={editedTrade}
         handleInputChange={handleInputChange}
         handleSaveOpenTrades={handleSaveOpenTrades}
         handleSaveClosedTrades={handleSaveClosedTrades}
         handleCancel={handleCancel}
-        isModalOpen={isModalOpen}
+        openTradeModalToggle={openTradeModalToggle}
       />
     </>
   );
