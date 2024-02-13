@@ -178,7 +178,6 @@ const TheWheelChart = () => {
 
       <DebitModal
         closedTrades={closedTrades}
-        handleInputChange={handleInputChange}
         handleSaveClosedTrades={handleSaveClosedTrades}
         handleCancel={handleCancel}
         closedTradeModalToggle={closedTradeModalToggle}

@@ -3,10 +3,7 @@ import { Trade } from "../fetcher";
 
 interface DebitModalProps {
   closedTrades: Trade[];
-  handleInputChange: (
-    e: React.ChangeEvent<HTMLElement>,
-    field: keyof Trade
-  ) => void;
+
   handleSaveClosedTrades: () => void;
   handleCancel: () => void;
   closedTradeModalToggle: boolean;
@@ -14,7 +11,6 @@ interface DebitModalProps {
 
 const DebitModal: React.FC<DebitModalProps> = ({
   closedTrades,
-  handleInputChange,
   handleSaveClosedTrades,
   handleCancel,
   closedTradeModalToggle,
