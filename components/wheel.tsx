@@ -155,7 +155,7 @@ const TheWheelChart = () => {
   console.log("trades in wheel: ", aggregatedTrades);
 
   return (
-    <div className="flex justify-center space-x-10">
+    <div className="flex justify-center">
       <CreditTable
         aggregatedTrades={aggregatedTrades}
         handleOpenTradeClick={handleOpenTradeClick}

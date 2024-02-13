@@ -45,7 +45,7 @@ export const CreditTable: React.FC<CreditTableProps> = ({
   };
 
   return (
-    <div className="w-1/2">
+    <div className="w-1/2 mr-5">
       <h2 className="text-slate-200 mb-1">Credits</h2>
       <table className="table table-xs w-full text-xs">
         <thead>

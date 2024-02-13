@@ -45,7 +45,7 @@ const DebitTable: React.FC<DebitTableProps> = ({
   };
 
   return (
-    <div className="w-1/2">
+    <div className="w-1/2 ml-5">
       <h2 className="text-slate-200 mb-1">Debits</h2>
       <table className="table table-xs w-full text-xs">
         <thead>
