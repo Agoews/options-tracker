@@ -21,6 +21,10 @@ const DebitModal: React.FC<DebitModalProps> = ({
 }) => {
   if (!closedTradeModalToggle) return null;
 
+  if (closedTradeModalToggle) {
+    console.log("closedTrades", closedTrades);
+  }
+
   return (
     <div className="modal modal-open">
       <div className="modal-box max-w-sm bg-slate-600 opacity-95">
@@ -29,7 +33,6 @@ const DebitModal: React.FC<DebitModalProps> = ({
           <table className="table w-full text-slate-200">
             <thead>
               <tr>
-                <th>Ticker</th>
                 <th>Closing Price</th>
                 <th>Closed Quantity</th>
               </tr>
@@ -37,7 +40,6 @@ const DebitModal: React.FC<DebitModalProps> = ({
             <tbody>
               {closedTrades.map((trade, index) => (
                 <tr key={index}>
-                  <td>{trade.ticker}</td>
                   <td>{trade.closingprice}</td>
                   <td>{trade.closedquantity}</td>
                 </tr>
