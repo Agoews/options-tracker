@@ -84,7 +84,10 @@ const DebitTable: React.FC<DebitTableProps> = ({
                     <td>
                       {closedTrades[0]?.closingprice
                         ? (
-                            ((Number(closedTrades[0]?.closingprice) -
+                            ((Number(
+                              aggregatedTrades[Number(tradeId)]
+                                .averageClosingPrice
+                            ) -
                               Number(openTrades[0]?.optionprice)) /
                               Number(openTrades[0]?.optionprice)) *
                             100

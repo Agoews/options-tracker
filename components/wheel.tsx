@@ -145,6 +145,7 @@ const TheWheelChart = () => {
       console.error("Error updating closed trade:", error);
     }
 
+    aggregatedTrades = tradeTableFormatter(data.result.rows);
     setEditingTradeId(null);
     setClosedTradeModalToggle(false);
   };
@@ -155,7 +156,7 @@ const TheWheelChart = () => {
     setClosedTradeModalToggle(false);
   };
 
-  const aggregatedTrades = tradeTableFormatter(data.result.rows);
+  let aggregatedTrades = tradeTableFormatter(data.result.rows);
   console.log("trades in wheel: ", aggregatedTrades);
 
   return (
