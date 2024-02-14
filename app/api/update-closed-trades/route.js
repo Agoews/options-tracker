@@ -3,11 +3,20 @@ import { sql } from "@vercel/postgres";
 export async function PUT(req, res) {
   const {
     tradeid,
+    closedtradeid,
+    closingprice,
+    completiondate,
     reopenquantity,
+    isClosed,
   } = await req.json();
 
   try {
-    console.log('-----', tradeid, reopenquantity)
+    console.log('-----', tradeid,
+      closedtradeid,
+      closingprice,
+      completiondate,
+      reopenquantity,
+      isClosed)
     // Update the open quantity in the OpenTrades table to reopen the trade
     await sql`
       UPDATE OpenTrades
@@ -18,13 +27,9 @@ export async function PUT(req, res) {
     `;
 
     await sql`
-      UPDATE ClosedTrades
-      SET ClosedQuantity = ClosedQuantity - ${reopenquantity}
-      WHERE TradeID = ${tradeid};
+      DELETE FROM ClosedTrades
+      WHERE ClosedtradeId = ${closedtradeid};
     `;
-
-    // Note: You might need additional logic to handle cases where the reopen quantity exceeds the closed quantity
-    // or to properly track reopened trades if using a separate table for closed trades.
 
     return new Response("Trade reopened successfully!", { status: 200 });
   } catch (error) {

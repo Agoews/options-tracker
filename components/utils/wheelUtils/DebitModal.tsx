@@ -3,15 +3,18 @@ import { Trade } from "../fetcher";
 
 interface DebitModalProps {
   closedTrades: Trade[];
-
-  handleSaveClosedTrades: () => void;
+  handleReopenTrade: (
+    closedTradeId: number,
+    tradeId: number,
+    closedQuantity: number
+  ) => void;
   handleCancel: () => void;
   closedTradeModalToggle: boolean;
 }
 
 const DebitModal: React.FC<DebitModalProps> = ({
   closedTrades,
-  handleSaveClosedTrades,
+  handleReopenTrade,
   handleCancel,
   closedTradeModalToggle,
 }) => {
@@ -42,7 +45,13 @@ const DebitModal: React.FC<DebitModalProps> = ({
                   <td>
                     <button
                       className="btn btn-xs bg-slate-800 text-slate-200"
-                      onClick={() => console.log(trade.closedtradeid)}
+                      onClick={() =>
+                        handleReopenTrade(
+                          trade.closedtradeid,
+                          trade.tradeid,
+                          trade.closedquantity
+                        )
+                      }
                     >
                       Reopen
                     </button>
@@ -54,12 +63,12 @@ const DebitModal: React.FC<DebitModalProps> = ({
         </div>
 
         <div className="modal-action mt-4">
-          <button
+          {/* <button
             className="btn bg-slate-800 text-slate-200"
-            onClick={handleSaveClosedTrades}
+            onClick={handleReopenTrade}
           >
             Save
-          </button>
+          </button> */}
           <button
             className="btn bg-slate-800 text-slate-200"
             onClick={handleCancel}

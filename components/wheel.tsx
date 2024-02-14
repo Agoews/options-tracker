@@ -43,21 +43,6 @@ const TheWheelChart = () => {
   if (isLoading) return <div>Loading...</div>;
   const trades: Trade[] = data.result.rows;
 
-  const handleOpenTradeClick = (trade: Trade) => {
-    setEditingTradeId(trade.tradeid);
-    setEditedTrade({ ...trade });
-    setOpenTradeModalToggle(true);
-  };
-
-  const handleClosedTradeClick = (tradeId: number) => {
-    console.log("TRADEID: ", tradeId);
-    const allClosedTrades = Object.values(aggregatedTrades)
-      .flatMap((aggregatedTrade) => aggregatedTrade.closedTrades)
-      .filter((closedTrade) => closedTrade.tradeid === tradeId);
-    setClosedTrades(allClosedTrades);
-    setClosedTradeModalToggle(true);
-  };
-
   const handleInputChange = (
     e: React.ChangeEvent<HTMLElement>,
     field: keyof Trade
@@ -77,6 +62,21 @@ const TheWheelChart = () => {
       }
     }
     setEditedTrade({ ...editedTrade, [field]: value });
+  };
+
+  const handleOpenTradeClick = (trade: Trade) => {
+    setEditingTradeId(trade.tradeid);
+    setEditedTrade({ ...trade });
+    setOpenTradeModalToggle(true);
+  };
+
+  const handleClosedTradeClick = (tradeId: number) => {
+    console.log("TRADEID: ", tradeId);
+    const allClosedTrades = Object.values(aggregatedTrades)
+      .flatMap((aggregatedTrade) => aggregatedTrade.closedTrades)
+      .filter((closedTrade) => closedTrade.tradeid === tradeId);
+    setClosedTrades(allClosedTrades);
+    setClosedTradeModalToggle(true);
   };
 
   const handleSaveOpenTrades = async () => {
@@ -113,13 +113,17 @@ const TheWheelChart = () => {
     setOpenTradeModalToggle(false);
   };
 
-  const handleSaveClosedTrades = async () => {
+  const handleReopenTrade = async (
+    closedTradeId: number,
+    tradeId: number,
+    closedQuantity: number
+  ) => {
     const updatedTrade = {
-      ...editedTrade,
-      tradeid: editedTrade.tradeid,
+      tradeid: tradeId,
+      closedtradeid: closedTradeId,
       closingprice: null,
       completiondate: null,
-      reopenquantity: Number(editedTrade.closedquantity),
+      reopenquantity: closedQuantity,
       isClosed: false,
     };
 
@@ -142,7 +146,7 @@ const TheWheelChart = () => {
     }
 
     setEditingTradeId(null);
-    setOpenTradeModalToggle(false);
+    setClosedTradeModalToggle(false);
   };
 
   const handleCancel = () => {
@@ -163,8 +167,8 @@ const TheWheelChart = () => {
 
       <DebitTable
         aggregatedTrades={aggregatedTrades}
-        handleClosedTradeClick={(tradeId) =>
-          handleClosedTradeClick(tradeId.tradeid)
+        handleClosedTradeClick={(trade) =>
+          handleClosedTradeClick(trade.tradeid)
         }
       />
 
@@ -178,7 +182,7 @@ const TheWheelChart = () => {
 
       <DebitModal
         closedTrades={closedTrades}
-        handleSaveClosedTrades={handleSaveClosedTrades}
+        handleReopenTrade={handleReopenTrade}
         handleCancel={handleCancel}
         closedTradeModalToggle={closedTradeModalToggle}
       />
