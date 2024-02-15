@@ -137,6 +137,34 @@ const Chart = () => {
     setOpenTradeModalToggle(false);
   };
 
+  const handleDelete = async () => {
+    const updatedTrade = {
+      ...editedTrade,
+      tradeid: editedTrade.tradeid,
+    };
+
+    const url = "/api/delete-trade";
+    try {
+      const response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          "Conetent-Type": "application/json",
+        },
+        body: JSON.stringify(updatedTrade),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete ${editedTrade.ticker}`);
+      }
+      mutate("/api/get-trades");
+    } catch (error) {
+      console.log("Error updating closed trade:", error);
+    }
+
+    setEditingTradeId(null);
+    setOpenTradeModalToggle(false);
+  };
+
   const formatDate = (dateString: string) => {
     return dateString.split("T")[0];
   };
@@ -267,6 +295,7 @@ const Chart = () => {
         handleSaveOpenTrades={handleSaveOpenTrades}
         handleSaveClosedTrades={handleSaveClosedTrades}
         handleCancel={handleCancel}
+        handleDelete={handleDelete}
         openTradeModalToggle={openTradeModalToggle}
       />
     </>

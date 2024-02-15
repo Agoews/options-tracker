@@ -5,6 +5,7 @@ import Background from "@/public/Background_1.png";
 import Link from "next/link";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { useRouter } from "next/navigation";
 
 interface TileDisableProps {
   date: Date;
@@ -19,6 +20,8 @@ const NewTrade = () => {
   const [expiration, setExpiration] = useState("");
   const [strategy, setStrategy] = useState("");
   const [actions, setAction] = useState("");
+
+  const router = useRouter();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,6 +41,7 @@ const NewTrade = () => {
       });
       if (response.ok) {
         console.log("Trade submitted successfully!");
+        router.push("/tracker");
       } else {
         console.error("Failed to submit trade");
       }

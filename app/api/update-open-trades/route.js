@@ -11,7 +11,7 @@ export async function PUT(req, res) {
     closingprice,
     expirationdate,
     completiondate,
-    closedquantity // Assume this is the quantity being closed
+    closedquantity
   } = await req.json();
 
   try {

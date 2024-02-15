@@ -10,6 +10,7 @@ interface TradeEditModalProps {
   handleSaveOpenTrades: () => void;
   handleSaveClosedTrades: () => void;
   handleCancel: () => void;
+  handleDelete: () => void;
   openTradeModalToggle: boolean;
 }
 
@@ -19,6 +20,7 @@ const OpenTradeEditModal: React.FC<TradeEditModalProps> = ({
   handleSaveOpenTrades,
   handleSaveClosedTrades,
   handleCancel,
+  handleDelete,
   openTradeModalToggle,
 }) => {
   if (!openTradeModalToggle) return null;
@@ -132,6 +134,12 @@ const OpenTradeEditModal: React.FC<TradeEditModalProps> = ({
               onClick={handleCancel}
             >
               Cancel
+            </button>
+            <button
+              className="btn bg-slate-800 text-slate-200"
+              onClick={handleDelete}
+            >
+              Delete Trade
             </button>
           </div>
         </div>
