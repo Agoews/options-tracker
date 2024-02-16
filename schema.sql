@@ -39,7 +39,7 @@ CREATE TABLE OpenTrades (
 
 CREATE TABLE ClosedTrades (
     ClosedTradeID SERIAL PRIMARY KEY,
-    TradeID INT REFERENCES OpenTrades(TradeID),
+    TradeID INT REFERENCES OpenTrades(TradeID) ON DELETE CASCADE,
     ClosingPrice DECIMAL,
     CompletionDate DATE,
     ClosedQuantity INT

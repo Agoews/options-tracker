@@ -7,6 +7,7 @@ import CreditTable from "./utils/wheelUtils/CreditTable";
 import DebitTable from "./utils/wheelUtils/DebitTable";
 import CreditModal from "./utils/wheelUtils/CreditModal";
 import DebitModal from "./utils/wheelUtils/DebitModal";
+import TotalsTable from "./utils/wheelUtils/TotalsTable";
 
 const TheWheelChart = () => {
   const initialTradeState: Trade = {
@@ -71,7 +72,6 @@ const TheWheelChart = () => {
   };
 
   const handleClosedTradeClick = (tradeId: number) => {
-    console.log("TRADEID: ", tradeId);
     const allClosedTrades = Object.values(aggregatedTrades)
       .flatMap((aggregatedTrade) => aggregatedTrade.closedTrades)
       .filter((closedTrade) => closedTrade.tradeid === tradeId);
@@ -160,34 +160,37 @@ const TheWheelChart = () => {
   console.log("trades in wheel: ", aggregatedTrades);
 
   return (
-    <div className="flex justify-center">
-      <CreditTable
-        aggregatedTrades={aggregatedTrades}
-        handleOpenTradeClick={handleOpenTradeClick}
-      />
+    <>
+      <div className="flex justify-center">
+        <CreditTable
+          aggregatedTrades={aggregatedTrades}
+          handleOpenTradeClick={handleOpenTradeClick}
+        />
 
-      <DebitTable
-        aggregatedTrades={aggregatedTrades}
-        handleClosedTradeClick={(trade) =>
-          handleClosedTradeClick(trade.tradeid)
-        }
-      />
+        <DebitTable
+          aggregatedTrades={aggregatedTrades}
+          handleClosedTradeClick={(trade) =>
+            handleClosedTradeClick(trade.tradeid)
+          }
+        />
 
-      <CreditModal
-        editedTrade={editedTrade}
-        handleInputChange={handleInputChange}
-        handleSaveOpenTrades={handleSaveOpenTrades}
-        handleCancel={handleCancel}
-        openTradeModalToggle={openTradeModalToggle}
-      />
+        <CreditModal
+          editedTrade={editedTrade}
+          handleInputChange={handleInputChange}
+          handleSaveOpenTrades={handleSaveOpenTrades}
+          handleCancel={handleCancel}
+          openTradeModalToggle={openTradeModalToggle}
+        />
 
-      <DebitModal
-        closedTrades={closedTrades}
-        handleReopenTrade={handleReopenTrade}
-        handleCancel={handleCancel}
-        closedTradeModalToggle={closedTradeModalToggle}
-      />
-    </div>
+        <DebitModal
+          closedTrades={closedTrades}
+          handleReopenTrade={handleReopenTrade}
+          handleCancel={handleCancel}
+          closedTradeModalToggle={closedTradeModalToggle}
+        />
+      </div>
+      <TotalsTable aggregatedTrades={aggregatedTrades} />
+    </>
   );
 };
 

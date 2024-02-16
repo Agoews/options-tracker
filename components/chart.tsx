@@ -5,6 +5,7 @@ import { fetcher, Trade } from "./utils/fetcher";
 import { getActionAbbreviation } from "./utils/getActionAbbreviation";
 import OpenTradeEditModal from "./utils/OpenTradeEditModal";
 import { tradeTableFormatter } from "./utils/tradeTableFormatter";
+import { format } from "path";
 
 const Chart = () => {
   const initialTradeState: Trade = {
@@ -169,6 +170,14 @@ const Chart = () => {
     return dateString.split("T")[0];
   };
 
+  const calculateDTE = (expirationDateString: string) => {
+    const today = new Date();
+    const expirationDate = new Date(expirationDateString);
+    const differenceInTime = expirationDate.getTime() - today.getTime();
+    const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
+    return differenceInDays;
+  };
+
   const aggregatedTrades = tradeTableFormatter(data.result.rows);
 
   return (
@@ -183,8 +192,9 @@ const Chart = () => {
               <td>Strategy</td>
               <td>Strike</td>
               <td>Entry Price</td>
-              <td>Quantity</td>
+              <td>Contracts</td>
               <td>Breakeven</td>
+              <td>DTE</td>
               <td>Expiration Date</td>
             </tr>
           </thead>
@@ -214,6 +224,9 @@ const Chart = () => {
                               +openTrades[0].strike - +openTrades[0].optionprice
                             ).toFixed(2)}
                       </td>
+                      <td>
+                        {calculateDTE(formatDate(openTrades[0].expirationdate))}
+                      </td>
                       <td>{formatDate(openTrades[0].expirationdate)}</td>
                     </tr>
                   );
@@ -234,10 +247,10 @@ const Chart = () => {
               <th>Action</th>
               <th>Strategy</th>
               <th>Strike</th>
-              <th>Quantity</th>
-              <th>Average Closing Price</th>
+              <th>Contracts</th>
+              <th>Avg Closing Price</th>
               <th>P/L</th>
-              <th>Completion Date</th>
+              <th>Last Closed Date</th>
             </tr>
           </thead>
           <tbody className="text-slate-200">
