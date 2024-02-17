@@ -12,7 +12,6 @@ export interface Trade {
   openquantity: number;
   closedquantity: number;
   isclosed: boolean;
-  sumClosingPrices: number;
   averageClosingPrice: number | null;
   totalClosingQuantity: number;
   openTrades: Trade[];

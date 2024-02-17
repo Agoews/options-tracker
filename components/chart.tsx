@@ -22,7 +22,6 @@ const Chart = () => {
     openquantity: 0,
     closedquantity: 0,
     isclosed: false,
-    sumClosingPrices: 0,
     averageClosingPrice: 0,
     totalClosingQuantity: 0,
     openTrades: [],

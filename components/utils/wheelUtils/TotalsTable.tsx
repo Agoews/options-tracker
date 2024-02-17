@@ -38,8 +38,6 @@ const TotalsTable: React.FC<TotalsTableProps> = ({ aggregatedTrades }) => {
   let totalReturns = 0;
   let totalInvested = 0;
 
-  // figure out the PL and Total
-
   Object.values(aggregatedTrades).forEach((trade) => {
     if (trade.averageClosingPrice > 0) {
       totalReturns += trade.averageClosingPrice * trade.totalClosingQuantity;
@@ -47,20 +45,7 @@ const TotalsTable: React.FC<TotalsTableProps> = ({ aggregatedTrades }) => {
         trade.totalClosingQuantity * trade.openTrades[0].optionprice;
     }
   });
-  // Object.values(aggregatedTrades).forEach(({ openTrades, closedTrades }) => {
-  //   closedTrades.forEach((trade) => {
-  //     if (trade.closingprice && trade.closedquantity > 0) {
-  //       totalReturns += trade.closingprice;
-  //       totalClosures++;
-  //     }
-  //   });
 
-  //   openTrades.forEach((trade) => {
-  //     totalInvested += trade.optionprice * trade.openquantity;
-  //   });
-  // });
-
-  // Assuming totalInvested is not 0 to avoid division by zero error
   const totalPL =
     totalInvested > 0
       ? ((totalInvested - totalReturns) / totalInvested) * 100
