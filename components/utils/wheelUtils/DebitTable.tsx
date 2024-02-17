@@ -83,6 +83,14 @@ const DebitTable: React.FC<DebitTableProps> = ({
                       ].averageClosingPrice?.toFixed(2)}
                     </td>
                     <td>
+                      $
+                      {(
+                        aggregatedTrades[Number(tradeId)].totalClosingQuantity *
+                        aggregatedTrades[Number(tradeId)].averageClosingPrice *
+                        100
+                      ).toFixed(2)}
+                    </td>
+                    <td>
                       {closedTrades[0]?.closingprice
                         ? (
                             ((Number(openTrades[0]?.optionprice) -
@@ -94,14 +102,6 @@ const DebitTable: React.FC<DebitTableProps> = ({
                             100
                           ).toFixed(2) + "%"
                         : "N/A"}
-                    </td>
-                    <td>
-                      $
-                      {(
-                        aggregatedTrades[Number(tradeId)].totalClosingQuantity *
-                        aggregatedTrades[Number(tradeId)].averageClosingPrice *
-                        100
-                      ).toFixed(2)}
                     </td>
                     <td>
                       {closedTrades[0].completiondate
