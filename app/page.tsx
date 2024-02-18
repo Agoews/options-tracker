@@ -19,7 +19,7 @@ export default function Home() {
               This is a work in progress! This will be the login page soon
               enough but that is for future development.
             </p>
-            <Link href="/tracker">
+            <Link href="/api/auth/signin">
               <button className="btn bg-slate-800 text-slate-200">
                 Get Started
               </button>
