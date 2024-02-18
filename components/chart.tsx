@@ -191,9 +191,9 @@ const Chart = () => {
               <td>Action</td>
               <td>Strategy</td>
               <td>Strike</td>
-              <td>Stock Entry</td>
-              <td>Entry Price</td>
               <td>Contracts</td>
+              <td>Entry Price</td>
+              <td>Stock Entry</td>
               <td>Breakeven</td>
               <td>DTE</td>
               <td>Expiration Date</td>
@@ -212,11 +212,12 @@ const Chart = () => {
                       <td>{openTrades[0].ticker}</td>
                       <td>{getActionAbbreviation(openTrades[0].actions)}</td>
                       <td>{openTrades[0].strategy}</td>
-                      <td>{Number(openTrades[0].strike).toFixed(2)}</td>
-                      <td>{Number(openTrades[0].currentprice).toFixed(2)}</td>
-                      <td>{Number(openTrades[0].optionprice).toFixed(2)}</td>
+                      <td>${Number(openTrades[0].strike).toFixed(2)}</td>
                       <td>{openTrades[0].openquantity}</td>
+                      <td>{Number(openTrades[0].optionprice).toFixed(2)}</td>
+                      <td>${Number(openTrades[0].currentprice).toFixed(2)}</td>
                       <td>
+                        $
                         {openTrades[0].actions === "COVERED CALL" ||
                         openTrades[0].actions === "CALL"
                           ? Number(
