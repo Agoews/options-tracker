@@ -6,6 +6,7 @@ export async function PUT(req, res) {
     ticker,
     strategy,
     strike,
+    currentprice,
     openquantity,
     optionprice,
     closingprice,
@@ -44,6 +45,7 @@ export async function PUT(req, res) {
           ticker = ${ticker},
           strategy = ${strategy},
           strike = ${strike},
+          currentprice = ${currentprice},
           openquantity = ${openquantity},
           optionprice = ${optionprice},
           expirationdate = ${expirationdate}

@@ -10,6 +10,7 @@ interface AggregatedTrades {
         | "actions"
         | "strategy"
         | "strike"
+        | "currentprice"
         | "openquantity"
         | "isclosed"
         | "optionprice"
@@ -50,6 +51,7 @@ export const tradeTableFormatter = (trades: Trade[]): AggregatedTrades => {
         actions: trade.actions,
         strategy: trade.strategy,
         strike: trade.strike,
+        currentprice: trade.currentprice,
         openquantity: trade.openquantity,
         isclosed: trade.isclosed,
         optionprice: trade.optionprice,

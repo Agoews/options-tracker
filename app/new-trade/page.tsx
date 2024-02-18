@@ -15,6 +15,7 @@ interface TileDisableProps {
 const NewTrade = () => {
   const [ticker, setTicker] = useState("");
   const [strike, setStrike] = useState("");
+  const [currentPrice, setCurrentPrice] = useState("");
   const [openquantity, setTotalQuantity] = useState("");
   const [optionprice, setOptionPrice] = useState("");
   const [expiration, setExpiration] = useState("");
@@ -31,12 +32,13 @@ const NewTrade = () => {
 
         body: JSON.stringify({
           ticker,
-          actions,
-          strategy,
           strike,
+          currentPrice,
           openquantity,
           optionprice,
           expiration,
+          strategy,
+          actions,
         }),
       });
       if (response.ok) {
@@ -57,6 +59,11 @@ const NewTrade = () => {
   const handleStrikeChange = (e: ChangeEvent<HTMLInputElement>) => {
     setStrike(e.target.value);
   };
+
+  const handleCurrentPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setCurrentPrice(e.target.value);
+  };
+
   const handleTotalQualityChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTotalQuantity(e.target.value);
   };
@@ -101,124 +108,129 @@ const NewTrade = () => {
         }}
       >
         <div className="hero-overlay bg-opacity-60"></div>
-        <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text text-slate-200">Stock Ticker</span>
-            </div>
-            <input
-              type="text"
-              placeholder="Type here"
-              className="input input-bordered w-full max-w-xs"
-              value={ticker}
-              onChange={handleTickerChange}
-            />
-          </label>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text text-slate-200">Strike</span>
-            </div>
-            <input
-              type="text"
-              placeholder="Type here"
-              className="input input-bordered w-full max-w-xs"
-              value={strike}
-              onChange={handleStrikeChange}
-            />
-          </label>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text text-slate-200">Quantity</span>
-            </div>
-            <input
-              type="text"
-              placeholder="Type here"
-              className="input input-bordered w-full max-w-xs"
-              value={openquantity}
-              onChange={handleTotalQualityChange}
-            />
-          </label>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text text-slate-200">Option Price</span>
-            </div>
-            <input
-              type="text"
-              placeholder="Type here"
-              className="input input-bordered w-full max-w-xs"
-              value={optionprice}
-              onChange={handleOptionPrice}
-            />
-          </label>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text text-slate-200">Expiration Date</span>
-            </div>
-            <div className="w-full h-full">
-              <Calendar
-                onClickDay={handleExpirationChange}
-                value={expiration}
-                tileDisabled={disableDates}
-                className="rounded-lg"
+        <div className="flex justify-center w-full">
+          <div className="grid grid-cols-2 gap-4 p-4">
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text text-slate-200">Stock Ticker</span>
+              </div>
+              <input
+                type="text"
+                placeholder="Type here"
+                className="input input-bordered w-full"
+                value={ticker}
+                onChange={handleTickerChange}
               />
-            </div>
-            {/* <input
-              type="text"
-              placeholder="Type here"
-              className="input input-bordered w-full max-w-xs"
-              value={expiration}
-              onChange={handleExpirationChange}
-            /> */}
-          </label>
-          <label>
-            <div className="label">
-              <span className="label-text text-slate-200">Action</span>
-            </div>
-            <select
-              className="select select-bordered w-full max-w-xs"
-              value={actions}
-              onChange={handleActionChange}
-            >
-              <option disabled value="">
-                Please select...
-              </option>
-              <option>CALL</option>
-              <option>PUT</option>
-              <option>COVERED CALL</option>
-              <option>CASH SECURED PUT</option>
-            </select>
-          </label>
-
-          <label>
-            <div className="label">
-              <span className="label-text text-slate-200">Strategy</span>
-            </div>
-            <select
-              className="select select-bordered w-full max-w-xs"
-              value={strategy}
-              onChange={handleStrategyChange}
-            >
-              <option disabled value="">
-                Please select...
-              </option>
-              <option>WHEEL</option>
-            </select>
-          </label>
-
-          <div className="flex justify-center">
-            <form onSubmit={handleSubmit} className="p-1">
-              <button
-                type="submit"
-                className="btn bg-slate-800 text-slate-200 mt-2"
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text text-slate-200">Strike</span>
+              </div>
+              <input
+                type="text"
+                placeholder="Type here"
+                className="input input-bordered w-full"
+                value={strike}
+                onChange={handleStrikeChange}
+              />
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text text-slate-200">Currnet Price</span>
+              </div>
+              <input
+                type="text"
+                placeholder="Type here"
+                className="input input-bordered w-full"
+                value={currentPrice}
+                onChange={handleCurrentPriceChange}
+              />
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text text-slate-200">Quantity</span>
+              </div>
+              <input
+                type="text"
+                placeholder="Type here"
+                className="input input-bordered w-full"
+                value={openquantity}
+                onChange={handleTotalQualityChange}
+              />
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text text-slate-200">Option Price</span>
+              </div>
+              <input
+                type="text"
+                placeholder="Type here"
+                className="input input-bordered w-full"
+                value={optionprice}
+                onChange={handleOptionPrice}
+              />
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text text-slate-200">Action</span>
+              </div>
+              <select
+                className="select select-bordered w-full"
+                value={actions}
+                onChange={handleActionChange}
               >
-                Submit
-              </button>
-            </form>
-            <Link className="p-1" href="/tracker">
-              <button className="btn bg-slate-800 text-slate-200 mt-2">
-                Cancel
-              </button>
-            </Link>
+                <option disabled value="">
+                  Please select...
+                </option>
+                <option>CALL</option>
+                <option>PUT</option>
+                <option>COVERED CALL</option>
+                <option>CASH SECURED PUT</option>
+              </select>
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text text-slate-200">
+                  Expiration Date
+                </span>
+              </div>
+              <div className="w-full h-full">
+                <Calendar
+                  onClickDay={handleExpirationChange}
+                  value={expiration}
+                  tileDisabled={disableDates}
+                  className="rounded-lg"
+                />
+              </div>
+            </label>
+            <label className="form-control w-full">
+              <div className="label">
+                <span className="label-text text-slate-200">Strategy</span>
+              </div>
+              <select
+                className="select select-bordered w-full"
+                value={strategy}
+                onChange={handleStrategyChange}
+              >
+                <option disabled value="">
+                  Please select...
+                </option>
+                <option>WHEEL</option>
+              </select>
+              <div className="flex-row justify-center form-control space-x-2 mt-4">
+                <form onSubmit={handleSubmit}>
+                  <button
+                    type="submit"
+                    className="btn bg-slate-800 text-slate-200"
+                  >
+                    Submit
+                  </button>
+                </form>
+                <button className="btn bg-slate-800 text-slate-200">
+                  <Link href="/tracker">Cancel</Link>
+                </button>
+              </div>
+            </label>
           </div>
         </div>
       </div>

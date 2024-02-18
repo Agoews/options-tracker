@@ -2,10 +2,11 @@ export interface Trade {
   tradeid: number;
   closedtradeid: number;
   ticker: string;
+  strike: number;
+  currentprice: number;
   actions: string;
   strategy: string;
   optionprice: number;
-  strike: number;
   closingprice: number | null;
   expirationdate: string;
   completiondate: string | null;

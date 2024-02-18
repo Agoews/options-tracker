@@ -5,33 +5,16 @@ CREATE TABLE Users (
     Name VARCHAR(255) NOT NULL
 );
 
--- Create Trades table
-CREATE TABLE Trades (
-    TradeID SERIAL PRIMARY KEY,
-    UserID INT REFERENCES Users(UserID),
-    Ticker VARCHAR(255) NOT NULL,
-    Actions VARCHAR(255) NOT NULL,
-    Strategy VARCHAR(255),
-    Strike DECIMAL NOT NULL,
-    OpenQuantity INT NOT NULL,
-    RemainingQuantity INT NOT NULL,
-    OptionPrice DECIMAL NOT NULL,
-    ClosingPrice DECIMAL,
-    ExpirationDate DATE NOT NULL,
-    Open BOOLEAN,
-    CreationDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    CompletionDate DATE
-);
-
 CREATE TABLE OpenTrades (
     TradeID SERIAL PRIMARY KEY,
     UserID INT REFERENCES Users(UserID),
     Ticker VARCHAR(255) NOT NULL,
-    Actions VARCHAR(255) NOT NULL,
-    Strategy VARCHAR(255),
     Strike DECIMAL NOT NULL,
+    CurrentPrice DECIMAL NOT NULL,
     OpenQuantity INT NOT NULL,
     OptionPrice DECIMAL NOT NULL,
+    Actions VARCHAR(255) NOT NULL,
+    Strategy VARCHAR(255),
     ExpirationDate DATE NOT NULL,
     isClosed BOOLEAN,
     CreationDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL

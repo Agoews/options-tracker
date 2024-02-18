@@ -18,6 +18,7 @@ const TheWheelChart = () => {
     strategy: "",
     optionprice: 0,
     strike: 0,
+    currentprice: 0,
     closingprice: 0,
     expirationdate: "",
     completiondate: "",
