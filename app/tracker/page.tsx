@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 
 const Tracker = async () => {
   const session = await getServerSession(options);
-  console.log(session?.user);
+
   if (!session) {
     redirect("/api/auth/signin?callbackUrl=/tracker");
   }

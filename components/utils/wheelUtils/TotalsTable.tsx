@@ -39,7 +39,7 @@ const TotalsTable: React.FC<TotalsTableProps> = ({ aggregatedTrades }) => {
   let totalInvested = 0;
 
   Object.values(aggregatedTrades).forEach((trade) => {
-    if (trade.averageClosingPrice > 0) {
+    if (trade.totalClosingQuantity > 0) {
       totalReturns += trade.averageClosingPrice * trade.totalClosingQuantity;
       totalInvested +=
         trade.totalClosingQuantity * trade.openTrades[0].optionprice;
@@ -64,8 +64,8 @@ const TotalsTable: React.FC<TotalsTableProps> = ({ aggregatedTrades }) => {
         </thead>
         <tbody className="text-slate-200 text-center">
           <tr>
-            <td>${Number(totalInvested).toFixed(2)}</td>
-            <td>${Number(totalReturns).toFixed(2)}</td>
+            <td>${(Number(totalInvested) * 100).toFixed(2)}</td>
+            <td>${(Number(totalReturns) * 100).toFixed(2)}</td>
             <td>{totalPL.toFixed(2)}%</td>
           </tr>
         </tbody>
