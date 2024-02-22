@@ -1,5 +1,6 @@
 "use client";
 import { signIn, signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 import React from "react";
 
 const Navbar = () => {
@@ -44,20 +45,20 @@ const Navbar = () => {
                 </li>
               )}
               <li>
-                <a>Homepage</a>
+                <Link href="/">Homepage</Link>
               </li>
               <li>
-                <a>Portfolio</a>
+                <a>Resources (WIP)</a>
               </li>
               <li>
-                <a>About</a>
+                <Link href="/about">About</Link>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="navbar-center">
-          <a className="btn btn-ghost text-xl">TradeTracker</a>
+          <a className="btn btn-ghost text-3xl">TradeTracker</a>
         </div>
 
         <div className="navbar-end">
