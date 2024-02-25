@@ -8,6 +8,7 @@ import DebitTable from "./utils/wheelUtils/DebitTable";
 import CreditModal from "./utils/wheelUtils/CreditModal";
 import DebitModal from "./utils/wheelUtils/DebitModal";
 import TotalsTable from "./utils/wheelUtils/TotalsTable";
+import CurrentHoldings from "./utils/wheelUtils/CurrentHoldings";
 
 const TheWheelChart = () => {
   const initialTradeState: Trade = {
@@ -39,6 +40,7 @@ const TheWheelChart = () => {
   const [openTradeModalToggle, setOpenTradeModalToggle] = useState(false);
   const [closedTradeModalToggle, setClosedTradeModalToggle] = useState(false);
   const [closedTrades, setClosedTrades] = useState<Trade[]>([]);
+  const [rolloutModalToggle, setRolloutModalToggle] = useState(false);
 
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
@@ -62,6 +64,7 @@ const TheWheelChart = () => {
         value = null;
       }
     }
+
     setEditedTrade({ ...editedTrade, [field]: value });
   };
 
@@ -150,10 +153,19 @@ const TheWheelChart = () => {
     setClosedTradeModalToggle(false);
   };
 
+  const handleOpenRolloutModal = () => {
+    setRolloutModalToggle(true);
+  };
+
+  const handleRolloutModalCancel = () => {
+    setRolloutModalToggle(false);
+  };
+
   const handleCancel = () => {
     setEditingTradeId(null);
     setOpenTradeModalToggle(false);
     setClosedTradeModalToggle(false);
+    setRolloutModalToggle(false);
   };
 
   let aggregatedTrades = tradeTableFormatter(data.result.rows);
@@ -178,8 +190,11 @@ const TheWheelChart = () => {
           editedTrade={editedTrade}
           handleInputChange={handleInputChange}
           handleSaveOpenTrades={handleSaveOpenTrades}
+          handleOpenRolloutModal={handleOpenRolloutModal}
+          handleRolloutModalCancel={handleRolloutModalCancel}
           handleCancel={handleCancel}
           openTradeModalToggle={openTradeModalToggle}
+          rolloutModalToggle={rolloutModalToggle}
         />
 
         <DebitModal
@@ -190,6 +205,7 @@ const TheWheelChart = () => {
         />
       </div>
       <TotalsTable aggregatedTrades={aggregatedTrades} />
+      <CurrentHoldings aggregatedTrades={aggregatedTrades} />
     </>
   );
 };

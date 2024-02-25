@@ -73,7 +73,7 @@ const NewTrade = () => {
   };
 
   const handleExpirationChange = (date: Date) => {
-    setExpiration(date.toISOString());
+    setExpiration(date.toISOString().split("T")[0]); //takes YYYY-MM-DD
   };
 
   const handleActionChange = (e: ChangeEvent<HTMLSelectElement>) => {

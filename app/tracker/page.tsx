@@ -9,7 +9,7 @@ const Tracker = async () => {
   const session = await getServerSession(options);
 
   if (!session) {
-    redirect("/api/auth/signin?callbackUrl=/tracker");
+    redirect("/api/auth/signin");
   }
 
   return (

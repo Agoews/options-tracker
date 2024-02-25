@@ -1,10 +1,16 @@
 "use client";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const Navbar = () => {
   const { data: session } = useSession();
+  const router = useRouter();
+  const signOutClickHandler = () => {
+    router.push("/");
+    signOut();
+  };
 
   return (
     <>
@@ -37,7 +43,7 @@ const Navbar = () => {
             >
               {session && session.user ? (
                 <li>
-                  <a onClick={() => signOut()}>Sign Out</a>
+                  <a onClick={signOutClickHandler}>Sign Out</a>
                 </li>
               ) : (
                 <li>
@@ -48,7 +54,7 @@ const Navbar = () => {
                 <Link href="/">Homepage</Link>
               </li>
               <li>
-                <a>Resources (WIP)</a>
+                <Link href="/resources">Resources (WIP)</Link>
               </li>
               <li>
                 <Link href="/about">About</Link>

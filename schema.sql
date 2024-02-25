@@ -28,6 +28,12 @@ CREATE TABLE ClosedTrades (
     ClosedQuantity INT
 );
 
+CREATE TABLE CurrentHoldings (
+    CurrentHoldingsID SERIAL PRIMARY KEY,
+    Ticker VARCHAR(255) NOT NULL,
+
+)
+
 
 -- Insert dummy data into Users table
 INSERT INTO Users (Email, Name) VALUES
@@ -36,7 +42,6 @@ INSERT INTO Users (Email, Name) VALUES
 ('alex.smith@example.com', 'Alex Smith');
 
 -- Insert dummy data into Trades table
--- Note: Assumes UserIDs from the Users table. Adjust UserIDs based on actual values in your Users table.
 INSERT INTO Trades (UserID, Ticker, Actions, Strategy, Strike, OpenQuantity, RemainingQuantity, OptionPrice, ClosingPrice, ExpirationDate, Open, CreationDate, CompletionDate) VALUES
 (1, 'AAPL', 'COVERED CALL', 'WHEEL', 150.00, 2, 3, 1.21, NULL, '2023-12-31', TRUE, CURRENT_TIMESTAMP, NULL),
 (1, 'GOOGL', 'CALL', NULL, 1800.00, 1, 0, 2.34, 2.82, '2023-12-31', FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),

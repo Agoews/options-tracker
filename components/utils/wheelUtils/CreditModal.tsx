@@ -1,5 +1,6 @@
 import React from "react";
 import { Trade } from "../fetcher";
+import RolloutModal from "./RolloutModal";
 
 interface CreditModalProps {
   editedTrade: Trade;
@@ -8,16 +9,22 @@ interface CreditModalProps {
     field: keyof Trade
   ) => void;
   handleSaveOpenTrades: () => void;
+  handleOpenRolloutModal: () => void;
+  handleRolloutModalCancel: () => void;
   handleCancel: () => void;
   openTradeModalToggle: boolean;
+  rolloutModalToggle: boolean;
 }
 
 const CreditModal: React.FC<CreditModalProps> = ({
   editedTrade,
   handleInputChange,
   handleSaveOpenTrades,
+  handleOpenRolloutModal,
+  handleRolloutModalCancel,
   handleCancel,
   openTradeModalToggle,
+  rolloutModalToggle,
 }) => {
   if (!openTradeModalToggle) return null;
 
@@ -127,6 +134,12 @@ const CreditModal: React.FC<CreditModalProps> = ({
             </button>
             <button
               className="btn bg-slate-800 text-slate-200"
+              onClick={handleOpenRolloutModal}
+            >
+              Rollout
+            </button>
+            <button
+              className="btn bg-slate-800 text-slate-200"
               onClick={handleCancel}
             >
               Cancel
@@ -134,6 +147,13 @@ const CreditModal: React.FC<CreditModalProps> = ({
           </div>
         </div>
       </div>
+      <RolloutModal
+        editedTrade={editedTrade}
+        handleInputChange={handleInputChange}
+        handleSaveOpenTrades={handleSaveOpenTrades}
+        handleRolloutModalCancel={handleRolloutModalCancel}
+        rolloutModalToggle={rolloutModalToggle}
+      />
     </div>
   );
 };

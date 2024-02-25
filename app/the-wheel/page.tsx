@@ -9,7 +9,7 @@ const TheWheel = async () => {
   const session = await getServerSession(options);
 
   if (!session) {
-    redirect("/api/auth/signin?callbackUrl=/the-wheel");
+    redirect("/api/auth/signin");
   }
 
   return (
