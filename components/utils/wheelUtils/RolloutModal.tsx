@@ -73,18 +73,20 @@ const RolloutModal: React.FC<RolloutModallProps> = ({
             />
           </div>
         </div>
-        <button
-          className="btn bg-slate-800 text-slate-200"
-          onClick={handleSaveOpenTrades}
-        >
-          Save
-        </button>
-        <button
-          className="btn bg-slate-800 text-slate-200"
-          onClick={handleRolloutModalCancel}
-        >
-          Cancel
-        </button>
+        <div className="modal-action items-center justify-center">
+          <button
+            className="btn bg-slate-800 text-slate-200"
+            onClick={handleSaveOpenTrades}
+          >
+            Save
+          </button>
+          <button
+            className="btn bg-slate-800 text-slate-200"
+            onClick={handleRolloutModalCancel}
+          >
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   );
