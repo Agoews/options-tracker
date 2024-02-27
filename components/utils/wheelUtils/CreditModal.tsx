@@ -125,7 +125,7 @@ const CreditModal: React.FC<CreditModalProps> = ({
               {`Current Open Quantity: ${editedTrade.openquantity}`}
             </label>
           </div>
-          <div className="modal-action">
+          <div className="modal-action items-center justify-center">
             <button
               className="btn bg-slate-800 text-slate-200"
               onClick={handleSaveOpenTrades}

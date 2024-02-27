@@ -6,7 +6,8 @@ import { options } from "../api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";
 
 const Tracker = async () => {
-  const session = await getServerSession(options);
+  const { providers } = options;
+  const session = await getServerSession({ providers });
 
   if (!session) {
     redirect("/api/auth/signin");

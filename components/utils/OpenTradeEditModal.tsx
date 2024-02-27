@@ -82,7 +82,7 @@ const OpenTradeEditModal: React.FC<TradeEditModalProps> = ({
 
           <div className="grid grid-cols-3 gap-4 mb-4">
             <label className="text-slate-200 text-left col-span-1">
-              Stock Entry:
+              Entry Price:
             </label>
             <input
               type="text"
@@ -135,7 +135,7 @@ const OpenTradeEditModal: React.FC<TradeEditModalProps> = ({
               {`Current Open Quantity: ${editedTrade.openquantity}`}
             </label>
           </div>
-          <div className="modal-action">
+          <div className="modal-action items-center justify-center">
             <button
               className="btn bg-slate-800 text-slate-200"
               onClick={handleSaveOpenTrades}

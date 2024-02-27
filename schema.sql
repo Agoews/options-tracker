@@ -2,7 +2,7 @@
 CREATE TABLE Users (
     UserID SERIAL PRIMARY KEY,
     Email VARCHAR(255) UNIQUE NOT NULL,
-    Funds INT NOT NULL
+    Funds DECIMAL
 );
 
 CREATE TABLE OpenTrades (
@@ -37,9 +37,9 @@ CREATE TABLE CurrentHoldings (
 
 -- Insert dummy data into Users table
 INSERT INTO Users (Email, Name) VALUES
-('john.doe@example.com', 'John Doe'),
-('jane.doe@example.com', 'Jane Doe'),
-('alex.smith@example.com', 'Alex Smith');
+('john.doe@example.com', 10000.00),
+('jane.doe@example.com', 20000.00),
+('alex.smith@example.com', 500.00);
 
 -- Insert dummy data into Trades table
 INSERT INTO Trades (UserID, Ticker, Actions, Strategy, Strike, OpenQuantity, RemainingQuantity, OptionPrice, ClosingPrice, ExpirationDate, Open, CreationDate, CompletionDate) VALUES

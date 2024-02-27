@@ -37,7 +37,7 @@ interface CurrentHoldingsProps {
 const CurrentHoldings: React.FC<CurrentHoldingsProps> = ({
   aggregatedTrades,
 }) => {
-  return <div>CurrentHoldings</div>;
+  return <div className="text-slate-200">CurrentHoldings (WIP)</div>;
 };
 
 export default CurrentHoldings;

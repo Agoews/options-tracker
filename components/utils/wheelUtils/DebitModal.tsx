@@ -62,7 +62,7 @@ const DebitModal: React.FC<DebitModalProps> = ({
           </table>
         </div>
 
-        <div className="modal-action mt-4">
+        <div className="modal-action items-center justify-center">
           {/* <button
             className="btn bg-slate-800 text-slate-200"
             onClick={handleReopenTrade}

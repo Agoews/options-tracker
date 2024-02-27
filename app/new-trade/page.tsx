@@ -15,7 +15,7 @@ interface TileDisableProps {
 const NewTrade = () => {
   const [ticker, setTicker] = useState("");
   const [strike, setStrike] = useState("");
-  const [currentPrice, setCurrentPrice] = useState("");
+  const [currentprice, setCurrentPrice] = useState("");
   const [openquantity, setTotalQuantity] = useState("");
   const [optionprice, setOptionPrice] = useState("");
   const [expiration, setExpiration] = useState("");
@@ -33,7 +33,7 @@ const NewTrade = () => {
         body: JSON.stringify({
           ticker,
           strike,
-          currentPrice,
+          currentprice,
           openquantity,
           optionprice,
           expiration,
@@ -136,13 +136,13 @@ const NewTrade = () => {
             </label>
             <label className="form-control w-full">
               <div className="label">
-                <span className="label-text text-slate-200">Currnet Price</span>
+                <span className="label-text text-slate-200">Entry Price</span>
               </div>
               <input
                 type="text"
                 placeholder="Type here"
                 className="input input-bordered w-full"
-                value={currentPrice}
+                value={currentprice}
                 onChange={handleCurrentPriceChange}
               />
             </label>
