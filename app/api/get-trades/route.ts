@@ -5,39 +5,42 @@ export async function GET(request: Request) {
   try {
     // Assuming the UserID is passed as a query parameter. Adjust as needed.
     const url = new URL(request.url);
-    // const userID = url.searchParams.get("userid");
-    const userID = 1;
+    const userEmail = url.searchParams.get("email");
 
-    if (!userID) {
+    console.log("userEmail in fetcher: ", userEmail);
+
+    if (!userEmail) {
       return NextResponse.json(
-        { error: "UserID is required" },
+        { error: "userEmail is required" },
         { status: 400 }
       );
     }
 
     const result = await sql`
       SELECT
-          ot.Tradeid,
+          ot.TradeID,
           ot.Ticker,
-          ot.Actions,
-          ot.Strategy,
           ot.Strike,
           ot.CurrentPrice,
           ot.OpenQuantity,
-          ot.isClosed,
           ot.OptionPrice,
+          ot.Actions,
+          ot.Strategy,
           ot.ExpirationDate,
+          ot.isClosed,
           ot.CreationDate,
-          ct.ClosedTradeId,
+          ct.ClosedTradeID,
           ct.ClosingPrice,
           ct.CompletionDate,
           ct.ClosedQuantity
       FROM
-          OpenTrades ot
+          Users u
+      JOIN
+          OpenTrades ot ON u.Email = ot.Email
       LEFT JOIN
           ClosedTrades ct ON ot.TradeID = ct.TradeID
       WHERE
-          ot.UserID = ${userID};
+          u.Email = ${userEmail};
     `;
 
     return NextResponse.json({ result }, { status: 200 });

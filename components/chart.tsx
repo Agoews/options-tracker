@@ -7,7 +7,11 @@ import OpenTradeEditModal from "./utils/OpenTradeEditModal";
 import { tradeTableFormatter } from "./utils/tradeTableFormatter";
 import { format } from "path";
 
-const Chart = () => {
+interface ChartProps {
+  userEmail: string;
+}
+
+const Chart: React.FC<ChartProps> = ({ userEmail }) => {
   const initialTradeState: Trade = {
     tradeid: 0,
     closedtradeid: 0,
@@ -30,7 +34,10 @@ const Chart = () => {
   };
 
   // fetch all data from /api/get-trades
-  const { data, error, isLoading } = useSWR("/api/get-trades", fetcher);
+  const { data, error, isLoading } = useSWR(
+    `/api/get-trades?email=${userEmail}`,
+    fetcher
+  );
 
   const [editingTradeId, setEditingTradeId] = useState<number | null>(null);
   const [editedTrade, setEditedTrade] = useState<Trade>(initialTradeState);
@@ -92,7 +99,7 @@ const Chart = () => {
       if (!response.ok) {
         throw new Error("Failed to update the trade.");
       }
-      mutate("/api/get-trades");
+      mutate(`/api/get-trades?email=${userEmail}`);
     } catch (error) {
       console.error("Error updating trade:", error);
     }
@@ -124,7 +131,7 @@ const Chart = () => {
       if (!response.ok) {
         throw new Error("Failed to update the closed trade.");
       }
-      mutate("/api/get-trades");
+      mutate(`/api/get-trades?email=${userEmail}`);
     } catch (error) {
       console.error("Error updating closed trade:", error);
     }
@@ -157,7 +164,7 @@ const Chart = () => {
       if (!response.ok) {
         throw new Error(`Failed to delete ${editedTrade.ticker}`);
       }
-      mutate("/api/get-trades");
+      mutate(`/api/get-trades?email=${userEmail}`);
     } catch (error) {
       console.log("Error updating closed trade:", error);
     }

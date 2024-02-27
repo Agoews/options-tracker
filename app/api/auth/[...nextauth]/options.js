@@ -46,7 +46,7 @@ export const options = {
           const userId = userExistsStatus.userId
           console.log('existing userId: ', userId)
         }
-
+        account.userId = userId
         return true;
       } catch (error) {
         console.log(error);

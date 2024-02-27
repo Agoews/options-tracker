@@ -6,6 +6,7 @@ import Link from "next/link";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 interface TileDisableProps {
   date: Date;
@@ -22,15 +23,23 @@ const NewTrade = () => {
   const [strategy, setStrategy] = useState("");
   const [actions, setAction] = useState("");
 
+  const { data: session } = useSession();
   const router = useRouter();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!session) {
+      console.error("No session found, please login first.");
+      return;
+    }
+
+    const userEmail = session.user?.email;
     try {
       const response = await fetch("/api/new-trade", {
         method: "POST",
 
         body: JSON.stringify({
+          userEmail,
           ticker,
           strike,
           currentprice,

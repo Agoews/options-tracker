@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 const Tracker = async () => {
   const { providers } = options;
   const session = await getServerSession({ providers });
+  const userEmail = session?.user?.email;
 
   if (!session) {
     redirect("/api/auth/signin");
@@ -26,7 +27,11 @@ const Tracker = async () => {
           <div className="text-center text-slate-800">
             <div className="rounded border-4 border-slate-800">
               <div className="overflow-x-auto">
-                <Chart />
+                {userEmail ? (
+                  <Chart userEmail={userEmail} />
+                ) : (
+                  <div>Loading...</div>
+                )}
               </div>
             </div>
             <Link className="p-1" href="/">

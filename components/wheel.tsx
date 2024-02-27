@@ -10,7 +10,11 @@ import DebitModal from "./utils/wheelUtils/DebitModal";
 import TotalsTable from "./utils/wheelUtils/TotalsTable";
 import CurrentHoldings from "./utils/wheelUtils/CurrentHoldings";
 
-const TheWheelChart = () => {
+interface WheelProps {
+  userEmail: string;
+}
+
+const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
   const initialTradeState: Trade = {
     tradeid: 0,
     closedtradeid: 0,
@@ -33,7 +37,10 @@ const TheWheelChart = () => {
   };
 
   // fetch all data from /api/get-trades
-  const { data, error, isLoading } = useSWR("/api/get-trades", fetcher);
+  const { data, error, isLoading } = useSWR(
+    `/api/get-trades?email=${userEmail}`,
+    fetcher
+  );
 
   const [editingTradeId, setEditingTradeId] = useState<number | null>(null);
   const [editedTrade, setEditedTrade] = useState<Trade>(initialTradeState);
