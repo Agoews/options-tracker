@@ -1,6 +1,6 @@
 import React from "react";
-import { Trade } from "../fetcher";
 import RolloutModal from "./RolloutModal";
+import { Trade } from "../utils/fetcher";
 
 interface CreditModalProps {
   editedTrade: Trade;

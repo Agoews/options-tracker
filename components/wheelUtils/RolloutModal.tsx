@@ -1,6 +1,6 @@
 import React from "react";
-import { Trade } from "../fetcher";
-import { getActionAbbreviation } from "../getActionAbbreviation";
+import { Trade } from "../utils/fetcher";
+import { getActionAbbreviation } from "../utils/getActionAbbreviation";
 
 interface RolloutModallProps {
   editedTrade: Trade;

@@ -3,12 +3,12 @@ import React, { useState } from "react";
 import useSWR, { mutate } from "swr";
 import { fetcher, Trade } from "./utils/fetcher";
 import { tradeTableFormatter } from "./utils/tradeTableFormatter";
-import CreditTable from "./utils/wheelUtils/CreditTable";
-import DebitTable from "./utils/wheelUtils/DebitTable";
-import CreditModal from "./utils/wheelUtils/CreditModal";
-import DebitModal from "./utils/wheelUtils/DebitModal";
-import TotalsTable from "./utils/wheelUtils/TotalsTable";
-import CurrentHoldings from "./utils/wheelUtils/CurrentHoldings";
+import CreditTable from "./wheelUtils/CreditTable";
+import DebitTable from "./wheelUtils/DebitTable";
+import CreditModal from "./wheelUtils/CreditModal";
+import DebitModal from "./wheelUtils/DebitModal";
+import TotalsTable from "./wheelUtils/TotalsTable";
+import CurrentHoldings from "./wheelUtils/CurrentHoldings";
 
 interface WheelProps {
   userEmail: string;

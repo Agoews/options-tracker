@@ -1,5 +1,5 @@
 import React from "react";
-import { Trade } from "../fetcher";
+import { Trade } from "../utils/fetcher";
 import StartingFunds from "./StartingFunds";
 import PLReturns from "./PLReturns";
 
