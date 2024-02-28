@@ -7,8 +7,6 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const userEmail = url.searchParams.get("email");
 
-    console.log("userEmail in fetcher: ", userEmail);
-
     if (!userEmail) {
       return NextResponse.json(
         { error: "userEmail is required" },

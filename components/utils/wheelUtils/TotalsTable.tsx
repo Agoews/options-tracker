@@ -1,5 +1,7 @@
 import React from "react";
 import { Trade } from "../fetcher";
+import StartingFunds from "./StartingFunds";
+import PLReturns from "./PLReturns";
 
 interface TotalsTableProps {
   aggregatedTrades: {
@@ -53,25 +55,16 @@ const TotalsTable: React.FC<TotalsTableProps> = ({ aggregatedTrades }) => {
 
   return (
     <div className="w-1/4 mx-auto flex flex-col items-center">
-      <h2 className="text-slate-200 my-1">Totals</h2>
-      <table className="table table-xs text-xs">
-        <thead>
-          <tr className="bg-slate-400 text-slate-800 border-2 border-slate-800 text-center">
-            <th>Starting Funds</th>
-            <th>Total Credits</th>
-            <th>Total Debits</th>
-            <th>Running P/L (%)</th>
-          </tr>
-        </thead>
-        <tbody className="text-slate-200 text-center">
-          <tr>
-            <td></td>
-            <td>${(Number(totalInvested) * 100).toFixed(2)}</td>
-            <td>${(Number(totalReturns) * 100).toFixed(2)}</td>
-            <td>{totalPL.toFixed(2)}%</td>
-          </tr>
-        </tbody>
-      </table>
+      <StartingFunds
+        totalInvested={totalInvested}
+        totalReturns={totalReturns}
+        totalPL={totalPL}
+      />
+      <PLReturns
+        totalInvested={totalInvested}
+        totalReturns={totalReturns}
+        totalPL={totalPL}
+      />
     </div>
   );
 };

@@ -114,7 +114,7 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
       if (!response.ok) {
         throw new Error("Failed to update the trade.");
       }
-      mutate("/api/get-trades");
+      mutate(`/api/get-trades?email=${userEmail}`);
     } catch (error) {
       console.error("Error updating trade:", error);
     }
@@ -150,7 +150,7 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
       if (!response.ok) {
         throw new Error("Failed to update the closed trade.");
       }
-      mutate("/api/get-trades");
+      mutate(`/api/get-trades?email=${userEmail}`);
     } catch (error) {
       console.error("Error updating closed trade:", error);
     }
@@ -176,7 +176,6 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
   };
 
   let aggregatedTrades = tradeTableFormatter(data.result.rows);
-  console.log("trades in wheel: ", aggregatedTrades);
 
   return (
     <>

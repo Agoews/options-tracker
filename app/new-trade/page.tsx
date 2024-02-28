@@ -51,7 +51,6 @@ const NewTrade = () => {
         }),
       });
       if (response.ok) {
-        console.log("Trade submitted successfully!");
         router.push("/tracker");
       } else {
         console.error("Failed to submit trade");

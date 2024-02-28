@@ -20,7 +20,6 @@ export interface Trade {
 }
 
 export const fetcher = async (url: string) => {
-  console.log("url in fetcher: ", url);
   const response = await fetch(url, {
     method: "GET",
     headers: {
