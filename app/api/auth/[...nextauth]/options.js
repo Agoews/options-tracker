@@ -1,5 +1,6 @@
 import GoogleProvider from "next-auth/providers/google";
 
+
 export const options = {
   session: {
     strategy: "jwt",
@@ -12,7 +13,8 @@ export const options = {
   ],
   callbacks: {
     async signIn({ account, profile }) {
-      const checkUserUrl = 'http://localhost:3000/api/users/check-user/';
+      const url = process.env.NEXTAUTH_URL
+      const checkUserUrl = `${url}/api/users/check-user/`;
       try {
         const checkUserResponse = await fetch(checkUserUrl, {
           method: 'POST',
@@ -25,7 +27,7 @@ export const options = {
 
         let userId = userExistsStatus.userId
         if (!userExistsStatus.userId) {
-          const createUserUrl = 'http://localhost:3000/api/users/create-user/';
+          const createUserUrl = `${url}/api/users/create-user/`;
           const createUserResponse = await fetch(createUserUrl, {
             method: 'POST',
             headers: {
