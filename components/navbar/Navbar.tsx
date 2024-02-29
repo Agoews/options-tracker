@@ -14,7 +14,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="navbar bg-base-100">
+      <div className="navbar bg-slate-800 test-slate-200">
         <div className="navbar-start">
           <div className="dropdown">
             <div
@@ -64,7 +64,9 @@ const Navbar = () => {
         </div>
 
         <div className="navbar-center">
-          <a className="btn btn-ghost text-3xl">TradeTracker</a>
+          <Link href="/" className="btn btn-ghost text-3xl">
+            TradeTracker
+          </Link>
         </div>
 
         <div className="navbar-end">

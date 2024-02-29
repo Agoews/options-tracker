@@ -74,7 +74,7 @@ const StartingFunds: React.FC<StartingFundsProps> = ({
         </thead>
         <tbody className="text-slate-200 text-center">
           <tr>
-            <td>${startingFunds.toFixed(2)}</td>
+            <td>${Number(startingFunds).toFixed(2)}</td>
             <td>${(Number(totalReturns) * 100).toFixed(2)}</td>
             <td>
               {startingFunds > 0
