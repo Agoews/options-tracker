@@ -15,6 +15,7 @@ export const options = {
     async signIn({ account, profile }) {
       const url = process.env.NEXTAUTH_URL
       const checkUserUrl = `${url}/api/users/check-user/`;
+      console.log('checkUserUrl ', checkUserUrl)
       try {
         const checkUserResponse = await fetch(checkUserUrl, {
           method: 'POST',
@@ -28,6 +29,8 @@ export const options = {
         let userId = userExistsStatus.userId
         if (!userExistsStatus.userId) {
           const createUserUrl = `${url}/api/users/create-user/`;
+          console.log('createUserUrl ', createUserUrl)
+
           const createUserResponse = await fetch(createUserUrl, {
             method: 'POST',
             headers: {
