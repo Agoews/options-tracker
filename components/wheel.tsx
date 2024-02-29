@@ -8,7 +8,6 @@ import DebitTable from "./wheelUtils/DebitTable";
 import CreditModal from "./wheelUtils/CreditModal";
 import DebitModal from "./wheelUtils/DebitModal";
 import TotalsTable from "./wheelUtils/TotalsTable";
-import CurrentHoldings from "./wheelUtils/CurrentHoldings";
 
 interface WheelProps {
   userEmail: string;
@@ -51,7 +50,6 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
 
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
-  const trades: Trade[] = data.result.rows;
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLElement>,
@@ -152,7 +150,7 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
       }
       mutate(`/api/get-trades?email=${userEmail}`);
     } catch (error) {
-      console.error("Error updating closed trade:", error);
+      console.error("Error updating closed trade: ", error);
     }
 
     aggregatedTrades = tradeTableFormatter(data.result.rows);
@@ -210,8 +208,7 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
           closedTradeModalToggle={closedTradeModalToggle}
         />
       </div>
-      <TotalsTable aggregatedTrades={aggregatedTrades} />
-      <CurrentHoldings aggregatedTrades={aggregatedTrades} />
+      <TotalsTable aggregatedTrades={aggregatedTrades} userEmail={userEmail} />
     </>
   );
 };

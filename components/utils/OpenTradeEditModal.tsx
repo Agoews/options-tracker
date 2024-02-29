@@ -52,7 +52,7 @@ const OpenTradeEditModal: React.FC<TradeEditModalProps> = ({
               Action:
             </span>
             <select
-              className="select select-bordered bg-slate-700 text-slate-200 flex-1 col-span-2 text-center"
+              className="select select-bordered select-xs bg-slate-700 text-slate-200 flex-1 col-span-2 text-center"
               value={editedTrade.actions}
               onChange={(e) => handleInputChange(e, "actions")}
               required

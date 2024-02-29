@@ -11,12 +11,6 @@ export async function PUT(req, res) {
   } = await req.json();
 
   try {
-    console.log('-----', tradeid,
-      closedtradeid,
-      closingprice,
-      completiondate,
-      reopenquantity,
-      isClosed)
     // Update the open quantity in the OpenTrades table to reopen the trade
     await sql`
       UPDATE OpenTrades

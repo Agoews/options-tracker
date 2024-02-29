@@ -1,16 +1,65 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
+
+import StartingFundsModal from "./StartingFundsModal";
+import { mutate } from "swr";
 
 interface StartingFundsProps {
-  totalInvested: string | number;
+  funds: number;
   totalReturns: string | number;
-  totalPL: number;
+  userEmail: string;
 }
 
 const StartingFunds: React.FC<StartingFundsProps> = ({
-  totalInvested,
+  funds,
   totalReturns,
-  totalPL,
+  userEmail,
 }) => {
+  const [startingFunds, setStartingFunds] = useState(funds ? funds : 0);
+  const [editedStartingFunds, setEditedStartingFunds] = useState(0);
+  const [startingFundsModalToggle, setStartingFundsModalToggle] =
+    useState(false);
+
+  const handleUpdateFundsModal = () => {
+    setStartingFundsModalToggle(!startingFundsModalToggle);
+  };
+
+  const handleSaveUpdateFunds = async () => {
+    console.log("handleSaveUpdateFunds: ", editedStartingFunds);
+    const updatedStartingFunds = Number(startingFunds) + editedStartingFunds;
+    const url = `/api/update-funds?email=${userEmail}`;
+
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ updatedStartingFunds }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update the funds.");
+      }
+      setStartingFunds(updatedStartingFunds);
+      setEditedStartingFunds(0);
+      handleUpdateFundsModal();
+    } catch (error) {
+      console.error("Error updating funds: ", error);
+    }
+  };
+
+  const handleCancel = () => {
+    setStartingFundsModalToggle(!startingFundsModalToggle);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLElement>) => {
+    const target = e.target as HTMLInputElement | HTMLSelectElement;
+    let funds: number = Number(target.value);
+    setEditedStartingFunds(funds);
+  };
+
   return (
     <>
       <h2 className="text-slate-200 my-1">Initial Investment P/L</h2>
@@ -26,15 +75,35 @@ const StartingFunds: React.FC<StartingFundsProps> = ({
         </thead>
         <tbody className="text-slate-200 text-center">
           <tr>
-            <td>${(Number(totalInvested) * 100).toFixed(2)}</td>
+            <td>${startingFunds.toFixed(2)}</td>
             <td>${(Number(totalReturns) * 100).toFixed(2)}</td>
-            <td>{totalPL.toFixed(2)}%</td>
-            <button className="btn btn-xs bg-slate-800 text-slate-200">
-              Update Funds
-            </button>
+            <td>
+              {startingFunds > 0
+                ? `${(
+                    ((Number(totalReturns) * 100) / startingFunds) *
+                    100
+                  ).toFixed(2)}%`
+                : "Update Funds"}
+            </td>
+            <td>
+              <button
+                onClick={handleUpdateFundsModal}
+                className="btn btn-xs bg-slate-800 text-slate-200"
+              >
+                Update Funds
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
+
+      <StartingFundsModal
+        startingFunds={startingFunds}
+        startingFundsModalToggle={startingFundsModalToggle}
+        handleInputChange={handleInputChange}
+        handleSaveUpdateFunds={handleSaveUpdateFunds}
+        handleCancel={handleCancel}
+      />
     </>
   );
 };

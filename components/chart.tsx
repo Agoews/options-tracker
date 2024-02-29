@@ -291,9 +291,12 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
                     <td>
                       {closedTrades[0]?.closingprice
                         ? (
-                            ((+closedTrades[0]?.closingprice -
-                              +openTrades[0]?.optionprice) /
-                              +openTrades[0]?.optionprice) *
+                            ((Number(openTrades[0]?.optionprice) -
+                              Number(
+                                aggregatedTrades[Number(tradeId)]
+                                  .averageClosingPrice
+                              )) /
+                              Number(openTrades[0]?.optionprice)) *
                             100
                           ).toFixed(2) + "%"
                         : "N/A"}

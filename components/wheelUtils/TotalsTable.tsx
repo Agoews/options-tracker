@@ -2,6 +2,8 @@ import React from "react";
 import { Trade } from "../utils/fetcher";
 import StartingFunds from "./StartingFunds";
 import PLReturns from "./PLReturns";
+import { fetcher } from "../utils/fetcher";
+import useSWR from "swr";
 
 interface TotalsTableProps {
   aggregatedTrades: {
@@ -34,9 +36,23 @@ interface TotalsTableProps {
       totalClosingQuantity: number;
     };
   };
+  userEmail: string;
 }
 
-const TotalsTable: React.FC<TotalsTableProps> = ({ aggregatedTrades }) => {
+const TotalsTable: React.FC<TotalsTableProps> = ({
+  aggregatedTrades,
+  userEmail,
+}) => {
+  const { data, error, isLoading } = useSWR(
+    `/api/get-holdings?email=${userEmail}`,
+    fetcher
+  );
+
+  if (error) return <div>Failed to load</div>;
+  if (isLoading) return <div>Loading...</div>;
+
+  const funds = data.result.rows[0].funds;
+
   let totalReturns = 0;
   let totalInvested = 0;
 
@@ -56,9 +72,9 @@ const TotalsTable: React.FC<TotalsTableProps> = ({ aggregatedTrades }) => {
   return (
     <div className="w-1/4 mx-auto flex flex-col items-center">
       <StartingFunds
-        totalInvested={totalInvested}
+        funds={funds}
         totalReturns={totalReturns}
-        totalPL={totalPL}
+        userEmail={userEmail}
       />
       <PLReturns
         totalInvested={totalInvested}
