@@ -14,7 +14,6 @@ export const options = {
     async signIn({ account, profile }) {
       const checkUserUrl = 'http://localhost:3000/api/users/check-user/';
       try {
-        // console.log('email being sent', JSON.stringify({ email: profile.email }))
         const checkUserResponse = await fetch(checkUserUrl, {
           method: 'POST',
           headers: {
@@ -41,10 +40,8 @@ export const options = {
 
           const userData = await createUserResponse.json()
           const userId = userData.user.userid
-          console.log('new userId: ', userId)
         } else {
           const userId = userExistsStatus.userId
-          console.log('existing userId: ', userId)
         }
         account.userId = userId
         return true;
