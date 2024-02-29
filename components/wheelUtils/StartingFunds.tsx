@@ -26,7 +26,6 @@ const StartingFunds: React.FC<StartingFundsProps> = ({
   };
 
   const handleSaveUpdateFunds = async () => {
-    console.log("handleSaveUpdateFunds: ", editedStartingFunds);
     const updatedStartingFunds = Number(startingFunds) + editedStartingFunds;
     const url = `/api/update-funds?email=${userEmail}`;
 
