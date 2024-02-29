@@ -16,6 +16,7 @@ export const options = {
       const url = process.env.NEXTAUTH_URL
       const checkUserUrl = `${url}/api/users/check-user/`;
       console.log('checkUserUrl ', checkUserUrl)
+      console.log('profile ', profile.email)
       try {
         const checkUserResponse = await fetch(checkUserUrl, {
           method: 'POST',
