@@ -234,9 +234,11 @@ const NewTrade = () => {
                     Submit
                   </button>
                 </form>
-                <button className="btn bg-slate-800 text-slate-200">
-                  <Link href="/tracker">Cancel</Link>
-                </button>
+                <Link href="/tracker">
+                  <button className="btn bg-slate-800 text-slate-200">
+                    Cancel
+                  </button>
+                </Link>
               </div>
             </label>
           </div>
