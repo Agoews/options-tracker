@@ -26,10 +26,6 @@ const NewTrade = () => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  if (!session) {
-    router.push("/");
-  }
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!session) {
