@@ -11,7 +11,7 @@ const TheWheel = async () => {
   const userEmail = session?.user?.email;
 
   if (!session) {
-    redirect("/api/auth/signin");
+    redirect("/");
   }
 
   return (

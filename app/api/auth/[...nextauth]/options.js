@@ -1,5 +1,5 @@
 import GoogleProvider from "next-auth/providers/google";
-
+import { redirect } from 'next/navigation'
 
 export const options = {
   session: {
@@ -55,6 +55,9 @@ export const options = {
         console.log(error);
         return false;
       }
+    },
+    async signOut() {
+      redirect('/')
     }
   }
 };
