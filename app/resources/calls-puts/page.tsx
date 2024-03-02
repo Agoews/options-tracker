@@ -5,7 +5,7 @@ import LongPut from "./LongPut";
 import ShortCall from "./ShortCall";
 import ShortPut from "./ShortPut";
 
-export const CallsPuts = () => {
+const CallsPuts = () => {
   return (
     <>
       <main className="flex min-h-screen min-w-screen flex-col items-center">
