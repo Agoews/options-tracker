@@ -1,6 +1,7 @@
 import React from "react";
 import Background from "@/public/Background_1.png";
-const Resources = () => {
+
+const IronCondor = () => {
   return (
     <>
       <main className="flex min-h-screen min-w-screen flex-col items-center">
@@ -17,7 +18,7 @@ const Resources = () => {
               className="collapse collapse-plus border border-base-300 bg-slate-400"
             >
               <div className="collapse-title text-xl font-medium">
-                Focus me to see content
+                Iron Condor
               </div>
               <div className="collapse-content">
                 <p>
@@ -32,4 +33,4 @@ const Resources = () => {
   );
 };
 
-export default Resources;
+export default IronCondor;

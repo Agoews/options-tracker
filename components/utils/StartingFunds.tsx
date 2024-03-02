@@ -6,13 +6,13 @@ import StartingFundsModal from "../wheelUtils/StartingFundsModal";
 
 interface StartingFundsProps {
   funds: number;
-  totalReturns: string | number;
+  totalCredits: string | number;
   userEmail: string;
 }
 
 const StartingFunds: React.FC<StartingFundsProps> = ({
   funds,
-  totalReturns,
+  totalCredits,
   userEmail,
 }) => {
   const [startingFunds, setStartingFunds] = useState(funds ? funds : 0);
@@ -73,12 +73,12 @@ const StartingFunds: React.FC<StartingFundsProps> = ({
         </thead>
         <tbody className="text-slate-200 text-center">
           <tr>
-            <td>${Number(startingFunds).toFixed(2)}</td>
-            <td>${(Number(totalReturns) * 100).toFixed(2)}</td>
+            <td>{`$${Number(startingFunds).toFixed(2)}`}</td>
+            <td>{`$${(Number(totalCredits) * 100).toFixed(2)}`}</td>
             <td>
               {startingFunds > 0
                 ? `${(
-                    ((Number(totalReturns) * 100) / startingFunds) *
+                    ((Number(totalCredits) * 100) / startingFunds) *
                     100
                   ).toFixed(2)}%`
                 : "Update Funds"}

@@ -1,14 +1,14 @@
 import React from "react";
 
 interface PLReturnsProps {
-  totalInvested: string | number;
-  totalReturns: string | number;
+  totalCredits: string | number;
+  totalDebits: string | number;
   totalPL: number;
 }
 
 const PLReturns: React.FC<PLReturnsProps> = ({
-  totalInvested,
-  totalReturns,
+  totalCredits,
+  totalDebits,
   totalPL,
 }) => {
   return (
@@ -25,8 +25,8 @@ const PLReturns: React.FC<PLReturnsProps> = ({
         </thead>
         <tbody className="text-slate-200 text-center">
           <tr>
-            <td>${(Number(totalInvested) * 100).toFixed(2)}</td>
-            <td>${(Number(totalReturns) * 100).toFixed(2)}</td>
+            <td>${(Number(totalCredits) * 100).toFixed(2)}</td>
+            <td>${(Number(totalDebits) * 100).toFixed(2)}</td>
             <td>{totalPL.toFixed(2)}%</td>
           </tr>
         </tbody>

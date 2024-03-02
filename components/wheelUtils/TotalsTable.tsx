@@ -53,32 +53,30 @@ const TotalsTable: React.FC<TotalsTableProps> = ({
 
   const funds = Number(data.result.rows[0].funds);
 
-  let totalReturns = 0;
-  let totalInvested = 0;
+  let totalDebits = 0;
+  let totalCredits = 0;
 
   Object.values(aggregatedTrades).forEach((trade) => {
     if (trade.totalClosingQuantity > 0) {
-      totalReturns += trade.averageClosingPrice * trade.totalClosingQuantity;
-      totalInvested +=
+      totalDebits += trade.averageClosingPrice * trade.totalClosingQuantity;
+      totalCredits +=
         trade.totalClosingQuantity * trade.openTrades[0].optionprice;
     }
   });
 
   const totalPL =
-    totalInvested > 0
-      ? ((totalInvested - totalReturns) / totalInvested) * 100
-      : 0;
+    totalCredits > 0 ? ((totalCredits - totalDebits) / totalCredits) * 100 : 0;
 
   return (
     <div className="w-1/4 mx-auto flex flex-col items-center">
       <PLReturns
-        totalInvested={totalInvested}
-        totalReturns={totalReturns}
+        totalCredits={totalCredits}
+        totalDebits={totalDebits}
         totalPL={totalPL}
       />
       <StartingFunds
         funds={funds}
-        totalReturns={totalReturns}
+        totalCredits={totalCredits}
         userEmail={userEmail}
       />
     </div>

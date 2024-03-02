@@ -61,12 +61,78 @@ const Navbar = () => {
               </li>
             </ul>
           </div>
-        </div>
-
-        <div className="navbar-center">
           <Link href="/" className="btn btn-ghost text-3xl">
             TradeTracker
           </Link>
+        </div>
+
+        <div className="navbar-center space-x-4 text-lg">
+          <ul className="menu menu-horizontal">
+            <li>
+              <Link href="/tracker">Home</Link>
+            </li>
+            <li>
+              <details>
+                <summary>Strategies</summary>
+                <ul className="p-1 bg-slate-800 min-w-36 rounded-t-none z-10">
+                  <li>
+                    <Link href="/tracker">All</Link>
+                  </li>
+                  <li>
+                    <Link href="/the-wheel">Calls & Puts</Link>
+                  </li>
+                  <li>
+                    <Link href="/the-wheel">The Wheel</Link>
+                  </li>
+                  <li>
+                    <Link href="/the-wheel">Iron Condor (WIP)</Link>
+                  </li>
+                  <li>
+                    <Link href="/the-wheel">Iron Butterfly (WIP)</Link>
+                  </li>
+                </ul>
+              </details>
+            </li>
+            <li>
+              <details>
+                <summary>Resources (WIP)</summary>
+                <ul className="p-1 bg-slate-800 min-w-36 rounded-t-none z-10">
+                  <li>
+                    <Link href="/resources/calls-puts">Calls & Puts</Link>
+                  </li>
+                  <li>
+                    <Link href="/resources/the-wheel">The Wheel</Link>
+                  </li>
+                  <li>
+                    <Link href="/resources/iron-condor">Iron Condor</Link>
+                  </li>
+                  <li>
+                    <Link href="/resources/iron-butterfly">Iron Butterfly</Link>
+                  </li>
+                </ul>
+              </details>{" "}
+            </li>
+          </ul>
+          {/* <div className="dropdown">
+            <div tabIndex={0} role="button" className="">
+              <summary>Strategies</summary>
+            </div>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+            >
+              <li>
+                <Link href="/tracker">All</Link>
+              </li>
+              <li>
+                <Link href="/the-wheel">The Wheel</Link>
+              </li>
+              <li>
+                <Link href="/the-wheel">Iron Condor (WIP)</Link>
+              </li>
+            </ul>
+          </div> */}
+          {/* <Link href="/">Resources</Link> */}
         </div>
 
         <div className="navbar-end">
