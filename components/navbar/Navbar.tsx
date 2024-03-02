@@ -85,10 +85,10 @@ const Navbar = () => {
                     <Link href="/the-wheel">The Wheel</Link>
                   </li>
                   <li>
-                    <Link href="/the-wheel">Iron Condor (WIP)</Link>
+                    <Link href="/iron-condor">Iron Condor (WIP)</Link>
                   </li>
                   <li>
-                    <Link href="/the-wheel">Iron Butterfly (WIP)</Link>
+                    <Link href="/iron-butterfly">Iron Butterfly (WIP)</Link>
                   </li>
                 </ul>
               </details>
@@ -104,10 +104,12 @@ const Navbar = () => {
                     <Link href="/resources/the-wheel">The Wheel</Link>
                   </li>
                   <li>
-                    <Link href="/resources/iron-condor">Iron Condor</Link>
+                    <Link href="/resources/iron-condor">Iron Condor (WIP)</Link>
                   </li>
                   <li>
-                    <Link href="/resources/iron-butterfly">Iron Butterfly</Link>
+                    <Link href="/resources/iron-butterfly">
+                      Iron Butterfly (WIP)
+                    </Link>
                   </li>
                 </ul>
               </details>{" "}

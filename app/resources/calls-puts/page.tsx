@@ -1,7 +1,11 @@
 import React from "react";
 import Background from "@/public/Background_1.png";
+import LongCalls from "./LongCall";
+import LongPut from "./LongPut";
+import ShortCall from "./ShortCall";
+import ShortPut from "./ShortPut";
 
-const CallsPuts = () => {
+export const CallsPuts = () => {
   return (
     <>
       <main className="flex min-h-screen min-w-screen flex-col items-center">
@@ -12,19 +16,16 @@ const CallsPuts = () => {
           }}
         >
           <div className="hero-overlay bg-opacity-60"></div>
-          <div className="text-center text-slate-800">
-            <div
-              tabIndex={0}
-              className="collapse collapse-plus border border-base-300 bg-slate-400"
-            >
-              <div className="collapse-title text-xl font-medium">
-                Calls & Puts
-              </div>
-              <div className="collapse-content">
-                <p>
-                  tabIndex={0} attribute is necessary to make the div focusable
-                </p>
-              </div>
+          <div className="grid grid-cols-2 text-slate-200 space-x-4 mx-4 max-w-6xl">
+            <div className="text-left col-span-1 space-y-1">
+              <div className="text-3xl font-bold">Calls</div>
+              <LongCalls />
+              <ShortCall />
+            </div>
+            <div className="text-left col-span-1 space-y-1">
+              <div className="text-3xl font-bold">Puts</div>
+              <LongPut />
+              <ShortPut />
             </div>
           </div>
         </div>
