@@ -36,7 +36,7 @@ const Tracker = async () => {
             </div>
             <Link className="p-1" href="/new-trade">
               <button className="btn bg-slate-800 text-slate-200 mt-2">
-                Enter New Trade
+                New Trade
               </button>
             </Link>
             <Link className="p-1" href="/the-wheel">

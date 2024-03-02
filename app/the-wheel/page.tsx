@@ -33,6 +33,11 @@ const TheWheel = async () => {
               )}
             </div>
           </div>
+          <Link className="p-1" href="/new-trade">
+            <button className="btn bg-slate-800 text-slate-200 mt-2">
+              New Trade
+            </button>
+          </Link>
           <Link className="p-1" href="/tracker">
             <button className="btn bg-slate-800 text-slate-200 mt-2">
               All Trades

@@ -1,6 +1,6 @@
 import React from "react";
 import { Trade } from "../utils/fetcher";
-import StartingFunds from "./StartingFunds";
+import StartingFunds from "../utils/StartingFunds";
 import PLReturns from "./PLReturns";
 import { fetcher } from "../utils/fetcher";
 import useSWR from "swr";
@@ -71,15 +71,15 @@ const TotalsTable: React.FC<TotalsTableProps> = ({
 
   return (
     <div className="w-1/4 mx-auto flex flex-col items-center">
-      <StartingFunds
-        funds={funds}
-        totalReturns={totalReturns}
-        userEmail={userEmail}
-      />
       <PLReturns
         totalInvested={totalInvested}
         totalReturns={totalReturns}
         totalPL={totalPL}
+      />
+      <StartingFunds
+        funds={funds}
+        totalReturns={totalReturns}
+        userEmail={userEmail}
       />
     </div>
   );

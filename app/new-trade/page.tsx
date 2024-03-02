@@ -22,6 +22,7 @@ const NewTrade = () => {
   const [expiration, setExpiration] = useState("");
   const [strategy, setStrategy] = useState("");
   const [actions, setAction] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const { data: session } = useSession();
   const router = useRouter();
@@ -81,6 +82,9 @@ const NewTrade = () => {
   };
 
   const handleExpirationChange = (date: Date) => {
+    const day = new Date(date);
+    day.setDate(date.getDate());
+    setSelectedDate(day); // highlighted date
     setExpiration(date.toISOString().split("T")[0]); //takes YYYY-MM-DD
   };
 
@@ -205,7 +209,7 @@ const NewTrade = () => {
               <div className="w-full h-full">
                 <Calendar
                   onClickDay={handleExpirationChange}
-                  value={expiration}
+                  value={selectedDate}
                   tileDisabled={disableDates}
                   className="rounded-lg"
                 />
