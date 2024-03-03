@@ -289,7 +289,10 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
                       ].averageClosingPrice?.toFixed(2)}
                     </td>
                     <td>
-                      {closedTrades[0]?.closingprice
+                      {/* If the option is a Covered Call or CSP the calculation returns positive returns for lower closing prices */}
+                      {(closedTrades[0]?.closingprice &&
+                        openTrades[0].actions === "COVERED CALL") ||
+                      openTrades[0].actions === "CASH SECURED PUT"
                         ? (
                             ((Number(openTrades[0]?.optionprice) -
                               Number(
@@ -299,7 +302,15 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
                               Number(openTrades[0]?.optionprice)) *
                             100
                           ).toFixed(2) + "%"
-                        : "N/A"}
+                        : (
+                            ((Number(
+                              aggregatedTrades[Number(tradeId)]
+                                .averageClosingPrice
+                            ) -
+                              Number(openTrades[0]?.optionprice)) /
+                              Number(openTrades[0]?.optionprice)) *
+                            100
+                          ).toFixed(2) + "%"}
                     </td>
                     <td>
                       {trade.completiondate

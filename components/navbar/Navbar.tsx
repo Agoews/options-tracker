@@ -89,7 +89,7 @@ const Navbar = () => {
                       <Link href="/tracker">All</Link>
                     </li>
                     <li>
-                      <Link href="/the-wheel">Calls & Puts</Link>
+                      <Link href="/calls-puts">Calls & Puts</Link>
                     </li>
                     <li>
                       <Link href="/the-wheel">The Wheel</Link>
