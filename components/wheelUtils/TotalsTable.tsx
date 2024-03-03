@@ -57,15 +57,17 @@ const TotalsTable: React.FC<TotalsTableProps> = ({
   let totalCredits = 0;
 
   Object.values(aggregatedTrades).forEach((trade) => {
-    if (trade.totalClosingQuantity > 0) {
+    if (
+      trade.totalClosingQuantity > 0 &&
+      trade.openTrades[0].strategy === "WHEEL"
+    ) {
       totalDebits += trade.averageClosingPrice * trade.totalClosingQuantity;
       totalCredits +=
         trade.totalClosingQuantity * trade.openTrades[0].optionprice;
     }
   });
 
-  const totalPL =
-    totalCredits > 0 ? ((totalCredits - totalDebits) / totalCredits) * 100 : 0;
+  const totalPL = totalCredits > 0 ? (totalCredits - totalDebits) * 100 : 0;
 
   return (
     <div className="w-1/4 mx-auto flex flex-col items-center">

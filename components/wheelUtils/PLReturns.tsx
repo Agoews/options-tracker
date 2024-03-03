@@ -20,14 +20,14 @@ const PLReturns: React.FC<PLReturnsProps> = ({
           <tr className="bg-slate-400 text-slate-800 border-2 border-slate-800 text-center">
             <th>Total Credits</th>
             <th>Total Debits</th>
-            <th>Running P/L (%)</th>
+            <th>Running P/L</th>
           </tr>
         </thead>
         <tbody className="text-slate-200 text-center">
           <tr>
             <td>${(Number(totalCredits) * 100).toFixed(2)}</td>
             <td>${(Number(totalDebits) * 100).toFixed(2)}</td>
-            <td>{totalPL.toFixed(2)}%</td>
+            <td>${totalPL.toFixed(2)}</td>
           </tr>
         </tbody>
       </table>
