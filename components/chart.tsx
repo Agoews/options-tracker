@@ -259,6 +259,7 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
               <th>Strike</th>
               <th>Contracts</th>
               <th>Avg Closing Price</th>
+              <th>Total</th>
               <th>P/L</th>
               <th>Last Closed Date</th>
             </tr>
@@ -279,7 +280,7 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
                     <td>{openTrades[0].ticker}</td>
                     <td>{getActionAbbreviation(openTrades[0].actions)}</td>
                     <td>{openTrades[0].strategy}</td>
-                    <td>{Number(openTrades[0].strike).toFixed(2)}</td>
+                    <td>${Number(openTrades[0].strike).toFixed(2)}</td>
                     <td>
                       {aggregatedTrades[Number(tradeId)].totalClosingQuantity}
                     </td>
@@ -287,6 +288,18 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
                       {aggregatedTrades[
                         Number(tradeId)
                       ].averageClosingPrice?.toFixed(2)}
+                    </td>
+                    <td>
+                      $
+                      {(
+                        Number(
+                          aggregatedTrades[Number(tradeId)].averageClosingPrice
+                        ) *
+                        Number(
+                          aggregatedTrades[Number(tradeId)].totalClosingQuantity
+                        ) *
+                        100
+                      ).toFixed(2)}
                     </td>
                     <td>
                       {/* If the option is a Covered Call or CSP the calculation returns positive returns for lower closing prices */}
@@ -312,6 +325,7 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
                             100
                           ).toFixed(2) + "%"}
                     </td>
+
                     <td>
                       {trade.completiondate
                         ? formatDate(trade.completiondate)

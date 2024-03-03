@@ -60,7 +60,7 @@ const StartingFunds: React.FC<StartingFundsProps> = ({
 
   return (
     <>
-      <h2 className="text-slate-200 my-1">Initial Investment P/L</h2>
+      <h2 className="text-slate-200 my-1">Return on Initial Investments</h2>
 
       <table className="table table-xs text-xs">
         <thead>

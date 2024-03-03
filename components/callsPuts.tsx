@@ -104,10 +104,15 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
                       <td>
                         {getActionAbbreviation(trade[1].openTrades[0].actions)}
                       </td>
-                      <td>{trade[1].openTrades[0].strike}</td>
+                      <td>
+                        ${Number(trade[1].openTrades[0].strike).toFixed(2)}
+                      </td>
                       <td>{trade[1].openTrades[0].openquantity}</td>
                       <td>{trade[1].openTrades[0].optionprice}</td>
-                      <td>{trade[1].openTrades[0].currentprice}</td>
+                      <td>
+                        $
+                        {Number(trade[1].openTrades[0].currentprice).toFixed(2)}
+                      </td>
                       <td>
                         $
                         {trade[1].openTrades[0].actions === "COVERED CALL" ||
@@ -148,6 +153,7 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
                 <th>Strike</th>
                 <th>Contracts</th>
                 <th>Avg Closing Price</th>
+                <th>Total</th>
                 <th>P/L</th>
               </tr>
             </thead>
@@ -165,9 +171,17 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
                     <td>
                       {getActionAbbreviation(trade[1].openTrades[0].actions)}
                     </td>
-                    <td>{trade[1].openTrades[0].strike}</td>
+                    <td>${Number(trade[1].openTrades[0].strike).toFixed(2)}</td>
                     <td>{trade[1].totalClosingQuantity}</td>
-                    <td>{trade[1].averageClosingPrice}</td>
+                    <td>{trade[1].averageClosingPrice.toFixed(2)}</td>
+                    <td>
+                      $
+                      {(
+                        trade[1].totalClosingQuantity *
+                        trade[1].averageClosingPrice *
+                        100
+                      ).toFixed(2)}
+                    </td>
                     <td>
                       {trade[1].closedTrades[0].closingprice
                         ? (
