@@ -98,7 +98,7 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
                   return (
                     <tr
                       key={trade[0]}
-                      className="hover:bg-slate-700 hover:text-slate-200 text-center"
+                      className="hover:bg-slate-700 hover:text-slate-200 hover:cursor-pointer text-center"
                     >
                       <td>{trade[1].openTrades[0].ticker}</td>
                       <td>
@@ -165,7 +165,7 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
                 return (
                   <tr
                     key={trade[0]}
-                    className="hover:bg-slate-700 hover:text-slate-200 text-center"
+                    className="hover:bg-slate-700 hover:text-slate-200 hover:cursor-pointer text-center"
                   >
                     <td>{trade[1].openTrades[0].ticker}</td>
                     <td>

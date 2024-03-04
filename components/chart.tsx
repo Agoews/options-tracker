@@ -220,7 +220,7 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
                     return (
                       <tr
                         key={tradeId}
-                        className="hover:bg-slate-700 hover:text-slate-200 text-center"
+                        className="hover:bg-slate-700 hover:text-slate-200 hover:cursor-pointer text-center"
                         onClick={() => handleRowClick(openTrades[0])}
                       >
                         <td>{openTrades[0].ticker}</td>
@@ -292,7 +292,7 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
                   return (
                     <tr
                       key={`${tradeId}-0`}
-                      className="hover:bg-slate-700 hover:text-slate-200 text-center"
+                      className="hover:bg-slate-700 hover:text-slate-200 hover:cursor-pointer text-center"
                       onClick={() => handleRowClick(closedTrades[0])}
                     >
                       <td>{openTrades[0].ticker}</td>

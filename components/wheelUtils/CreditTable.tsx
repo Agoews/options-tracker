@@ -69,7 +69,7 @@ export const CreditTable: React.FC<CreditTableProps> = ({
               return (
                 <tr
                   key={tradeId}
-                  className="hover:bg-slate-700 hover:text-slate-200 text-center"
+                  className="hover:bg-slate-700 hover:text-slate-200 hover: cursor-pointer text-center"
                   onClick={() => handleOpenTradeClick(openTrades[0])}
                 >
                   <td>{openTrades[0].ticker}</td>

@@ -69,7 +69,7 @@ const DebitTable: React.FC<DebitTableProps> = ({
                 return (
                   <tr
                     key={`${tradeId}-0`}
-                    className="hover:bg-slate-700 hover:text-slate-200 text-center"
+                    className="hover:bg-slate-700 hover:text-slate-200 hover:cursor-pointer text-center"
                     onClick={() => handleClosedTradeClick(closedTrades[0])}
                   >
                     <td>{openTrades[0].ticker}</td>
