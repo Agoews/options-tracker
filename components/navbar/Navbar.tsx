@@ -94,12 +94,12 @@ const Navbar = () => {
                     <li>
                       <Link href="/the-wheel">The Wheel</Link>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link href="/iron-condor">Iron Condor (WIP)</Link>
                     </li>
                     <li>
                       <Link href="/iron-butterfly">Iron Butterfly (WIP)</Link>
-                    </li>
+                    </li> */}
                   </ul>
                 </div>
               </li>
@@ -119,14 +119,14 @@ const Navbar = () => {
                   <li>
                     <Link href="/resources/the-wheel">The Wheel</Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link href="/resources/iron-condor">Iron Condor (WIP)</Link>
                   </li>
                   <li>
                     <Link href="/resources/iron-butterfly">
                       Iron Butterfly (WIP)
                     </Link>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </li>

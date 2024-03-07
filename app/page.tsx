@@ -48,8 +48,9 @@ export default function Home() {
             <h1 className="mb-5 text-5xl font-bold">Hello there</h1>
             <p className="mb-5 text-slate-200">
               Welcome to your all in one trade tracker. This is a work in
-              progress! This will be the login page soon enough but that is for
-              future development.
+              progress! If you log in with Google you won&apos;t see anything at
+              the moment. I will be adding a guest account shortly so that the
+              layout of the site can be seen.
             </p>
             <Link href="/api/auth/signin">
               <button className="btn bg-slate-800 text-slate-200">Login</button>
