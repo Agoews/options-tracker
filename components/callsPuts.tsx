@@ -63,15 +63,12 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
   };
 
   const aggregatedTrades = tradeTableFormatter(data.result.rows);
-  // console.log("data", data.result.rows);
 
   const filteredOptions = Object.entries(aggregatedTrades).filter(
     (option) =>
       option[1].openTrades[0].actions === "CALL" ||
       option[1].openTrades[0].actions === "PUT"
   );
-
-  console.log("filteredOptions: ", filteredOptions);
 
   return (
     <>

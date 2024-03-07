@@ -8,7 +8,7 @@ CREATE TABLE Users (
 
 CREATE TABLE OpenTrades (
     TradeID SERIAL PRIMARY KEY,
-    Email INT REFERENCES Users(Email) ON DELETE CASCADE,
+    Email VARCHAR(255) NOT NULL REFERENCES Users(Email) ON DELETE CASCADE,
     Ticker VARCHAR(255) NOT NULL,
     Strike DECIMAL NOT NULL,
     CurrentPrice DECIMAL NOT NULL,
@@ -37,10 +37,9 @@ CREATE TABLE CurrentHoldings (
 
 
 -- Insert dummy data into Users table
-INSERT INTO Users (Email, Name) VALUES
-('john.doe@example.com', 10000.00),
-('jane.doe@example.com', 20000.00),
-('alex.smith@example.com', 500.00);
+INSERT INTO Users (Email, Name, Funds) VALUES
+('test@gmail.com', 'Test', 10000.00),
+('george.h881@gmail.com', 20000.00);
 
 -- Insert dummy data into Trades table
 INSERT INTO Trades (UserID, Ticker, Actions, Strategy, Strike, OpenQuantity, RemainingQuantity, OptionPrice, ClosingPrice, ExpirationDate, Open, CreationDate, CompletionDate) VALUES

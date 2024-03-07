@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 export async function POST(req) {
   const body = await req.json();
   const { email } = body;
+
   try {
     // Select the user ID from the database where the email matches
     const result = await sql`
