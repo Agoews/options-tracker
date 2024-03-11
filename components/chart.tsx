@@ -5,7 +5,6 @@ import { fetcher, Trade } from "./utils/fetcher";
 import { getActionAbbreviation } from "./utils/getActionAbbreviation";
 import OpenTradeEditModal from "./utils/OpenTradeEditModal";
 import { tradeTableFormatter } from "./utils/tradeTableFormatter";
-import { format } from "path";
 
 interface ChartProps {
   userEmail: string;

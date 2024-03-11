@@ -51,10 +51,7 @@ const Navbar = () => {
                 </li>
               )}
               <li>
-                <Link href="/">Homepage</Link>
-              </li>
-              <li>
-                <Link href="/resources">Resources (WIP)</Link>
+                <Link href="/">Home</Link>
               </li>
               <li>
                 <Link href="/about">About</Link>
@@ -68,41 +65,39 @@ const Navbar = () => {
 
         <div className="navbar-center space-x-4 text-lg">
           <ul className="menu menu-horizontal space-x-10">
-            <li>
-              <div className="dropdown dropdown-bottom p-0">
-                <div className="btn btn-ghost">
-                  <Link href="/tracker">Home</Link>
-                </div>
-              </div>
-            </li>
             {session && session.user ? (
-              <li>
-                <div className="dropdown dropdown-hover dropdown-bottom p-0">
-                  <div tabIndex={0} role="button" className="btn btn-ghost">
-                    Strategies
-                  </div>
-                  <ul
-                    tabIndex={0}
-                    className="dropdown-content p-1 bg-slate-800 min-w-36 rounded-lg z-10"
-                  >
-                    <li>
-                      <Link href="/tracker">All</Link>
-                    </li>
-                    <li>
-                      <Link href="/calls-puts">Calls & Puts</Link>
-                    </li>
-                    <li>
-                      <Link href="/the-wheel">The Wheel</Link>
-                    </li>
-                    {/* <li>
+              <>
+                <li>
+                  <div className="dropdown dropdown-hover dropdown-bottom p-0">
+                    <div tabIndex={0} role="button" className="btn btn-ghost">
+                      Strategies
+                    </div>
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content p-1 bg-slate-800 min-w-36 rounded-lg z-10"
+                    >
+                      <li>
+                        <Link href="/summary">Summary</Link>
+                      </li>
+                      <li>
+                        <Link href="/tracker">All Trades</Link>
+                      </li>
+                      <li>
+                        <Link href="/calls-puts">Calls & Puts</Link>
+                      </li>
+                      <li>
+                        <Link href="/the-wheel">The Wheel</Link>
+                      </li>
+                      {/* <li>
                       <Link href="/iron-condor">Iron Condor (WIP)</Link>
                     </li>
                     <li>
                       <Link href="/iron-butterfly">Iron Butterfly (WIP)</Link>
                     </li> */}
-                  </ul>
-                </div>
-              </li>
+                    </ul>
+                  </div>
+                </li>
+              </>
             ) : null}
             <li>
               <div className="dropdown dropdown-hover dropdown-bottom p-0">
@@ -131,26 +126,6 @@ const Navbar = () => {
               </div>
             </li>
           </ul>
-          {/* <div className="dropdown">
-            <div tabIndex={0} role="button" className="">
-              <summary>Strategies</summary>
-            </div>
-            <ul
-              tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-            >
-              <li>
-                <Link href="/tracker">All</Link>
-              </li>
-              <li>
-                <Link href="/the-wheel">The Wheel</Link>
-              </li>
-              <li>
-                <Link href="/the-wheel">Iron Condor (WIP)</Link>
-              </li>
-            </ul>
-          </div> */}
-          {/* <Link href="/">Resources</Link> */}
         </div>
 
         <div className="navbar-end">

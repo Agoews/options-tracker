@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import Background from "@/public/WheelGidePicture.png";
+import WheelGuidePicture from "@/public/WheelGidePicture.png";
 
 // import WheelGuidePicture from "@/public/WheelGuidePicture.png";
 
@@ -28,7 +28,7 @@ const WheelGuide = () => {
         </ol>
         <div className="flex items-center justify-center">
           <Image
-            src={Background}
+            src={WheelGuidePicture}
             width={400}
             height={400}
             alt="Wheel Guide Image"
