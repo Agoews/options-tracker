@@ -1,6 +1,8 @@
 "use client";
 import CallReturns from "@/components/callsPutsUtils/CallReturns";
 import PutReturns from "@/components/callsPutsUtils/PutReturns";
+import StartingFunds from "@/components/utils/StartingFunds";
+import TotalReturns from "@/components/utils/TotalReturns";
 import { fetcher } from "@/components/utils/fetcher";
 import { tradeTableFormatter } from "@/components/utils/tradeTableFormatter";
 import PLReturns from "@/components/wheelUtils/PLReturns";
@@ -30,10 +32,10 @@ const TotalReturnsTable: React.FC<TotalReturnsTableProps> = ({ userEmail }) => {
 
   let wheelTotalDebits = 0;
   let wheelTotalCredits = 0;
-  let callTotalDebits = 0;
-  let callTotalCredits = 0;
-  let putTotalDebits = 0;
-  let putTotalCredits = 0;
+  let callOpeningCost = 0;
+  let callClosingCost = 0;
+  let putOpeningCost = 0;
+  let putClosingCost = 0;
 
   Object.values(aggregatedTrades).forEach((trade) => {
     if (
@@ -48,15 +50,15 @@ const TotalReturnsTable: React.FC<TotalReturnsTableProps> = ({ userEmail }) => {
       trade.openTrades[0].strategy === "" &&
       trade.openTrades[0].actions === "CALL"
     ) {
-      callTotalDebits += trade.averageClosingPrice * trade.totalClosingQuantity;
-      callTotalCredits +=
+      callOpeningCost += trade.averageClosingPrice * trade.totalClosingQuantity;
+      callClosingCost +=
         trade.totalClosingQuantity * trade.openTrades[0].optionprice;
     } else if (
       trade.openTrades[0].strategy === "" &&
       trade.openTrades[0].actions === "PUT"
     ) {
-      putTotalDebits += trade.averageClosingPrice * trade.totalClosingQuantity;
-      putTotalCredits +=
+      putOpeningCost += trade.averageClosingPrice * trade.totalClosingQuantity;
+      putClosingCost +=
         trade.totalClosingQuantity * trade.openTrades[0].optionprice;
     }
   });
@@ -64,39 +66,53 @@ const TotalReturnsTable: React.FC<TotalReturnsTableProps> = ({ userEmail }) => {
   const wheelTotalPL =
     wheelTotalCredits > 0 ? (wheelTotalCredits - wheelTotalDebits) * 100 : 0;
   const callTotalPL =
-    callTotalCredits > 0 ? (callTotalCredits - callTotalDebits) * 100 : 0;
+    callClosingCost > 0 ? (callOpeningCost - callClosingCost) * 100 : 0;
   const putTotalPL =
-    putTotalCredits > 0 ? (putTotalCredits - putTotalDebits) * 100 : 0;
+    putClosingCost > 0 ? (putOpeningCost - putClosingCost) * 100 : 0;
 
+  const totalProfits = (wheelTotalPL + callTotalPL + putTotalPL) / 100;
   // console.log("callsPutsOptions: ", callsPutsOptions);
   // console.log("wheelOptions: ", wheelTotalCredits, wheelTotalDebits);
   // console.log("aggregatedTrades: ", aggregatedTrades);
 
-  // fix calculations for calls and puts
   // arrange tables better
   // create table for total returns on initial investment
 
   return (
     <>
       {/* Total Returns */}
-      <div className="overflow-x-auto">
+      <div className="text-3xl">
         {aggregatedTrades ? (
           <>
-            <PLReturns
-              totalCredits={wheelTotalCredits}
-              totalDebits={wheelTotalDebits}
-              totalPL={wheelTotalPL}
-            />
-            <CallReturns
-              totalCredits={callTotalCredits}
-              totalDebits={callTotalDebits}
-              totalPL={callTotalPL}
-            />
-            <PutReturns
-              totalCredits={putTotalCredits}
-              totalDebits={putTotalDebits}
-              totalPL={putTotalPL}
-            />
+            <div className="grid grid-cols-3">
+              <div className="col-span-3">
+                <TotalReturns
+                  totalProfits={totalProfits}
+                  userEmail={userEmail}
+                />
+              </div>
+              <div className="col-span-1">
+                <PLReturns
+                  totalCredits={wheelTotalCredits}
+                  totalDebits={wheelTotalDebits}
+                  totalPL={wheelTotalPL}
+                />
+              </div>
+              <div className="col-span-1 mx-2">
+                <CallReturns
+                  closingCosts={callClosingCost}
+                  openingCosts={callOpeningCost}
+                  totalPL={callTotalPL}
+                />
+              </div>
+              <div className="col-span-1">
+                <PutReturns
+                  closingCosts={putClosingCost}
+                  openingCosts={putOpeningCost}
+                  totalPL={putTotalPL}
+                />
+              </div>
+            </div>
           </>
         ) : (
           <div>Loading...</div>
