@@ -1,6 +1,5 @@
 import React from "react";
 import Background from "@/public/Background_1.png";
-
 import { options } from "../api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";

@@ -21,7 +21,7 @@ const StartingFundsModal: React.FC<StartingFundsModalProps> = ({
     <div className="modal modal-open">
       <div className="modal-box max-w-sm text-slate-200 bg-slate-600 opacity-95">
         <h3 className="font-bold text-lg mb-4">Update Funds</h3>
-        <div className="mb-2 text-lg">
+        <div className="mb-2 text-base">
           Current Funds: ${startingFunds.toFixed(2)}
         </div>
         <input
@@ -30,9 +30,9 @@ const StartingFundsModal: React.FC<StartingFundsModalProps> = ({
           onChange={(e) => {
             handleInputChange(e);
           }}
-          className="input input-bordered w-3/4"
+          className="input input-bordered w-3/  4"
         />
-        <div className="modal-action items-center text-lg justify-center">
+        <div className="modal-action items-center text-base justify-center">
           <button
             className="btn bg-slate-800 text-slate-200"
             onClick={handleSaveUpdateFunds}

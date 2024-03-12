@@ -69,7 +69,7 @@ const TotalReturnsTable: React.FC<TotalReturnsTableProps> = ({ userEmail }) => {
   return (
     <>
       {/* Total Returns */}
-      <div className="text-3xl">
+      <div className="text-2xl">
         {aggregatedTrades ? (
           <>
             <div className="grid grid-cols-3">

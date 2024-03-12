@@ -77,7 +77,7 @@ const TotalReturns: React.FC<TotalReturnsProps> = ({
         className="tooltip tooltip-right text-slate-200"
         data-tip="P/L of the wheel trades on the starting funds"
       >
-        <h2 className="text-slate-200 my-1">Return on Initial Investments</h2>
+        <h2 className="text-slate-200 my-1">Total Returns</h2>
       </div>
 
       <table className="table table-xs text-xs">

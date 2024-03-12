@@ -64,9 +64,12 @@ const Navbar = () => {
         </div>
 
         <div className="navbar-center space-x-4 text-lg">
-          <ul className="menu menu-horizontal space-x-10">
+          <ul className="menu menu-horizontal">
             {session && session.user ? (
-              <>
+              <div className="flex">
+                <Link href="/stock-holdings">
+                  <div className="btn btn-ghost">Holdings</div>
+                </Link>
                 <li>
                   <div className="dropdown dropdown-hover dropdown-bottom p-0">
                     <div tabIndex={0} role="button" className="btn btn-ghost">
@@ -77,10 +80,10 @@ const Navbar = () => {
                       className="dropdown-content p-1 bg-slate-800 min-w-36 rounded-lg z-10"
                     >
                       <li>
-                        <Link href="/summary">Summary</Link>
+                        <Link href="/tracker">All Trades</Link>
                       </li>
                       <li>
-                        <Link href="/tracker">All Trades</Link>
+                        <Link href="/summary">Summary</Link>
                       </li>
                       <li>
                         <Link href="/calls-puts">Calls & Puts</Link>
@@ -97,7 +100,7 @@ const Navbar = () => {
                     </ul>
                   </div>
                 </li>
-              </>
+              </div>
             ) : null}
             <li>
               <div className="dropdown dropdown-hover dropdown-bottom p-0">
