@@ -24,12 +24,6 @@ const TotalReturnsTable: React.FC<TotalReturnsTableProps> = ({ userEmail }) => {
 
   const aggregatedTrades = tradeTableFormatter(data.result.rows);
 
-  const callsPutsOptions = Object.entries(aggregatedTrades).filter(
-    (option) =>
-      option[1].openTrades[0].actions === "CALL" ||
-      option[1].openTrades[0].actions === "PUT"
-  );
-
   let wheelTotalDebits = 0;
   let wheelTotalCredits = 0;
   let callOpeningCost = 0;
@@ -71,12 +65,6 @@ const TotalReturnsTable: React.FC<TotalReturnsTableProps> = ({ userEmail }) => {
     putClosingCost > 0 ? (putOpeningCost - putClosingCost) * 100 : 0;
 
   const totalProfits = (wheelTotalPL + callTotalPL + putTotalPL) / 100;
-  // console.log("callsPutsOptions: ", callsPutsOptions);
-  // console.log("wheelOptions: ", wheelTotalCredits, wheelTotalDebits);
-  // console.log("aggregatedTrades: ", aggregatedTrades);
-
-  // arrange tables better
-  // create table for total returns on initial investment
 
   return (
     <>

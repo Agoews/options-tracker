@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import useSWR from "swr";
 import { Trade, fetcher } from "./fetcher";
+import StartingFundsModal from "../wheelUtils/StartingFundsModal";
 
 interface TotalReturnsProps {
   totalProfits: number;
@@ -32,8 +33,42 @@ const TotalReturns: React.FC<TotalReturnsProps> = ({
     );
   }
 
+  const handleSaveUpdateFunds = async () => {
+    const updatedStartingFunds = Number(startingFunds) + editedStartingFunds;
+    const url = `/api/update-funds?email=${userEmail}`;
+
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ updatedStartingFunds }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update the funds.");
+      }
+      setStartingFunds(updatedStartingFunds);
+      setEditedStartingFunds(0);
+      handleUpdateFundsModal();
+    } catch (error) {
+      console.error("Error updating funds: ", error);
+    }
+  };
+
   const handleUpdateFundsModal = () => {
     setStartingFundsModalToggle(!startingFundsModalToggle);
+  };
+
+  const handleCancel = () => {
+    setStartingFundsModalToggle(!startingFundsModalToggle);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLElement>) => {
+    const target = e.target as HTMLInputElement | HTMLSelectElement;
+    let funds: number = Number(target.value);
+    setEditedStartingFunds(funds);
   };
 
   return (
@@ -77,6 +112,13 @@ const TotalReturns: React.FC<TotalReturnsProps> = ({
           </tr>
         </tbody>
       </table>
+      <StartingFundsModal
+        startingFunds={startingFunds}
+        startingFundsModalToggle={startingFundsModalToggle}
+        handleInputChange={handleInputChange}
+        handleSaveUpdateFunds={handleSaveUpdateFunds}
+        handleCancel={handleCancel}
+      />
     </>
   );
 };
