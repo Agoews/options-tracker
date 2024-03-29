@@ -1,10 +1,12 @@
 import { sql } from "@vercel/postgres";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
+export async function GET(request: Request) {
   try {
-    const url = new URL(req.url);
+    // Assuming the UserID is passed as a query parameter. Adjust as needed.
+    const url = new URL(request.url);
     const userEmail = url.searchParams.get("email");
+
     if (!userEmail) {
       return NextResponse.json(
         { error: "userEmail is required" },
@@ -14,11 +16,11 @@ export async function GET(req: Request) {
 
     const result = await sql`
       SELECT
-        u.Funds
+          *
       FROM
-        Users u
-       WHERE
-        u.Email = ${userEmail};
+          CurrentHoldings
+      WHERE
+          Email = ${userEmail};
     `;
 
     return NextResponse.json({ result }, { status: 200 });

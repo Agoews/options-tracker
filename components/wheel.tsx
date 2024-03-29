@@ -47,6 +47,7 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
   const [closedTradeModalToggle, setClosedTradeModalToggle] = useState(false);
   const [closedTrades, setClosedTrades] = useState<Trade[]>([]);
   const [rolloutModalToggle, setRolloutModalToggle] = useState(false);
+  const [assignmentModalToggle, setAssignmentModalToggle] = useState(false);
 
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
@@ -158,12 +159,23 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
     setClosedTradeModalToggle(false);
   };
 
+  const handleAssignment = async () => {
+    console.log("clicked");
+  };
   const handleOpenRolloutModal = () => {
     setRolloutModalToggle(true);
   };
 
   const handleRolloutModalCancel = () => {
     setRolloutModalToggle(false);
+  };
+
+  const handleOpenAssignmentRolloutModal = () => {
+    setAssignmentModalToggle(true);
+  };
+
+  const handleAssignmentModalCancel = () => {
+    setAssignmentModalToggle(false);
   };
 
   const handleCancel = () => {
@@ -196,9 +208,13 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
           handleSaveOpenTrades={handleSaveOpenTrades}
           handleOpenRolloutModal={handleOpenRolloutModal}
           handleRolloutModalCancel={handleRolloutModalCancel}
+          handleAssignment={handleAssignment}
+          handleOpenAssignmentModal={handleOpenAssignmentRolloutModal}
+          handleAssignmentModalCancel={handleAssignmentModalCancel}
           handleCancel={handleCancel}
           openTradeModalToggle={openTradeModalToggle}
           rolloutModalToggle={rolloutModalToggle}
+          assignmentModalToggle={assignmentModalToggle}
         />
 
         <DebitModal

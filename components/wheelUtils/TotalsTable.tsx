@@ -44,7 +44,7 @@ const TotalsTable: React.FC<TotalsTableProps> = ({
   userEmail,
 }) => {
   const { data, error, isLoading } = useSWR(
-    `/api/get-holdings?email=${userEmail}`,
+    `/api/get-trades?email=${userEmail}`,
     fetcher
   );
 

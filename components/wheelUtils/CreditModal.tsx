@@ -1,6 +1,7 @@
 import React from "react";
 import RolloutModal from "./RolloutModal";
 import { Trade } from "../utils/fetcher";
+import AssignedModal from "./AssignedModal";
 
 interface CreditModalProps {
   editedTrade: Trade;
@@ -11,9 +12,13 @@ interface CreditModalProps {
   handleSaveOpenTrades: () => void;
   handleOpenRolloutModal: () => void;
   handleRolloutModalCancel: () => void;
+  handleAssignment: () => void;
+  handleOpenAssignmentModal: () => void;
+  handleAssignmentModalCancel: () => void;
   handleCancel: () => void;
   openTradeModalToggle: boolean;
   rolloutModalToggle: boolean;
+  assignmentModalToggle: boolean;
 }
 
 const CreditModal: React.FC<CreditModalProps> = ({
@@ -22,9 +27,13 @@ const CreditModal: React.FC<CreditModalProps> = ({
   handleSaveOpenTrades,
   handleOpenRolloutModal,
   handleRolloutModalCancel,
+  handleAssignment,
+  handleOpenAssignmentModal,
+  handleAssignmentModalCancel,
   handleCancel,
   openTradeModalToggle,
   rolloutModalToggle,
+  assignmentModalToggle,
 }) => {
   if (!openTradeModalToggle) return null;
 
@@ -140,6 +149,12 @@ const CreditModal: React.FC<CreditModalProps> = ({
             </button>
             <button
               className="btn bg-slate-800 text-slate-200"
+              onClick={handleOpenAssignmentModal}
+            >
+              Assign
+            </button>
+            <button
+              className="btn bg-slate-800 text-slate-200"
               onClick={handleCancel}
             >
               Cancel
@@ -153,6 +168,12 @@ const CreditModal: React.FC<CreditModalProps> = ({
         handleSaveOpenTrades={handleSaveOpenTrades}
         handleRolloutModalCancel={handleRolloutModalCancel}
         rolloutModalToggle={rolloutModalToggle}
+      />
+      <AssignedModal
+        editedTrade={editedTrade}
+        assignmentModalToggle={assignmentModalToggle}
+        handleAssignmentModalCancel={handleAssignmentModalCancel}
+        handleAssignment={handleAssignment}
       />
     </div>
   );
