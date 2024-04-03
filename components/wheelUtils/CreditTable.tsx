@@ -50,7 +50,7 @@ export const CreditTable: React.FC<CreditTableProps> = ({
       <div className="overflow-y-auto max-h-[200px]">
         <table className="table table-xs w-full text-xs">
           <thead>
-            <tr className="bg-slate-400 text-slate-800 border-2 border-slate-800 text-center">
+            <tr className="text-slate-800 border-2 border-slate-800 text-center">
               <th>Ticker</th>
               <th>Action</th>
               <th># of Options</th>

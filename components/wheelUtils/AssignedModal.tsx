@@ -26,11 +26,12 @@ const AssignedModal: React.FC<AssignmentModalProps> = ({
         <div className="py-2 text-base">
           <div>{`Assign ${editedTrade.openquantity * 100} shares of ${
             editedTrade.ticker
-          } at $${Number(editedTrade.strike).toFixed(
-            2
-          )} with a breakeven of $${Number(
-            editedTrade.strike - editedTrade.optionprice
-          ).toFixed(2)}?`}</div>
+          } at $${Number(editedTrade.strike).toFixed(2)}`}</div>
+          <div>
+            {`Breakeven: $${Number(
+              editedTrade.strike - editedTrade.optionprice
+            ).toFixed(2)}`}
+          </div>
         </div>
         <div className="modal-action items-center justify-center">
           <button
