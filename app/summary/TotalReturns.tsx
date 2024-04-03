@@ -72,28 +72,33 @@ const TotalReturnsTable: React.FC<TotalReturnsTableProps> = ({ userEmail }) => {
       <div className="text-2xl">
         {aggregatedTrades ? (
           <>
-            <div className="grid grid-cols-3">
-              <div className="col-span-3">
+            <div className="grid grid-cols-1 xl:grid-cols-6 xl:space-x-4 space-y-4">
+              {/* Adjust div spacing and positioning as needed for xl screens */}
+              <div className="col-span-1 xl:col-span-1"></div>
+              <div className="col-span-1 xl:col-span-4 rounded border-2 border-[#00ee00]">
                 <TotalReturns
                   totalProfits={totalProfits}
                   userEmail={userEmail}
                 />
               </div>
-              <div className="col-span-1">
+              {/* This div probably meant to be separate from the first set; adjust col-span for xl screen */}
+              <div className="col-span-1 xl:col-span-1"></div>
+              {/* Following elements will stack on small screens and align next to each other on xl screens */}
+              <div className="col-span-1 xl:col-span-2 rounded border-2 border-[#00ee00]">
                 <PLReturns
                   totalCredits={wheelTotalCredits}
                   totalDebits={wheelTotalDebits}
                   totalPL={wheelTotalPL}
                 />
               </div>
-              <div className="col-span-1 mx-2">
+              <div className="col-span-1 xl:col-span-2 rounded border-2 border-[#00ee00]">
                 <CallReturns
                   closingCosts={callClosingCost}
                   openingCosts={callOpeningCost}
                   totalPL={callTotalPL}
                 />
               </div>
-              <div className="col-span-1">
+              <div className="col-span-1 xl:col-span-2 rounded border-2 border-[#00ee00]">
                 <PutReturns
                   closingCosts={putClosingCost}
                   openingCosts={putOpeningCost}

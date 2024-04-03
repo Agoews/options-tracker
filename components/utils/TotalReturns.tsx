@@ -14,24 +14,24 @@ const TotalReturns: React.FC<TotalReturnsProps> = ({
   totalProfits,
   userEmail,
 }) => {
-  const { data, error, isLoading } = useSWR(
-    `/api/get-holdings?email=${userEmail}`,
-    fetcher
-  );
+  // const { data, error, isLoading } = useSWR(
+  //   `/api/get-trades?email=${userEmail}`,
+  //   fetcher
+  // );
 
   const [startingFunds, setStartingFunds] = useState(Number);
   const [editedStartingFunds, setEditedStartingFunds] = useState(0);
   const [startingFundsModalToggle, setStartingFundsModalToggle] =
     useState(false);
 
-  if (error) return <div>Failed to load</div>;
-  if (isLoading) return <div>Loading...</div>;
+  // if (error) return <div>Failed to load</div>;
+  // if (isLoading) return <div>Loading...</div>;
 
-  if (!startingFunds) {
-    setStartingFunds(
-      Number(data.result.rows[0].funds) ? Number(data.result.rows[0].funds) : 0
-    );
-  }
+  // if (!startingFunds) {
+  //   setStartingFunds(
+  //     Number(data.result.rows[0].funds) ? Number(data.result.rows[0].funds) : 0
+  //   );
+  // }
 
   const handleSaveUpdateFunds = async () => {
     const updatedStartingFunds = Number(startingFunds) + editedStartingFunds;
@@ -74,15 +74,15 @@ const TotalReturns: React.FC<TotalReturnsProps> = ({
   return (
     <>
       <div
-        className="tooltip tooltip-right text-slate-200"
+        className="tooltip tooltip-right text-[#00ee00]"
         data-tip="P/L of the wheel trades on the starting funds"
       >
-        <h2 className="text-slate-200 my-1">Total Returns</h2>
+        <h2 className="text-[#00ee00] my-1">Total Returns</h2>
       </div>
 
       <table className="table table-xs text-xs">
         <thead>
-          <tr className="bg-slate-400 text-slate-800 border-2 border-slate-800 text-center">
+          <tr className="text-slate-200 text-center">
             <th>Starting Funds</th>
             <th>Returns</th>
             <th>Total P/L (%)</th>
@@ -99,7 +99,7 @@ const TotalReturns: React.FC<TotalReturnsProps> = ({
                     ((Number(totalProfits) * 100) / startingFunds) *
                     100
                   ).toFixed(2)}%`
-                : "Update Funds"}
+                : "Update Funds ->"}
             </td>
             <td>
               <button

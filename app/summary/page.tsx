@@ -40,15 +40,9 @@ const SummaryPage = async () => {
   return (
     <>
       <main className="flex min-h-screen min-w-screen flex-col items-center">
-        <div
-          className="hero min-h-screen"
-          style={{
-            backgroundImage: `url(${Background.src})`,
-          }}
-        >
-          <div className="hero-overlay bg-opacity-60"></div>
-          <div className="text-center text-slate-800">
-            <div className="rounded border-4 border-slate-800">
+        <div className="hero min-h-screen">
+          <div className="text-center">
+            <div>
               <div>
                 {userEmail ? (
                   <TotalReturnsTable userEmail={userEmail} />
@@ -58,17 +52,17 @@ const SummaryPage = async () => {
               </div>
             </div>
             <Link className="p-1" href="/new-trade">
-              <button className="btn bg-slate-800 text-slate-200 mt-2">
+              <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2">
                 New Trade
               </button>
             </Link>
             <Link className="p-1" href="/calls-puts">
-              <button className="btn bg-slate-800 text-slate-200 mt-2">
+              <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2">
                 Calls & Puts
               </button>
             </Link>
             <Link className="p-1" href="/the-wheel">
-              <button className="btn bg-slate-800 text-slate-200 mt-2">
+              <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2">
                 The Wheel
               </button>
             </Link>
