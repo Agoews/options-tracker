@@ -188,8 +188,8 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
   let aggregatedTrades = tradeTableFormatter(data.result.rows);
 
   return (
-    <>
-      <div className="flex justify-center">
+    <div className="xl:space-y-4">
+      <div className="flex justify-center xl:space-x-4">
         <CreditTable
           aggregatedTrades={aggregatedTrades}
           handleOpenTradeClick={handleOpenTradeClick}
@@ -225,7 +225,7 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
         />
       </div>
       <TotalsTable aggregatedTrades={aggregatedTrades} userEmail={userEmail} />
-    </>
+    </div>
   );
 };
 

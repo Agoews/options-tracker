@@ -6,10 +6,7 @@ export default function Home() {
   const { data: session } = useSession();
 
   return (
-    <main
-      className="flex min-h-screen min-w-screen flex-col items-center"
-      // style={{ backgroundColor: "#002f00" }}
-    >
+    <main className="flex min-h-screen min-w-screen flex-col items-center">
       <div className="flex flex-col justify-center items-center min-h-screen">
         <div className="text-center text-[#00ee00]">
           <div className="max-w-md">

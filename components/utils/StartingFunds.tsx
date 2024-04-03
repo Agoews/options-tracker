@@ -61,15 +61,15 @@ const StartingFunds: React.FC<StartingFundsProps> = ({
   return (
     <>
       <div
-        className="tooltip tooltip-right text-slate-200"
+        className="tooltip tooltip-right text-[#00ee00]"
         data-tip="P/L of the wheel trades on the starting funds"
       >
-        <h2 className="text-slate-200 my-1">Return on Initial Investments</h2>
+        <h2 className="text-[#00ee00]">Return on Initial Investments</h2>
       </div>
 
       <table className="table table-xs text-xs">
         <thead>
-          <tr className="bg-slate-400 text-slate-800 border-2 border-slate-800 text-center">
+          <tr className="text-slate-200 text-center">
             <th>Starting Funds</th>
             <th>Returns</th>
             <th>Total P/L (%)</th>
@@ -86,12 +86,12 @@ const StartingFunds: React.FC<StartingFundsProps> = ({
                     ((Number(totalCredits) * 100) / startingFunds) *
                     100
                   ).toFixed(2)}%`
-                : "Update Funds"}
+                : "Update Funds ->"}
             </td>
             <td>
               <button
                 onClick={handleUpdateFundsModal}
-                className="btn btn-xs bg-slate-800 text-slate-200"
+                className="btn btn-xs text-[#00ee00] border-[#00ee00] bg-[#002f00]"
               >
                 Update Funds
               </button>
