@@ -188,13 +188,13 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
 
   return (
     <>
-      <div className="flex flex-colw-full overflow-x-auto space-y-4  xl:flex-row xl:space-x-4 xl:space-y-0">
-        <div className="flex flex-col w-full xl:w-1/2 p-4 rounded border-2 border-[#00ee00]">
+      <div className="flex flex-col w-full overflow-x-auto space-y-4 2xl:flex-row 2xl:space-x-4 2xl:space-y-0">
+        <div className="flex flex-col w-full 2xl:w-1/2">
           {/* OPEN TRADES */}
-          <div className="text-3xl text-[#00ee00] text-left font-bold my-2">
+          <h2 className="text-[#00ee00] text-2xl mb-1 text-left">
             Open Positions
-          </div>
-          <div className="overflow-auto max-w-[800px] max-h-[200px]">
+          </h2>
+          <div className="overflow-auto max-w-[800px] max-h-[200px] rounded border-2 border-[#00ee00]">
             <table className="table table-xs table-pin-rows text-xs">
               <thead>
                 <tr className="text-slate-200 text-center">
@@ -262,12 +262,12 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
           </div>
         </div>
 
-        <div className="flex flex-col w-full xl:w-1/2 p-4 rounded border-2 border-[#00ee00]">
+        <div className="flex flex-col w-full 2xl:w-1/2">
           {/* CLOSED TRADES */}
-          <div className="text-3xl text-[#00ee00] text-left font-bold my-2">
+          <h2 className="text-[#00ee00] text-2xl mb-1 text-left">
             Closed Positions
-          </div>
-          <div className="overflow-auto max-w-[800px] max-h-[200px]">
+          </h2>
+          <div className="overflow-auto max-w-[800px] max-h-[200px] rounded border-2 border-[#00ee00]">
             <table className="table table-xs table-pin-rows text-xs">
               <thead>
                 <tr className="text-slate-300 text-center">
