@@ -2,7 +2,6 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import React from "react";
 import { options } from "../api/auth/[...nextauth]/options";
-import Background from "@/public/Background_1.png";
 import { Trade, fetcher } from "@/components/utils/fetcher";
 import Link from "next/link";
 import TotalReturnsTable from "./TotalReturns";

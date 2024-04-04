@@ -3,9 +3,11 @@ import React from "react";
 
 const LongPut = () => {
   return (
-    <div className="collapse collapse-plus bg-slate-600 bg-opacity-70">
+    <div className="collapse collapse-plus bg-[#002f00] bg-opacity-70">
       <input type="checkbox" />
-      <div className="collapse-title text-lg font-bold">Long Put</div>
+      <div className="collapse-title text-lg font-bold text-slate-200">
+        Long Put
+      </div>
       <div className="collapse-content text-sm space-y-2">
         <p>
           The long put strategy is an investment approach where you purchase a
@@ -13,15 +15,17 @@ const LongPut = () => {
           strike price by the expiration date. Unlike the long call, this
           strategy capitalizes on a stock&apos;s potential decrease.
         </p>
-        <div className="text-lg font-medium">Example:</div>
+        <div className="text-lg font-medium text-slate-200">Example:</div>
         <p>
           For XYZ stock at $50 per share, a put option with a $50 strike price
           and six months to expiration can be bought for a $5 premium per share,
           totaling a $500 investment for a contract covering 100 shares.
         </p>
-        <div className="text-lg font-medium">Payoff Profile:</div>
+        <div className="text-lg font-medium text-slate-200">
+          Payoff Profile:
+        </div>
         <table className="table table-xs">
-          <thead className="text-slate-200">
+          <thead className="text-[#00ee00]">
             <tr>
               <th>Stock Price at Expiration</th>
               <th>Long Put&apos;s Profit</th>
@@ -50,14 +54,16 @@ const LongPut = () => {
             </tr>
           </tbody>
         </table>
-        <div className="text-lg font-medium">Potential Upside/Downside:</div>
+        <div className="text-lg font-medium text-slate-200">
+          Potential Upside/Downside:
+        </div>
         <p>
           The maximum gain for a long put is theoretically the strike price
           times 100 per contract if the stock falls to $0, offering significant
           profit potential. However, the risk is limited to the loss of the
           entire premium, $500 in this scenario, if the prediction is incorrect.
         </p>
-        <div className="text-lg font-medium">Why Use It:</div>
+        <div className="text-lg font-medium text-slate-200">Why Use It:</div>
         <p>
           A long put is suitable for those willing to risk the premium to profit
           from a stock&apos;s decline. It offers more substantial earnings
@@ -65,7 +71,7 @@ const LongPut = () => {
           strategy can be particularly appealing for limiting losses compared to
           the unlimited risk of short-selling.
         </p>
-        <div className="text-right">
+        <div className="text-right text-slate-200">
           <Link
             className="link"
             href="https://www.nerdwallet.com/article/investing/options-trading-strategies"

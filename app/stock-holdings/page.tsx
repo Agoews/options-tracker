@@ -1,5 +1,4 @@
 import React from "react";
-import Background from "@/public/Background_1.png";
 import OpenHoldings from "./OpenHoldings";
 import { options } from "../api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";

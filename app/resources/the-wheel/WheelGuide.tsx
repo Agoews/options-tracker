@@ -7,9 +7,11 @@ import WheelGuidePicture from "@/public/WheelGidePicture.png";
 
 const WheelGuide = () => {
   return (
-    <div className="collapse collapse-plus bg-slate-600 bg-opacity-70">
+    <div className="collapse collapse-plus bg-[#002f00] bg-opacity-70">
       <input type="checkbox" />
-      <div className="collapse-title text-lg font-bold">Steps:</div>
+      <div className="collapse-title text-lg font-bold text-slate-200">
+        Steps:
+      </div>
       <div className="collapse-content text-sm space-y-2">
         <ol className="list-disc list-inside">
           <li>
@@ -34,7 +36,7 @@ const WheelGuide = () => {
             alt="Wheel Guide Image"
           />
         </div>
-        <div className="text-right">
+        <div className="text-right text-slate-200">
           <Link
             className="link"
             href="https://optionalpha.com/blog/wheel-strategy"

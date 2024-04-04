@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Background from "@/public/Background_1.png";
 import Chart from "@/components/chart";
 import { getServerSession } from "next-auth";
 import { options } from "../api/auth/[...nextauth]/options";
