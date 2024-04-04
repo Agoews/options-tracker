@@ -5,7 +5,6 @@ const LongCalls = () => {
   return (
     <div className="collapse collapse-plus bg-[#002f00] bg-opacity-70 border-2 border-[#00ee00]">
       <input type="checkbox" />
-
       <div className="collapse-title text-lg font-bold text-[#00ee00]">
         Long Call
       </div>
