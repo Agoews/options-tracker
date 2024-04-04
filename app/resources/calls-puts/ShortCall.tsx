@@ -3,13 +3,12 @@ import React from "react";
 
 const ShortCall = () => {
   return (
-    <div className="collapse collapse-plus bg-[#002f00] bg-opacity-70">
+    <div className="collapse collapse-plus bg-[#002f00] bg-opacity-70 border-2 border-[#00ee00]">
       <input type="checkbox" />
-
-      <div className="collapse-title text-lg font-bold text-slate-200">
+      <div className="collapse-title text-lg font-bold text-[#00ee00]">
         Short Call / Covered Call
       </div>
-      <div className="collapse-content text-sm space-y-2">
+      <div className="collapse-content text-sm space-y-2 text-slate-200">
         <p>
           The covered call is a two-part strategy where an investor owns the
           underlying stock and sells a call option on that stock. This approach
@@ -18,13 +17,13 @@ const ShortCall = () => {
           expires. The investor risks losing potential stock appreciation above
           the strike price but limits the downside risk.
         </p>
-        <div className="text-lg font-medium text-slate-200">Example:</div>
+        <div className="text-lg font-medium text-[#00ee00]">Example:</div>
         <p>
           With XYZ stock at $50 per share, an investor can sell a call with a
           $50 strike price for a $5 premium, receiving $500 for 100 shares. The
           investor must own at least 100 shares of XYZ to cover this call.
         </p>
-        <div className="text-lg font-medium text-slate-200">
+        <div className="text-lg font-medium text-[#00ee00]">
           Payoff Profile:
         </div>
         <table className="table table-xs">
@@ -81,7 +80,7 @@ const ShortCall = () => {
             </tr>
           </tbody>
         </table>
-        <div className="text-lg font-medium text-slate-200">
+        <div className="text-lg font-medium text-[#00ee00]">
           Potential Upside/Downside:
         </div>
         <p>
@@ -90,14 +89,14 @@ const ShortCall = () => {
           buffer against stock depreciation, with the downside risk being the
           total loss of the stock&apos;s value, mitigated by the premium earned.
         </p>
-        <div className="text-lg font-medium text-slate-200">Why Use It:</div>
+        <div className="text-lg font-medium text-[#00ee00]">Why Use It:</div>
         <p>
           Covered calls are popular for generating income on stock holdings with
           limited downside risk. It&apos;s suitable for investors who expect the
           stock to remain flat or decrease slightly, allowing for income
           generation or setting a desirable sell price for the stock.
         </p>
-        <div className="text-right text-slate-200">
+        <div className="text-right text-[#00ee00]">
           <Link
             className="link"
             href="https://www.nerdwallet.com/article/investing/options-trading-strategies"

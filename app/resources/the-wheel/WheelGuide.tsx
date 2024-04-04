@@ -7,12 +7,12 @@ import WheelGuidePicture from "@/public/WheelGidePicture.png";
 
 const WheelGuide = () => {
   return (
-    <div className="collapse collapse-plus bg-[#002f00] bg-opacity-70">
+    <div className="collapse collapse-plus bg-[#002f00] bg-opacity-70 border-2 border-[#00ee00]">
       <input type="checkbox" />
-      <div className="collapse-title text-lg font-bold text-slate-200">
+      <div className="collapse-title text-lg font-bold text-[#00ee00]">
         Steps:
       </div>
-      <div className="collapse-content text-sm space-y-2">
+      <div className="collapse-content text-sm space-y-2 text-slate-200">
         <ol className="list-disc list-inside">
           <li>
             <strong>Sell Put Options:</strong> Choose a stock, sell put options
@@ -36,7 +36,7 @@ const WheelGuide = () => {
             alt="Wheel Guide Image"
           />
         </div>
-        <div className="text-right text-slate-200">
+        <div className="text-right text-[#00ee00]">
           <Link
             className="link"
             href="https://optionalpha.com/blog/wheel-strategy"

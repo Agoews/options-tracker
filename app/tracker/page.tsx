@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Chart from "@/components/chart";
+import Chart from "@/app/tracker/chart";
 import { getServerSession } from "next-auth";
 import { options } from "../api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";

@@ -3,13 +3,12 @@ import React from "react";
 
 const ShortPut = () => {
   return (
-    <div className="collapse collapse-plus bg-[#002f00] bg-opacity-70">
+    <div className="collapse collapse-plus bg-[#002f00] bg-opacity-70 border-2 border-[#00ee00]">
       <input type="checkbox" />
-
-      <div className="collapse-title text-lg font-bold text-slate-200">
+      <div className="collapse-title text-lg font-bold text-[#00ee00]">
         Short Put / Cash Secured Put
       </div>
-      <div className="collapse-content text-sm space-y-2">
+      <div className="collapse-content text-sm space-y-2 text-slate-200">
         <p>
           The short put strategy involves selling a put option, or &quot;going
           short,&quot; betting that the stock will not decline significantly
@@ -17,14 +16,14 @@ const ShortPut = () => {
           price stays the same or rises, allowing the put to expire worthless
           and the seller to keep the premium.
         </p>
-        <div className="text-lg font-medium text-slate-200">Example:</div>
+        <div className="text-lg font-medium text-[#00ee00]">Example:</div>
         <p>
           If XYZ stock is trading at $50 per share, a put with a $50 strike
           price can be sold for a $5 premium, netting the seller $500 for a
           contract covering 100 shares. The profit or loss for the short put is
           the inverse of a long put.
         </p>
-        <div className="text-lg font-medium text-slate-200">
+        <div className="text-lg font-medium text-[#00ee00]">
           Payoff Profile:
         </div>
         <table className="table table-xs">
@@ -61,7 +60,7 @@ const ShortPut = () => {
             </tr>
           </tbody>
         </table>
-        <div className="text-lg font-medium text-slate-200">
+        <div className="text-lg font-medium text-[#00ee00]">
           Potential Upside/Downside:
         </div>
         <p>
@@ -71,14 +70,14 @@ const ShortPut = () => {
           strike price, the seller incurs a loss, with the maximum downside
           being significant if the stock goes to $0.
         </p>
-        <div className="text-lg font-medium text-slate-200">Why Use It:</div>
+        <div className="text-lg font-medium text-[#00ee00]">Why Use It:</div>
         <p>
           Investors might use short puts to generate income or to enter a stock
           position at a desired lower price. While the strategy provides an
           opportunity to earn premium income or buy a stock at a discount, it
           carries the risk of substantial loss if the stock price declines.
         </p>
-        <div className="text-right text-slate-200">
+        <div className="text-right text-[#00ee00]">
           <Link
             className="link"
             href="https://www.nerdwallet.com/article/investing/options-trading-strategies"
