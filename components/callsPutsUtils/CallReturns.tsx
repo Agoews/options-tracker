@@ -12,11 +12,11 @@ const CallReturns: React.FC<CallReturnsProps> = ({
 }) => {
   return (
     <>
-      <h2 className="text-[#00ee00] my-1">Call P/L</h2>
+      <h2 className="text-[#00ee00] text-2xl mb-1">Call P/L</h2>
 
-      <table className="table table-xs text-xs">
+      <table className="table table-xs text-xs rounded border-2 border-[#00ee00]">
         <thead>
-          <tr className="text-slate-200 text-center">
+          <tr className="text-[#00ee00] text-center">
             <th>Opening Price</th>
             <th>Closing Price</th>
             <th>Running P/L</th>

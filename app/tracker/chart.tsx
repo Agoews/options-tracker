@@ -197,7 +197,7 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
           <div className="overflow-auto max-w-[800px] max-h-[200px] rounded border-2 border-[#00ee00]">
             <table className="table table-xs table-pin-rows text-xs">
               <thead>
-                <tr className="text-slate-200 text-center">
+                <tr className="text-[#00ee00] text-center">
                   <td>Ticker</td>
                   <td>Action</td>
                   <td>Strategy</td>
@@ -270,7 +270,7 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
           <div className="overflow-auto max-w-[800px] max-h-[200px] rounded border-2 border-[#00ee00]">
             <table className="table table-xs table-pin-rows text-xs">
               <thead>
-                <tr className="text-slate-300 text-center">
+                <tr className="text-[#00ee00] text-center">
                   <th>Ticker</th>
                   <th>Action</th>
                   <th>Strategy</th>

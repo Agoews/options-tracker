@@ -29,8 +29,8 @@ const RolloutModal: React.FC<RolloutModallProps> = ({
 
   return (
     <div className={`modal ${rolloutModalToggle ? "modal-open" : ""}`}>
-      <div className="modal-box max-w-sm text-slate-200 bg-slate-600 opacity-95">
-        <div className="py-2">
+      <div className="modal-box max-w-sm text-[#00ee00]">
+        <div>
           <div className="font-bold text-lg mb-1">{`${
             editedTrade.ticker
           }  ${formatDate(editedTrade.expirationdate)}  $${
@@ -47,7 +47,7 @@ const RolloutModal: React.FC<RolloutModallProps> = ({
               value={editedTrade.strike}
               onChange={(e) => handleInputChange(e, "strike")}
               required
-              className="bg-slate-700 rounded-md flex-1 col-span-1 text-center"
+              className="bg-slate-700 rounded-md flex-1 col-span-1 text-center text-slate-200"
             />
           </div>
           <div className="grid grid-cols-2 text-center my-1">
@@ -58,7 +58,7 @@ const RolloutModal: React.FC<RolloutModallProps> = ({
               value={editedTrade.optionprice}
               onChange={(e) => handleInputChange(e, "optionprice")}
               required
-              className="bg-slate-700 rounded-md flex-1 col-span-1 text-center"
+              className="bg-slate-700 rounded-md flex-1 col-span-1 text-center text-slate-200"
             />
           </div>
           <div className="grid grid-cols-2 text-center my-1">
@@ -69,19 +69,19 @@ const RolloutModal: React.FC<RolloutModallProps> = ({
               value={formatDate(editedTrade.expirationdate)}
               onChange={(e) => handleInputChange(e, "expirationdate")}
               required
-              className="bg-slate-700 rounded-md flex-1 col-span-1 text-center"
+              className="bg-slate-700 rounded-md flex-1 col-span-1 text-center text-slate-200"
             />
           </div>
         </div>
         <div className="modal-action items-center justify-center">
           <button
-            className="btn bg-slate-800 text-slate-200"
+            className="btn btn-sm bg-[#002f00] text-[#00ee00] border-[#00ee00]"
             onClick={handleSaveOpenTrades}
           >
             Save
           </button>
           <button
-            className="btn bg-slate-800 text-slate-200"
+            className="btn btn-sm bg-[#002f00] text-[#00ee00] border-[#00ee00]"
             onClick={handleRolloutModalCancel}
           >
             Cancel

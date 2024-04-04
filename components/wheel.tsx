@@ -162,6 +162,7 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
   const handleAssignment = async () => {
     console.log("clicked");
   };
+
   const handleOpenRolloutModal = () => {
     setRolloutModalToggle(true);
   };

@@ -43,11 +43,11 @@ const CreditModal: React.FC<CreditModalProps> = ({
 
   return (
     <div className="modal modal-open">
-      <div className="modal-box max-w-sm bg-slate-600 opacity-95">
-        <h3 className="font-bold text-lg text-slate-200 mb-1">Update Trade</h3>
-        <div className="py-2 text-sm">
+      <div className="modal-box max-w-sm">
+        <h3 className="font-bold text-xl text-[#00ee00] mb-4">Update Trade</h3>
+        <div className="text-sm">
           <div className="grid grid-cols-3 gap-4 mb-4">
-            <label className="text-slate-200 text-left col-span-1">
+            <label className="text-[#00ee00] text-left col-span-1">
               Ticker:
             </label>
             <input
@@ -60,7 +60,7 @@ const CreditModal: React.FC<CreditModalProps> = ({
           </div>
 
           <div className="grid grid-cols-3 gap-4 mb-4">
-            <span className="text-slate-200 text-left col-span-1 ">
+            <span className="text-[#00ee00] text-left col-span-1 ">
               Action:
             </span>
             <select
@@ -80,7 +80,7 @@ const CreditModal: React.FC<CreditModalProps> = ({
           </div>
 
           <div className="grid grid-cols-3 gap-4 mb-4">
-            <label className="text-slate-200 text-left col-span-1">
+            <label className="text-[#00ee00] text-left col-span-1">
               Strike:
             </label>
             <input
@@ -93,7 +93,7 @@ const CreditModal: React.FC<CreditModalProps> = ({
           </div>
 
           <div className="grid grid-cols-3 gap-4 mb-4">
-            <label className="text-slate-200 text-left col-span-1">
+            <label className="text-[#00ee00] text-left col-span-1">
               Option Price:
             </label>
             <input
@@ -106,7 +106,7 @@ const CreditModal: React.FC<CreditModalProps> = ({
           </div>
 
           <div className="grid grid-cols-3 gap-4 mb-4">
-            <label className="text-slate-200 text-left col-span-1">
+            <label className="text-[#00ee00] text-left col-span-1">
               Closing Price:
             </label>
             <input
@@ -119,7 +119,7 @@ const CreditModal: React.FC<CreditModalProps> = ({
           </div>
 
           <div className="grid grid-cols-3 gap-4 mb-4">
-            <label className="text-slate-200 text-left col-span-1">
+            <label className="text-[#00ee00] text-left col-span-1">
               Close Quantity:
             </label>
             <input
@@ -130,31 +130,33 @@ const CreditModal: React.FC<CreditModalProps> = ({
             />
           </div>
           <div className="gap-4 items-center">
-            <label className="text-slate-200 text-left col-span-1">
-              {`Current Open Quantity: ${editedTrade.openquantity}`}
+            <label className="text-[#00ee00] text-left col-span-1">
+              Current Open Quantity:
+              <span className="text-slate-200">{` ${editedTrade.openquantity}`}</span>
             </label>
           </div>
+
           <div className="modal-action items-center justify-center">
             <button
-              className="btn bg-slate-800 text-slate-200"
+              className="btn btn-sm text-[#00ee00] border-[#00ee00] bg-[#002f00]"
               onClick={handleSaveOpenTrades}
             >
               Save
             </button>
             <button
-              className="btn bg-slate-800 text-slate-200"
+              className="btn btn-sm text-[#00ee00] border-[#00ee00] bg-[#002f00]"
               onClick={handleOpenRolloutModal}
             >
               Rollout
             </button>
             <button
-              className="btn bg-slate-800 text-slate-200"
+              className="btn btn-sm text-[#00ee00] border-[#00ee00] bg-[#002f00]"
               onClick={handleOpenAssignmentModal}
             >
               Assign
             </button>
             <button
-              className="btn bg-slate-800 text-slate-200"
+              className="btn btn-sm text-[#00ee00] border-[#00ee00] bg-[#002f00]"
               onClick={handleCancel}
             >
               Cancel

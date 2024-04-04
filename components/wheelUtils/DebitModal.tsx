@@ -26,12 +26,12 @@ const DebitModal: React.FC<DebitModalProps> = ({
 
   return (
     <div className="modal modal-open">
-      <div className="modal-box max-w-sm bg-slate-600 opacity-95">
-        <h3 className="font-bold text-lg text-slate-200 mb-4">Closed Trades</h3>
+      <div className="modal-box max-w-md">
+        <h3 className="font-bold text-xl text-[#00ee00] mb-4">Closed Trades</h3>
         <div className="overflow-x-auto">
-          <table className="table w-full text-slate-200">
+          <table className="table table-xs w-full">
             <thead>
-              <tr>
+              <tr className="text-[#00ee00] text-center">
                 <th>Closing Price</th>
                 <th>Closed Quantity</th>
                 <th></th>
@@ -44,7 +44,7 @@ const DebitModal: React.FC<DebitModalProps> = ({
                   <td>{trade.closedquantity}</td>
                   <td>
                     <button
-                      className="btn btn-xs bg-slate-800 text-slate-200"
+                      className="btn btn-xs bg-[#002f00] text-[#00ee00] border-[#00ee00]"
                       onClick={() =>
                         handleReopenTrade(
                           trade.closedtradeid,
@@ -70,7 +70,7 @@ const DebitModal: React.FC<DebitModalProps> = ({
             Save
           </button> */}
           <button
-            className="btn bg-slate-800 text-slate-200"
+            className="btn btn-sm bg-[#002f00] text-[#00ee00] border-[#00ee00]"
             onClick={handleCancel}
           >
             Cancel
