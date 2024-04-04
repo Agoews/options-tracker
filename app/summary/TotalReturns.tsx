@@ -73,7 +73,6 @@ const TotalReturnsTable: React.FC<TotalReturnsTableProps> = ({ userEmail }) => {
         {aggregatedTrades ? (
           <>
             <div className="grid grid-cols-1 xl:grid-cols-6 xl:space-x-4 space-y-4">
-              {/* Adjust div spacing and positioning as needed for xl screens */}
               <div className="col-span-1 xl:col-span-1"></div>
               <div className="col-span-1 xl:col-span-4 rounded border-2 border-[#00ee00]">
                 <TotalReturns
@@ -81,9 +80,7 @@ const TotalReturnsTable: React.FC<TotalReturnsTableProps> = ({ userEmail }) => {
                   userEmail={userEmail}
                 />
               </div>
-              {/* This div probably meant to be separate from the first set; adjust col-span for xl screen */}
               <div className="col-span-1 xl:col-span-1"></div>
-              {/* Following elements will stack on small screens and align next to each other on xl screens */}
               <div className="col-span-1 xl:col-span-2 rounded border-2 border-[#00ee00]">
                 <PLReturns
                   totalCredits={wheelTotalCredits}

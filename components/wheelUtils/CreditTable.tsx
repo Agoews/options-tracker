@@ -57,7 +57,7 @@ export const CreditTable: React.FC<CreditTableProps> = ({
               <th>Credit</th>
               <th>Total</th>
               <th>Status</th>
-              <th>Expiration Date</th>
+              <th>Expiration</th>
             </tr>
           </thead>
           <tbody className="text-slate-200 text-center">

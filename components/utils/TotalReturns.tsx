@@ -104,7 +104,7 @@ const TotalReturns: React.FC<TotalReturnsProps> = ({
             <td>
               <button
                 onClick={handleUpdateFundsModal}
-                className="btn btn-xs bg-slate-800 text-slate-200"
+                className="btn btn-xs text-[#00ee00] border-[#00ee00] bg-[#002f00]"
               >
                 Update Funds
               </button>
