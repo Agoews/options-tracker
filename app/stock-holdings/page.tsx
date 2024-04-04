@@ -15,13 +15,7 @@ const StockHoldings = async () => {
   }
   return (
     <main className="flex min-h-screen min-w-screen items-center">
-      <div
-        className="hero min-h-screen"
-        style={{
-          backgroundImage: `url(${Background.src})`,
-        }}
-      >
-        <div className="hero-overlay bg-opacity-60"></div>
+      <div className="hero min-h-screen">
         <div className="text-center text-slate-800"></div>
         {userEmail ? (
           <OpenHoldings userEmail={userEmail} />

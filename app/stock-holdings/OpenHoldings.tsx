@@ -28,10 +28,10 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
 
   return (
     <div className="">
-      <h2 className="text-slate-200 mb-1">Current Positions</h2>
-      <table className="table table-xs w-full text-xs">
+      <h2 className="text-[#00ee00] text-2xl mb-1">Current Positions</h2>
+      <table className="table table-xs w-full text-xs rounded border-2 border-[#00ee00]">
         <thead>
-          <tr className="bg-slate-400 text-slate-800 border-2 border-slate-800 text-center">
+          <tr className="text-slate-200 text-center">
             <th>Ticker</th>
             <th>Quantity</th>
             <th>Entry Price</th>

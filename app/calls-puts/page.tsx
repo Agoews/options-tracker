@@ -4,7 +4,7 @@ import { options } from "../api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import CallsPutsTable from "@/components/callsPuts";
+import CallsPutsTable from "@/app/calls-puts/callsPuts";
 
 const CallsPuts = async () => {
   const { providers } = options;
@@ -17,15 +17,9 @@ const CallsPuts = async () => {
 
   return (
     <main className="flex min-h-screen min-w-screen items-center">
-      <div
-        className="hero min-h-screen"
-        style={{
-          backgroundImage: `url(${Background.src})`,
-        }}
-      >
-        <div className="hero-overlay bg-opacity-60"></div>
+      <div className="hero min-h-screen">
         <div className="text-center text-slate-800">
-          <div className="rounded border-4 border-slate-800">
+          <div>
             <div className="overflow-x-auto">
               {userEmail ? (
                 <CallsPutsTable userEmail={userEmail} />
@@ -35,12 +29,12 @@ const CallsPuts = async () => {
             </div>
           </div>
           <Link className="p-1" href="/new-trade">
-            <button className="btn bg-slate-800 text-slate-200 mt-2">
+            <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2">
               New Trade
             </button>
           </Link>
           <Link className="p-1" href="/tracker">
-            <button className="btn bg-slate-800 text-slate-200 mt-2">
+            <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2">
               All Trades
             </button>
           </Link>
