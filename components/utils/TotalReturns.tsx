@@ -77,7 +77,9 @@ const TotalReturns: React.FC<TotalReturnsProps> = ({
         className="tooltip tooltip-right text-[#00ee00]"
         data-tip="P/L of the wheel trades on the starting funds"
       >
-        <h2 className="text-[#00ee00] text-2xl mb-1">Total Returns</h2>
+        <h2 className="text-[#00ee00] text-2xl mb-1 text-left">
+          Total Returns
+        </h2>
       </div>
 
       <table className="table table-xs rounded border-2 border-[#00ee00]">

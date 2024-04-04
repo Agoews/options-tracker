@@ -74,7 +74,7 @@ const TotalReturnsTable: React.FC<TotalReturnsTableProps> = ({ userEmail }) => {
           <>
             <div className="grid grid-cols-1 xl:grid-cols-6 xl:space-x-4 space-y-2">
               <div className="col-span-1 xl:col-span-1"></div>
-              <div className="col-span-1 xl:col-span-4">
+              <div className="col-span-1 xl:col-span-4 items-left text-left xl:items-center xl:text-center">
                 <TotalReturns
                   totalProfits={totalProfits}
                   userEmail={userEmail}

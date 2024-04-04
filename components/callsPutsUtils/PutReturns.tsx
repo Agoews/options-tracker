@@ -13,7 +13,7 @@ const PutReturns: React.FC<PutReturnsProps> = ({
 }) => {
   return (
     <>
-      <h2 className="text-[#00ee00] my-1">Put P/L</h2>
+      <h2 className="text-[#00ee00] mb-1 text-left xl:text-center">Put P/L</h2>
 
       <table className="table table-xs text-xs rounded border-2 border-[#00ee00]">
         <thead>

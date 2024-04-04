@@ -12,7 +12,9 @@ const CallReturns: React.FC<CallReturnsProps> = ({
 }) => {
   return (
     <>
-      <h2 className="text-[#00ee00] text-2xl mb-1">Call P/L</h2>
+      <h2 className="text-[#00ee00] text-2xl mb-1 text-left xl:text-center">
+        Call P/L
+      </h2>
 
       <table className="table table-xs text-xs rounded border-2 border-[#00ee00]">
         <thead>
