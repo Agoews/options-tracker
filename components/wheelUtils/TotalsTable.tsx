@@ -70,7 +70,7 @@ const TotalsTable: React.FC<TotalsTableProps> = ({
   const totalPL = totalCredits > 0 ? (totalCredits - totalDebits) * 100 : 0;
 
   return (
-    <div className="w-1/2 mx-auto flex flex-col items-center rounded border-2 border-[#00ee00] space-y-4">
+    <div className="xl:w-1/2 mx-auto flex flex-col">
       <PLReturns
         totalCredits={totalCredits}
         totalDebits={totalDebits}

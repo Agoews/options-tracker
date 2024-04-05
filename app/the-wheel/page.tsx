@@ -17,7 +17,7 @@ const TheWheel = async () => {
     <main className="flex min-h-screen min-w-screen items-center">
       <div className="hero min-h-screen">
         <div className="text-center text-[#00ee00]">
-          <div className="overflow-x-auto">
+          <div>
             {userEmail ? (
               <TheWheelChart userEmail={userEmail} />
             ) : (

@@ -45,12 +45,14 @@ export const CreditTable: React.FC<CreditTableProps> = ({
   };
 
   return (
-    <div className="w-1/2 rounded border-2 border-[#00ee00]">
-      <h2 className="text-[#00ee00] mb-1">Credits</h2>
-      <div className="overflow-y-auto max-h-[200px]">
-        <table className="table table-xs w-full text-xs">
+    <div className="xl:w-1/2">
+      <h2 className="text-[#00ee00] text-2xl text-left xl:text-center">
+        Credits
+      </h2>
+      <div className="overflow-y-auto xl:h-[200px] max-h-[200px] rounded border-2 border-[#00ee00]">
+        <table className="table table-xs w-full table-pin-rows text-xs">
           <thead>
-            <tr className="text-slate-200 text-center">
+            <tr className="text-[#00ee00] text-center">
               <th>Ticker</th>
               <th>Action</th>
               <th># of Options</th>

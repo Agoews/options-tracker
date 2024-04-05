@@ -64,12 +64,14 @@ const StartingFunds: React.FC<StartingFundsProps> = ({
         className="tooltip tooltip-right text-[#00ee00]"
         data-tip="P/L of the wheel trades on the starting funds"
       >
-        <h2 className="text-[#00ee00]">Return on Initial Investments</h2>
+        <h2 className="text-[#00ee00] text-2xl text-left xl:text-center mt-2">
+          Return on Initial Investments
+        </h2>
       </div>
 
-      <table className="table table-xs text-xs">
+      <table className="table table-xs text-xs rounded border-2 border-[#00ee00]">
         <thead>
-          <tr className="text-slate-200 text-center">
+          <tr className="text-[#00ee00] text-center">
             <th>Starting Funds</th>
             <th>Returns</th>
             <th>Total P/L (%)</th>
