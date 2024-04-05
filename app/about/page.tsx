@@ -1,20 +1,12 @@
 import React from "react";
-import Background from "@/public/Background_1.png";
-import Link from "next/link";
 
 const About = () => {
   return (
     <main className="flex min-h-screen min-w-screen flex-col items-center">
-      <div
-        className="hero min-h-screen"
-        style={{
-          backgroundImage: `url(${Background.src})`,
-        }}
-      >
-        <div className="hero-overlay bg-opacity-60"></div>
-        <div className="hero-content text-center text-slate-800">
+      <div className="hero min-h-screen">
+        <div className="hero-content text-center text-[#00ee00]">
           <div className="max-w-md">
-            <h1 className="mb-5 text-5xl font-bold">
+            <h1 className="mb-5 text-4xl font-bold">
               My Personal Tracking Project
             </h1>
             <p className="mb-5 text-slate-200">
