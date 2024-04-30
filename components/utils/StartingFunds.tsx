@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import StartingFundsModal from "../wheelUtils/StartingFundsModal";
+import useSWR from "swr";
+import { fetcher } from "./fetcher";
 
 interface StartingFundsProps {
   funds: number;
@@ -14,11 +16,25 @@ const StartingFunds: React.FC<StartingFundsProps> = ({
   totalCredits,
   userEmail,
 }) => {
-  console.log("Funds:", funds);
-  const [startingFunds, setStartingFunds] = useState(funds ? funds : 0);
+  const { data, error, isLoading } = useSWR(
+    `/api/get-funds?email=${userEmail}`,
+    fetcher
+  );
+
+  const [startingFunds, setStartingFunds] = useState(0);
   const [editedStartingFunds, setEditedStartingFunds] = useState(0);
   const [startingFundsModalToggle, setStartingFundsModalToggle] =
     useState(false);
+
+  if (error) return <div>Failed to load</div>;
+  if (isLoading) return <div>Loading...</div>;
+
+  if (!startingFunds) {
+    console.log(data.result);
+    setStartingFunds(
+      Number(data.result.rows[0].funds) ? Number(data.result.rows[0].funds) : 0
+    );
+  }
 
   const handleUpdateFundsModal = () => {
     setStartingFundsModalToggle(!startingFundsModalToggle);
