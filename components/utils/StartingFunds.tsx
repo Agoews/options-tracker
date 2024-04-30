@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-
 import StartingFundsModal from "../wheelUtils/StartingFundsModal";
 
 interface StartingFundsProps {
@@ -15,6 +14,7 @@ const StartingFunds: React.FC<StartingFundsProps> = ({
   totalCredits,
   userEmail,
 }) => {
+  console.log("Funds:", funds);
   const [startingFunds, setStartingFunds] = useState(funds ? funds : 0);
   const [editedStartingFunds, setEditedStartingFunds] = useState(0);
   const [startingFundsModalToggle, setStartingFundsModalToggle] =

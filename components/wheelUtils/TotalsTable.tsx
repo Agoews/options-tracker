@@ -51,6 +51,7 @@ const TotalsTable: React.FC<TotalsTableProps> = ({
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
 
+  console.log(data.result.rows);
   const funds = Number(data.result.rows[0].funds);
 
   let totalDebits = 0;

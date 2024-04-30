@@ -17,7 +17,7 @@ export default function Home() {
                 : "Welcome to your all in one trade tracker. This is a work in progress! A Gmail account is the only way to log in at the moment."}
             </p>
             <Link
-              href={session && session.user ? "/tracker" : "/api/auth/signin"}
+              href={session && session.user ? "/summary" : "/api/auth/signin"}
             >
               <button className="btn border text-[#00ee00] border-[#00ee00] bg-[#002f00]">
                 {session && session.user ? "Get Started" : "Login"}

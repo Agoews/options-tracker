@@ -19,8 +19,8 @@ const StartingFundsModal: React.FC<StartingFundsModalProps> = ({
 
   return (
     <div className="modal modal-open">
-      <div className="modal-box max-w-sm text-slate-200 bg-slate-600 opacity-95">
-        <h3 className="font-bold text-lg mb-4">Update Funds</h3>
+      <div className="modal-box max-w-sm text-slate-200">
+        <h3 className="font-bold text-lg mb-4 text-[#00ee00]">Update Funds</h3>
         <div className="mb-2 text-base">
           Current Funds: ${startingFunds.toFixed(2)}
         </div>
@@ -34,13 +34,13 @@ const StartingFundsModal: React.FC<StartingFundsModalProps> = ({
         />
         <div className="modal-action items-center text-base justify-center">
           <button
-            className="btn bg-slate-800 text-slate-200"
+            className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2"
             onClick={handleSaveUpdateFunds}
           >
             Update Funds
           </button>
           <button
-            className="btn bg-slate-800 text-slate-200"
+            className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2"
             onClick={handleCancel}
           >
             Cancel

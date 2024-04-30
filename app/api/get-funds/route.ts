@@ -1,11 +1,12 @@
 import { sql } from "@vercel/postgres";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request) {
-  try {
-    const url = new URL(request.url);
-    const userEmail = url.searchParams.get("email");
+export async function GET(req: Request) {
+  // const { updatedStartingFunds } = await req.json();
+  const url = new URL(req.url);
+  const userEmail = url.searchParams.get("email");
 
+  try {
     if (!userEmail) {
       return NextResponse.json(
         { error: "userEmail is required" },
@@ -15,11 +16,11 @@ export async function GET(request: Request) {
 
     const result = await sql`
       SELECT
-          *
+        Funds
       FROM
-          CurrentHoldings
+        Users
       WHERE
-          Email = ${userEmail};
+       Email = ${userEmail};
     `;
 
     return NextResponse.json({ result }, { status: 200 });

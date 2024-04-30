@@ -14,24 +14,25 @@ const TotalReturns: React.FC<TotalReturnsProps> = ({
   totalProfits,
   userEmail,
 }) => {
-  // const { data, error, isLoading } = useSWR(
-  //   `/api/get-trades?email=${userEmail}`,
-  //   fetcher
-  // );
+  const { data, error, isLoading } = useSWR(
+    `/api/get-funds?email=${userEmail}`,
+    fetcher
+  );
 
   const [startingFunds, setStartingFunds] = useState(Number);
   const [editedStartingFunds, setEditedStartingFunds] = useState(0);
   const [startingFundsModalToggle, setStartingFundsModalToggle] =
     useState(false);
 
-  // if (error) return <div>Failed to load</div>;
-  // if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Failed to load</div>;
+  if (isLoading) return <div>Loading...</div>;
 
-  // if (!startingFunds) {
-  //   setStartingFunds(
-  //     Number(data.result.rows[0].funds) ? Number(data.result.rows[0].funds) : 0
-  //   );
-  // }
+  if (!startingFunds) {
+    console.log(data.result);
+    setStartingFunds(
+      Number(data.result.rows[0].funds) ? Number(data.result.rows[0].funds) : 0
+    );
+  }
 
   const handleSaveUpdateFunds = async () => {
     const updatedStartingFunds = Number(startingFunds) + editedStartingFunds;
