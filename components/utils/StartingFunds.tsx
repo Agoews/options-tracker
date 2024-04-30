@@ -30,7 +30,6 @@ const StartingFunds: React.FC<StartingFundsProps> = ({
   if (isLoading) return <div>Loading...</div>;
 
   if (!startingFunds) {
-    console.log(data.result);
     setStartingFunds(
       Number(data.result.rows[0].funds) ? Number(data.result.rows[0].funds) : 0
     );
