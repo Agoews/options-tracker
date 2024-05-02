@@ -35,13 +35,10 @@ CREATE TABLE CurrentHoldings (
     Ticker VARCHAR(255) NOT NULL,
     Quantity DECIMAL NOT NULL,
     EntryPrice DECIMAL NOT NULL,
-    CurrentPrice DECIMAL,
     CallsSold DECIMAL DEFAULT 0,
     TotalValue DECIMAL DEFAULT 0,
     CostBasis DECIMAL DEFAULT 0,
     DatePurchased DATE NOT NULL,
-    DividendsReceived DECIMAL DEFAULT 0,
-    Notes TEXT
 );
 
 -- Insert dummy data into Users table

@@ -28,7 +28,6 @@ const StockHoldings = async () => {
 
 export default StockHoldings;
 
-// Create a table for stock holdings
 // Add a button on the wheel page to assign calls and puts
 
 // Cost basis needs to be assigned the total value - put cost at closing if it is assigned

@@ -160,7 +160,25 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
   };
 
   const handleAssignment = async () => {
-    console.log("clicked");
+    console.log("clicked", editedTrade, userEmail);
+    const url = `/api/assign-current-holdings/`;
+    try {
+      editedTrade["userEmail"] = userEmail;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ editedTrade, userEmail }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to assign the trade.");
+      }
+    } catch (error) {
+      console.error("Error assigning trade: ", error);
+    }
+    setAssignmentModalToggle(false);
   };
 
   const handleOpenRolloutModal = () => {
