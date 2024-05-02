@@ -54,7 +54,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // SQL Insert, assuming sql is set up to handle SQL queries
+    // Add the shares into the CurrentHoldings table
     const result = await sql`
       INSERT INTO CurrentHoldings (
         Email,
@@ -75,6 +75,7 @@ export async function POST(request: Request) {
       );
     `;
 
+    // Add closed trade into the ClosedTrades table
     await sql`
         INSERT INTO ClosedTrades (TradeID, ClosingPrice, CompletionDate, ClosedQuantity)
         VALUES (${tradeid}, ${costBasis}, CURRENT_TIMESTAMP, ${openquantity});
