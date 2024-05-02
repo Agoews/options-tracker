@@ -3,13 +3,18 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    const { editedTrade, userEmail: rootEmail } = await request.json(); // Extract editedTrade and root userEmail
+    const { editedTrade, userEmail: email } = await request.json();
     const {
+      tradeid,
       ticker,
+      actions,
+      strategy,
       strike,
       currentprice,
       openquantity,
+      isclosed,
       optionprice,
+      expirationdate,
       userEmail,
     } = editedTrade;
 
@@ -22,11 +27,9 @@ export async function POST(request: Request) {
     const costBasis = numericStrike - numericOptionPrice;
     const totalValue = quantity * entryPrice;
 
-    console.log(userEmail, ticker, quantity, entryPrice, totalValue, costBasis);
-
     // Validate all required fields are present and not null
     if (
-      !userEmail ||
+      !email ||
       !ticker ||
       isNaN(quantity) ||
       isNaN(entryPrice) ||
@@ -34,6 +37,17 @@ export async function POST(request: Request) {
       isNaN(numericOptionPrice) ||
       isNaN(numericStrike)
     ) {
+      console.log(
+        "---",
+        tradeid,
+        email,
+        ticker,
+        quantity,
+        entryPrice,
+        numericCurrentPrice,
+        numericOptionPrice,
+        numericStrike
+      );
       return NextResponse.json(
         { error: "Missing or invalid required fields" },
         { status: 400 }
@@ -51,16 +65,34 @@ export async function POST(request: Request) {
         CostBasis,
         DatePurchased
       ) VALUES (
-        ${userEmail},
+        ${email},
         ${ticker},
         ${quantity},
         ${entryPrice},
         ${totalValue},
         ${costBasis},
-        CURRENT_DATE
+        CURRENT_TIMESTAMP
       );
     `;
-    console.log("result from assignment", result);
+
+    await sql`
+        INSERT INTO ClosedTrades (TradeID, ClosingPrice, CompletionDate, ClosedQuantity)
+        VALUES (${tradeid}, ${costBasis}, CURRENT_TIMESTAMP, ${openquantity});
+      `;
+
+    // Update the open quantity in OpenTrades table
+    await sql`
+        UPDATE OpenTrades
+        SET openquantity = 0
+        WHERE tradeid = ${tradeid};
+      `;
+
+    // Check if the open quantity is now 0 or below, and mark the trade as closed
+    await sql`
+        UPDATE OpenTrades
+        SET isClosed = TRUE
+        WHERE tradeid = ${tradeid} AND openquantity <= 0;
+      `;
 
     // Return successful response
     return NextResponse.json(

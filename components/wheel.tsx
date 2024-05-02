@@ -160,10 +160,9 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
   };
 
   const handleAssignment = async () => {
-    console.log("clicked", editedTrade, userEmail);
     const url = `/api/assign-current-holdings/`;
+    console.log("+++++++++", userEmail);
     try {
-      editedTrade["userEmail"] = userEmail;
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -179,6 +178,7 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
       console.error("Error assigning trade: ", error);
     }
     setAssignmentModalToggle(false);
+    setOpenTradeModalToggle(false);
   };
 
   const handleOpenRolloutModal = () => {
