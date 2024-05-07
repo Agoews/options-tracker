@@ -37,17 +37,6 @@ export async function POST(request: Request) {
       isNaN(numericOptionPrice) ||
       isNaN(numericStrike)
     ) {
-      console.log(
-        "---",
-        tradeid,
-        email,
-        ticker,
-        quantity,
-        entryPrice,
-        numericCurrentPrice,
-        numericOptionPrice,
-        numericStrike
-      );
       return NextResponse.json(
         { error: "Missing or invalid required fields" },
         { status: 400 }
@@ -63,6 +52,8 @@ export async function POST(request: Request) {
         EntryPrice,
         TotalValue,
         CostBasis,
+        OptionsProfit,
+        Profit
         DatePurchased
       ) VALUES (
         ${email},
@@ -70,6 +61,7 @@ export async function POST(request: Request) {
         ${quantity},
         ${entryPrice},
         ${totalValue},
+        ${numericOptionPrice},
         ${costBasis},
         CURRENT_TIMESTAMP
       );
@@ -95,7 +87,6 @@ export async function POST(request: Request) {
         WHERE tradeid = ${tradeid} AND openquantity <= 0;
       `;
 
-    // Return successful response
     return NextResponse.json(
       { userEmail, currentprice, optionprice, strike, ticker, openquantity },
       { status: 201 }

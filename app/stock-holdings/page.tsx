@@ -12,6 +12,7 @@ const StockHoldings = async () => {
   if (!session) {
     redirect("/");
   }
+
   return (
     <main className="flex min-h-screen min-w-screen items-center">
       <div className="hero min-h-screen">
@@ -29,6 +30,3 @@ const StockHoldings = async () => {
 export default StockHoldings;
 
 // Add a button on the wheel page to assign calls and puts
-
-// Cost basis needs to be assigned the total value - put cost at closing if it is assigned
-// Create a route to query everything from the CurrentHoldings table

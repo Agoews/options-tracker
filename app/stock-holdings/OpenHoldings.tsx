@@ -26,6 +26,9 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
 
   const holdingsArray = data.result.rows;
 
+  const handleCurrentHoldingClick = (data: any) => {
+    console.log("clicked", data);
+  };
   return (
     <div className="">
       <h2 className="text-[#00ee00] text-2xl mb-1">Current Positions</h2>
@@ -37,7 +40,7 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
             <th>Entry Price</th>
             <th>Total Value</th>
             <th>Cost Basis</th>
-            <th>Profit from Calls</th>
+            <th>Options Profit</th>
             <th>Date Purchased</th>
             <th>Notes</th>
           </tr>
@@ -47,13 +50,14 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
             <tr
               key={obj.currentholdingsid}
               className="hover:bg-slate-700 hover:text-slate-200 hover: cursor-pointer text-center"
+              onClick={() => handleCurrentHoldingClick(obj)}
             >
               <td>{obj.ticker}</td>
               <td>{obj.quantity}</td>
-              <td>{obj.entryprice}</td>
-              <td>{Number(obj.quantity * obj.entryprice).toFixed(2)}</td>
-              <td>{obj.costbasis}</td>
-              <td>{obj.callssold}</td>
+              <td>{"$" + Number(obj.entryprice).toFixed(2)}</td>
+              <td>{"$" + Number(obj.quantity * obj.entryprice).toFixed(2)}</td>
+              <td>{"$" + Number(obj.costbasis).toFixed(2)}</td>
+              <td>{"$" + obj.optionsprofit}</td>
               <td>{formatDate(obj.datepurchased)}</td>
               <td>{obj.notes}</td>
             </tr>
@@ -65,3 +69,8 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
 };
 
 export default OpenHoldings;
+
+// make the assignments work for covered calls as well as CSP
+// modal for current holdings
+// sell calls on current holdings
+// sell holdings
