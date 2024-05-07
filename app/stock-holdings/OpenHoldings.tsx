@@ -1,7 +1,8 @@
 "use client";
 import { fetcher } from "@/components/utils/fetcher";
-import React from "react";
+import React, { useState } from "react";
 import useSWR from "swr";
+import CurrentHoldingsModal from "./CurrentHoldingsModal";
 
 interface OpenHoldingsProps {
   userEmail: string;
@@ -11,6 +12,9 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
     `/api/get-current-holdings?email=${userEmail}`,
     fetcher
   );
+
+  const [currentHoldingsModalToggle, setCurrentHoldingsModalToggle] =
+    useState(false);
 
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
@@ -28,7 +32,13 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
 
   const handleCurrentHoldingClick = (data: any) => {
     console.log("clicked", data);
+    setCurrentHoldingsModalToggle(true);
   };
+
+  const handleCancel = () => {
+    setCurrentHoldingsModalToggle(false);
+  };
+
   return (
     <div className="">
       <h2 className="text-[#00ee00] text-2xl mb-1">Current Positions</h2>
@@ -64,6 +74,10 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
           ))}
         </tbody>
       </table>
+      <CurrentHoldingsModal
+        currentHoldingsModalToggle={currentHoldingsModalToggle}
+        handleCancel={handleCancel}
+      />
     </div>
   );
 };
