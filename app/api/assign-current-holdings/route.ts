@@ -26,6 +26,7 @@ export async function POST(request: Request) {
     const entryPrice = numericStrike;
     const costBasis = numericStrike - numericOptionPrice;
     const totalValue = quantity * entryPrice;
+    const maxOptions = quantity / 100;
 
     // Validate all required fields are present and not null
     if (
@@ -53,7 +54,8 @@ export async function POST(request: Request) {
         TotalValue,
         CostBasis,
         OptionsProfit,
-        Profit
+        OpenOptions,
+        MaxOptions,
         DatePurchased
       ) VALUES (
         ${email},
@@ -61,8 +63,10 @@ export async function POST(request: Request) {
         ${quantity},
         ${entryPrice},
         ${totalValue},
-        ${numericOptionPrice},
         ${costBasis},
+        ${numericOptionPrice},
+        0,
+        ${maxOptions},
         CURRENT_TIMESTAMP
       );
     `;

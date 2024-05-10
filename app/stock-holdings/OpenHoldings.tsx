@@ -1,6 +1,6 @@
 "use client";
 import { fetcher } from "@/components/utils/fetcher";
-import React, { useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import useSWR from "swr";
 import CurrentHoldingsModal from "./CurrentHoldingsModal";
 
@@ -13,16 +13,44 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
     fetcher
   );
 
+  const initialCallState = {};
+
   const [currentHoldingsModalToggle, setCurrentHoldingsModalToggle] =
     useState(false);
+  const [holdingId, setHoldingId] = useState<number | null>(null);
+  const [holdingData, setHoldingData] = useState<null>(null);
+  const [coveredCallStrike, setCoveredCallStrike] = useState<string | null>(
+    null
+  );
+  const [coveredCallPremium, setCoveredCallPremium] = useState<string | null>(
+    null
+  );
+  const [coveredCallQuantity, setCoveredCallQuantity] = useState<string | null>(
+    null
+  );
+  const [coveredCallExpiration, setCoveredCallExpiration] = useState<
+    string | null
+  >(null);
 
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
 
-  if (data) {
-    console.log("data: ", data.result.rows);
-    console.log("data: ", data.result.rows[0]);
-  }
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(
+      coveredCallStrike,
+      coveredCallPremium,
+      coveredCallQuantity,
+      coveredCallExpiration
+    );
+
+    setCoveredCallStrike(null);
+    setCoveredCallPremium(null);
+    setCoveredCallQuantity(null);
+    setCoveredCallExpiration(null);
+    setCurrentHoldingsModalToggle(false);
+    setCurrentHoldingsModalToggle(false);
+  };
 
   const formatDate = (dateString: string) => {
     return dateString.split("T")[0];
@@ -31,11 +59,14 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
   const holdingsArray = data.result.rows;
 
   const handleCurrentHoldingClick = (data: any) => {
-    console.log("clicked", data);
+    // console.log("clicked", data);
+    setHoldingId(data.currentholdingsid);
+    setHoldingData({ ...data });
     setCurrentHoldingsModalToggle(true);
   };
 
   const handleCancel = () => {
+    setHoldingId(null);
     setCurrentHoldingsModalToggle(false);
   };
 
@@ -51,8 +82,8 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
             <th>Total Value</th>
             <th>Cost Basis</th>
             <th>Options Profit</th>
+            <th>Open Options</th>
             <th>Date Purchased</th>
-            <th>Notes</th>
           </tr>
         </thead>
         <tbody className="text-slate-200 text-center">
@@ -67,15 +98,21 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
               <td>{"$" + Number(obj.entryprice).toFixed(2)}</td>
               <td>{"$" + Number(obj.quantity * obj.entryprice).toFixed(2)}</td>
               <td>{"$" + Number(obj.costbasis).toFixed(2)}</td>
-              <td>{"$" + obj.optionsprofit}</td>
+              <td>{"$" + (obj.optionsprofit * 100).toFixed(2)}</td>
+              <td>{obj.openoptions}</td>
               <td>{formatDate(obj.datepurchased)}</td>
-              <td>{obj.notes}</td>
             </tr>
           ))}
         </tbody>
       </table>
       <CurrentHoldingsModal
         currentHoldingsModalToggle={currentHoldingsModalToggle}
+        holdingData={holdingData}
+        setCoveredCallStrike={setCoveredCallStrike}
+        setCoveredCallPremium={setCoveredCallPremium}
+        setCoveredCallQuantity={setCoveredCallQuantity}
+        setCoveredCallExpiration={setCoveredCallExpiration}
+        handleSubmit={handleSubmit}
         handleCancel={handleCancel}
       />
     </div>

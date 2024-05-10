@@ -38,7 +38,9 @@ CREATE TABLE CurrentHoldings (
     OptionsProfit DECIMAL DEFAULT 0,
     TotalValue DECIMAL DEFAULT 0,
     CostBasis DECIMAL DEFAULT 0,
-    DatePurchased DATE NOT NULL,
+    OpenOptions INT,
+    MaxOptions INT,
+    DatePurchased DATE NOT NULL
 );
 
 -- Insert dummy data into Users table

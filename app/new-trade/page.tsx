@@ -112,82 +112,76 @@ const NewTrade = () => {
   };
 
   return (
-    <main className="flex min-h-screen min-w-screen flex-col items-center">
-      <div
-        className="hero min-h-screen"
-        style={{
-          backgroundImage: `url(${Background.src})`,
-        }}
-      >
-        <div className="hero-overlay bg-opacity-60"></div>
+    <main className="flex min-h-screen min-w-screen items-center">
+      <div className="hero min-h-screen">
         <div className="flex justify-center w-full">
           <div className="grid grid-cols-2 gap-4 p-4">
             <label className="form-control w-full">
               <div className="label">
-                <span className="label-text text-slate-200">Stock Ticker</span>
+                <span className="label-text text-[#00ee00]">Stock Ticker</span>
               </div>
               <input
                 type="text"
-                placeholder="Type here"
-                className="input input-bordered w-full"
+                placeholder="Stock Abbreviation"
+                className="input input-bordered w-full text-slate-200"
                 value={ticker}
                 onChange={handleTickerChange}
               />
             </label>
             <label className="form-control w-full">
               <div className="label">
-                <span className="label-text text-slate-200">Strike</span>
+                <span className="label-text text-[#00ee00]">Strike</span>
               </div>
               <input
                 type="text"
-                placeholder="Type here"
-                className="input input-bordered w-full"
+                placeholder="Strike Price"
+                className="input input-bordered w-full text-slate-200"
                 value={strike}
                 onChange={handleStrikeChange}
               />
             </label>
             <label className="form-control w-full">
               <div className="label">
-                <span className="label-text text-slate-200">Entry Price</span>
+                <span className="label-text text-[#00ee00]">Entry Price</span>
               </div>
               <input
                 type="text"
-                placeholder="Type here"
-                className="input input-bordered w-full"
+                placeholder="Current Stock Price"
+                className="input input-bordered w-full text-slate-200"
                 value={currentprice}
                 onChange={handleCurrentPriceChange}
               />
             </label>
             <label className="form-control w-full">
               <div className="label">
-                <span className="label-text text-slate-200">Quantity</span>
+                <span className="label-text text-[#00ee00]">Quantity</span>
               </div>
               <input
                 type="text"
-                placeholder="Type here"
-                className="input input-bordered w-full"
+                placeholder="# of Options"
+                className="input input-bordered w-full text-slate-200"
                 value={openquantity}
                 onChange={handleTotalQualityChange}
               />
             </label>
             <label className="form-control w-full">
               <div className="label">
-                <span className="label-text text-slate-200">Option Price</span>
+                <span className="label-text text-[#00ee00]">Option Price</span>
               </div>
               <input
                 type="text"
-                placeholder="Type here"
-                className="input input-bordered w-full"
+                placeholder="Option Value"
+                className="input input-bordered w-full text-slate-200"
                 value={optionprice}
                 onChange={handleOptionPrice}
               />
             </label>
             <label className="form-control w-full">
               <div className="label">
-                <span className="label-text text-slate-200">Action</span>
+                <span className="label-text text-[#00ee00]">Action</span>
               </div>
               <select
-                className="select select-bordered w-full"
+                className="select select-bordered w-full text-slate-200"
                 value={actions}
                 onChange={handleActionChange}
               >
@@ -202,7 +196,7 @@ const NewTrade = () => {
             </label>
             <label className="form-control w-full">
               <div className="label">
-                <span className="label-text text-slate-200">
+                <span className="label-text text-[#00ee00]">
                   Expiration Date
                 </span>
               </div>
@@ -217,10 +211,10 @@ const NewTrade = () => {
             </label>
             <label className="form-control w-full">
               <div className="label">
-                <span className="label-text text-slate-200">Strategy</span>
+                <span className="label-text text-[#00ee00]">Strategy</span>
               </div>
               <select
-                className="select select-bordered w-full"
+                className="select select-bordered w-full text-slate-200"
                 value={strategy}
                 onChange={handleStrategyChange}
               >
@@ -233,13 +227,13 @@ const NewTrade = () => {
                 <form onSubmit={handleSubmit}>
                   <button
                     type="submit"
-                    className="btn bg-slate-800 text-slate-200"
+                    className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2"
                   >
                     Submit
                   </button>
                 </form>
                 <Link href="/tracker">
-                  <button className="btn bg-slate-800 text-slate-200">
+                  <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2">
                     Cancel
                   </button>
                 </Link>
