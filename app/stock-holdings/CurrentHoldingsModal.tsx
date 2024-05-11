@@ -4,7 +4,7 @@ interface CurrentHoldingsModalProps {
   currentHoldingsModalToggle: boolean;
   holdingData: any;
   handleSubmit: (e: React.SyntheticEvent) => Promise<void>;
-  handleSellShares: () => void;
+  handleOpenSellSharesModal: () => void;
   handleCancel: () => void;
   setCoveredCallStrike: (value: string | null) => void;
   setCoveredCallPremium: (value: string | null) => void;
@@ -16,7 +16,7 @@ const CurrentHoldingsModal: React.FC<CurrentHoldingsModalProps> = ({
   currentHoldingsModalToggle,
   holdingData,
   handleSubmit,
-  handleSellShares,
+  handleOpenSellSharesModal,
   handleCancel,
   setCoveredCallStrike,
   setCoveredCallPremium,
@@ -102,7 +102,7 @@ const CurrentHoldingsModal: React.FC<CurrentHoldingsModalProps> = ({
             </button>
             <button
               className="btn btn-sm text-[#00ee00] border-[#00ee00] bg-[#002f00]"
-              onClick={handleSellShares}
+              onClick={handleOpenSellSharesModal}
             >
               Sell Shares
             </button>

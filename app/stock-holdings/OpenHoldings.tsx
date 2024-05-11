@@ -56,7 +56,7 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
     setCurrentHoldingsModalToggle(false);
   };
 
-  const handleSellShares = async () => {
+  const handleOpenSellSharesModal = async () => {
     console.log("sell shares clicked");
     setSellSharesModalToggle(true);
     setCurrentHoldingsModalToggle(false);
@@ -73,6 +73,12 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
     setHoldingId(data.currentholdingsid);
     setHoldingData({ ...data });
     setCurrentHoldingsModalToggle(true);
+  };
+
+  const handleSellShares = (closedQuantity: string, exitPrice: string) => {
+    console.log("Quantity:", closedQuantity, "Price:", exitPrice);
+    // additional logic here to process selling shares
+    setSellSharesModalToggle(false);
   };
 
   const handleCancel = () => {
@@ -124,14 +130,17 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
         setCoveredCallQuantity={setCoveredCallQuantity}
         setCoveredCallExpiration={setCoveredCallExpiration}
         handleSubmit={handleSubmit}
-        handleSellShares={handleSellShares}
+        handleOpenSellSharesModal={handleOpenSellSharesModal}
         handleCancel={handleCancel}
       />
       <SellSharesModal
         holdingData={holdingData}
         sellSharesModalToggle={sellSharesModalToggle}
+        closedQuantity={closedQuantity}
+        exitPrice={exitPrice}
         setClosedQuantity={setClosedQuantity}
         setExitPrice={setExitPrice}
+        handleSellShares={handleSellShares}
         handleCancel={handleCancel}
       />
     </div>

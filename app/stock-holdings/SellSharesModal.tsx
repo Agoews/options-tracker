@@ -3,16 +3,22 @@ import React from "react";
 interface SellSharesModalProps {
   sellSharesModalToggle: boolean;
   holdingData: any;
+  closedQuantity: any;
+  exitPrice: any;
   setClosedQuantity: any;
   setExitPrice: any;
+  handleSellShares: (closedQuantity: string, exitPrice: string) => void;
   handleCancel: () => void;
 }
 
 const SellSharesModal: React.FC<SellSharesModalProps> = ({
   sellSharesModalToggle,
   holdingData,
+  closedQuantity,
+  exitPrice,
   setClosedQuantity,
   setExitPrice,
+  handleSellShares,
   handleCancel,
 }) => {
   if (!sellSharesModalToggle) return null;
@@ -51,6 +57,12 @@ const SellSharesModal: React.FC<SellSharesModalProps> = ({
             />
           </div>
           <div className="modal-action items-center justify-center">
+            <button
+              className="btn btn-sm text-[#00ee00] border-[#00ee00] bg-[#002f00]"
+              onClick={() => handleSellShares(closedQuantity, exitPrice)}
+            >
+              Sell Shares
+            </button>
             <button
               className="btn btn-sm text-[#00ee00] border-[#00ee00] bg-[#002f00]"
               onClick={handleCancel}
