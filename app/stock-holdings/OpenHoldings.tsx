@@ -33,6 +33,8 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
   const [coveredCallExpiration, setCoveredCallExpiration] = useState<
     string | null
   >(null);
+  const [exitPrice, setExitPrice] = useState<string | null>(null);
+  const [closedQuantity, setClosedQuantity] = useState<string | null>(null);
 
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
@@ -128,6 +130,8 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
       <SellSharesModal
         holdingData={holdingData}
         sellSharesModalToggle={sellSharesModalToggle}
+        setClosedQuantity={setClosedQuantity}
+        setExitPrice={setExitPrice}
         handleCancel={handleCancel}
       />
     </div>
