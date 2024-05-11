@@ -100,7 +100,7 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
         <tbody className="text-slate-200 text-center">
           {holdingsArray.map((obj: any) => (
             <tr
-              key={obj.currentholdingsid}
+              key={obj.currentstockholdingsid}
               className="hover:bg-slate-700 hover:text-slate-200 hover: cursor-pointer text-center"
               onClick={() => handleCurrentHoldingClick(obj)}
             >
