@@ -17,7 +17,7 @@ export async function GET(request: Request) {
       SELECT
           *
       FROM
-          CurrentHoldings
+          CurrentStockHoldings
       WHERE
           Email = ${userEmail};
     `;

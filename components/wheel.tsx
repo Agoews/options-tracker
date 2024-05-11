@@ -161,7 +161,6 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
 
   const handleAssignment = async () => {
     const url = `/api/assign-current-holdings/`;
-    console.log("+++++++++", userEmail);
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -174,6 +173,7 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
       if (!response.ok) {
         throw new Error("Failed to assign the trade.");
       }
+      mutate(`/api/get-trades?email=${userEmail}`);
     } catch (error) {
       console.error("Error assigning trade: ", error);
     }

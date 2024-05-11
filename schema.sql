@@ -29,8 +29,8 @@ CREATE TABLE ClosedTrades (
     ClosedQuantity INT
 );
 
-CREATE TABLE CurrentHoldings (
-    CurrentHoldingsID SERIAL PRIMARY KEY,
+CREATE TABLE CurrentStockHoldings (
+    CurrentStockHoldingsID SERIAL PRIMARY KEY,
     Email VARCHAR(255) NOT NULL REFERENCES Users(Email) ON DELETE CASCADE,
     Ticker VARCHAR(255) NOT NULL,
     Quantity DECIMAL NOT NULL,
@@ -41,6 +41,17 @@ CREATE TABLE CurrentHoldings (
     OpenOptions INT,
     MaxOptions INT,
     DatePurchased DATE NOT NULL
+);
+
+CREATE TABLE SoldStockHoldings (
+    SoldStockHoldingsID SERIAL PRIMARY KEY,
+    Email VARCHAR(255) NOT NULL REFERENCES Users(Email) ON DELETE CASCADE,
+    Ticker VARCHAR(255) NOT NULL,
+    Quantity DECIMAL NOT NULL,
+    EntryPrice DECIMAL NOT NULL,
+    ExitPrice DECIMAL NOT NULL,
+    SaleDate DATE NOT NULL,
+    CostBasis DECIMAL
 );
 
 -- Insert dummy data into Users table

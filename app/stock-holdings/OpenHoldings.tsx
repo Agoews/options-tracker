@@ -1,8 +1,9 @@
 "use client";
 import { fetcher } from "@/components/utils/fetcher";
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, SyntheticEvent, useEffect, useState } from "react";
 import useSWR from "swr";
 import CurrentHoldingsModal from "./CurrentHoldingsModal";
+import SellSharesModal from "./SellSharesModal";
 
 interface OpenHoldingsProps {
   userEmail: string;
@@ -17,6 +18,7 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
 
   const [currentHoldingsModalToggle, setCurrentHoldingsModalToggle] =
     useState(false);
+  const [sellSharesModalToggle, setSellSharesModalToggle] = useState(false);
   const [holdingId, setHoldingId] = useState<number | null>(null);
   const [holdingData, setHoldingData] = useState<null>(null);
   const [coveredCallStrike, setCoveredCallStrike] = useState<string | null>(
@@ -35,7 +37,7 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     console.log(
       coveredCallStrike,
@@ -49,6 +51,12 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
     setCoveredCallQuantity(null);
     setCoveredCallExpiration(null);
     setCurrentHoldingsModalToggle(false);
+    setCurrentHoldingsModalToggle(false);
+  };
+
+  const handleSellShares = async () => {
+    console.log("sell shares clicked");
+    setSellSharesModalToggle(true);
     setCurrentHoldingsModalToggle(false);
   };
 
@@ -68,11 +76,12 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
   const handleCancel = () => {
     setHoldingId(null);
     setCurrentHoldingsModalToggle(false);
+    setSellSharesModalToggle(false);
   };
 
   return (
     <div className="">
-      <h2 className="text-[#00ee00] text-2xl mb-1">Current Positions</h2>
+      <h2 className="text-[#00ee00] text-2xl mb-1">Current Stock Positions</h2>
       <table className="table table-xs w-full text-xs rounded border-2 border-[#00ee00]">
         <thead>
           <tr className="text-slate-200 text-center">
@@ -113,6 +122,12 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
         setCoveredCallQuantity={setCoveredCallQuantity}
         setCoveredCallExpiration={setCoveredCallExpiration}
         handleSubmit={handleSubmit}
+        handleSellShares={handleSellShares}
+        handleCancel={handleCancel}
+      />
+      <SellSharesModal
+        holdingData={holdingData}
+        sellSharesModalToggle={sellSharesModalToggle}
         handleCancel={handleCancel}
       />
     </div>

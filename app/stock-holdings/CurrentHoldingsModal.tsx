@@ -1,9 +1,10 @@
-import React from "react";
+import React, { FormEvent } from "react";
 
 interface CurrentHoldingsModalProps {
   currentHoldingsModalToggle: boolean;
   holdingData: any;
-  handleSubmit: () => void;
+  handleSubmit: (e: React.SyntheticEvent) => Promise<void>;
+  handleSellShares: () => void;
   handleCancel: () => void;
   setCoveredCallStrike: (value: string | null) => void;
   setCoveredCallPremium: (value: string | null) => void;
@@ -15,6 +16,7 @@ const CurrentHoldingsModal: React.FC<CurrentHoldingsModalProps> = ({
   currentHoldingsModalToggle,
   holdingData,
   handleSubmit,
+  handleSellShares,
   handleCancel,
   setCoveredCallStrike,
   setCoveredCallPremium,
@@ -97,6 +99,12 @@ const CurrentHoldingsModal: React.FC<CurrentHoldingsModalProps> = ({
               onClick={handleSubmit}
             >
               Write Call
+            </button>
+            <button
+              className="btn btn-sm text-[#00ee00] border-[#00ee00] bg-[#002f00]"
+              onClick={handleSellShares}
+            >
+              Sell Shares
             </button>
             <button
               className="btn btn-sm text-[#00ee00] border-[#00ee00] bg-[#002f00]"

@@ -44,52 +44,54 @@ export async function POST(request: Request) {
       );
     }
 
-    // Add the shares into the CurrentHoldings table
-    const result = await sql`
-      INSERT INTO CurrentHoldings (
-        Email,
-        Ticker,
-        Quantity,
-        EntryPrice,
-        TotalValue,
-        CostBasis,
-        OptionsProfit,
-        OpenOptions,
-        MaxOptions,
-        DatePurchased
-      ) VALUES (
-        ${email},
-        ${ticker},
-        ${quantity},
-        ${entryPrice},
-        ${totalValue},
-        ${costBasis},
-        ${numericOptionPrice},
-        0,
-        ${maxOptions},
-        CURRENT_TIMESTAMP
-      );
-    `;
-
-    // Add closed trade into the ClosedTrades table
-    await sql`
-        INSERT INTO ClosedTrades (TradeID, ClosingPrice, CompletionDate, ClosedQuantity)
-        VALUES (${tradeid}, ${costBasis}, CURRENT_TIMESTAMP, ${openquantity});
+    if (actions === "CASH SECURED PUT") {
+      // Add the shares into the CurrentHoldings table
+      const result = await sql`
+        INSERT INTO CurrentStockHoldings (
+          Email,
+          Ticker,
+          Quantity,
+          EntryPrice,
+          TotalValue,
+          CostBasis,
+          OptionsProfit,
+          OpenOptions,
+          MaxOptions,
+          DatePurchased
+        ) VALUES (
+          ${email},
+          ${ticker},
+          ${quantity},
+          ${entryPrice},
+          ${totalValue},
+          ${costBasis},
+          ${numericOptionPrice},
+          0,
+          ${maxOptions},
+          CURRENT_TIMESTAMP
+        );
       `;
 
-    // Update the open quantity in OpenTrades table
-    await sql`
-        UPDATE OpenTrades
-        SET openquantity = 0
-        WHERE tradeid = ${tradeid};
-      `;
+      // Add closed trade into the ClosedTrades table
+      await sql`
+          INSERT INTO ClosedTrades (TradeID, ClosingPrice, CompletionDate, ClosedQuantity)
+          VALUES (${tradeid}, 0, CURRENT_TIMESTAMP, ${openquantity});
+        `;
 
-    // Check if the open quantity is now 0 or below, and mark the trade as closed
-    await sql`
-        UPDATE OpenTrades
-        SET isClosed = TRUE
-        WHERE tradeid = ${tradeid} AND openquantity <= 0;
-      `;
+      // Update the open quantity in OpenTrades table
+      await sql`
+          UPDATE OpenTrades
+          SET openquantity = 0
+          WHERE tradeid = ${tradeid};
+        `;
+
+      // Check if the open quantity is now 0 or below, and mark the trade as closed
+      await sql`
+          UPDATE OpenTrades
+          SET isClosed = TRUE
+          WHERE tradeid = ${tradeid} AND openquantity <= 0;
+        `;
+    }
 
     return NextResponse.json(
       { userEmail, currentprice, optionprice, strike, ticker, openquantity },
