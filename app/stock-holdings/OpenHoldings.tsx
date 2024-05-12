@@ -4,6 +4,7 @@ import React, { FormEvent, SyntheticEvent, useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 import CurrentHoldingsModal from "./CurrentHoldingsModal";
 import SellSharesModal from "./SellSharesModal";
+import AddHoldingModal from "./AddHoldingModal";
 
 interface OpenHoldingsProps {
   userEmail: string;
@@ -19,6 +20,7 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
   const [currentHoldingsModalToggle, setCurrentHoldingsModalToggle] =
     useState(false);
   const [sellSharesModalToggle, setSellSharesModalToggle] = useState(false);
+  const [addPositionToggle, setAddPositionToggle] = useState(false);
   const [holdingId, setHoldingId] = useState<number | null>(null);
   const [holdingData, setHoldingData] = useState<null>(null);
   const [coveredCallStrike, setCoveredCallStrike] = useState<string | null>(
@@ -35,6 +37,9 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
   >(null);
   const [exitPrice, setExitPrice] = useState<string | null>(null);
   const [closedQuantity, setClosedQuantity] = useState<string | null>(null);
+  const [ticker, setTicker] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState<string | null>(null);
+  const [entryPrice, setEntryPrice] = useState<string | null>(null);
 
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
@@ -58,7 +63,12 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
     setCurrentHoldingsModalToggle(false);
   };
 
-  const handleOpenSellSharesModal = async () => {
+  const handleOpenAddPositionModal = () => {
+    console.log("Add position clicked");
+    setAddPositionToggle(true);
+  };
+
+  const handleOpenSellSharesModal = () => {
     console.log("sell shares clicked");
     setSellSharesModalToggle(true);
     setCurrentHoldingsModalToggle(false);
@@ -85,6 +95,7 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
     setHoldingId(null);
     setCurrentHoldingsModalToggle(false);
     setSellSharesModalToggle(false);
+    setAddPositionToggle(false);
   };
 
   const handleDelete = async () => {
@@ -144,6 +155,28 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
           ))}
         </tbody>
       </table>
+
+      <div className="text-center text-[#00ee00] space-x-4">
+        <button
+          className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2"
+          onClick={handleOpenAddPositionModal}
+        >
+          Add Position
+        </button>
+        <button
+          className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2"
+          // onClick={handleCancel}
+        >
+          Cancel
+        </button>
+      </div>
+      <AddHoldingModal
+        addPositionToggle={addPositionToggle}
+        setTicker={setTicker}
+        setQuantity={setQuantity}
+        setEntryPrice={setEntryPrice}
+        handleCancel={handleCancel}
+      />
       <CurrentHoldingsModal
         currentHoldingsModalToggle={currentHoldingsModalToggle}
         holdingData={holdingData}
