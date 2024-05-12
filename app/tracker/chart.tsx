@@ -165,7 +165,7 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
       }
       mutate(`/api/get-trades?email=${userEmail}`);
     } catch (error) {
-      console.log("Error updating closed trade:", error);
+      console.log("Error deleting trade:", error);
     }
 
     setEditingTradeId(null);

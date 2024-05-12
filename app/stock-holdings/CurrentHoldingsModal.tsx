@@ -6,6 +6,7 @@ interface CurrentHoldingsModalProps {
   handleSubmit: (e: React.SyntheticEvent) => Promise<void>;
   handleOpenSellSharesModal: () => void;
   handleCancel: () => void;
+  handleDelete: () => void;
   setCoveredCallStrike: (value: string | null) => void;
   setCoveredCallPremium: (value: string | null) => void;
   setCoveredCallQuantity: (value: string | null) => void;
@@ -18,6 +19,7 @@ const CurrentHoldingsModal: React.FC<CurrentHoldingsModalProps> = ({
   handleSubmit,
   handleOpenSellSharesModal,
   handleCancel,
+  handleDelete,
   setCoveredCallStrike,
   setCoveredCallPremium,
   setCoveredCallQuantity,
@@ -104,7 +106,13 @@ const CurrentHoldingsModal: React.FC<CurrentHoldingsModalProps> = ({
               className="btn btn-sm text-[#00ee00] border-[#00ee00] bg-[#002f00]"
               onClick={handleOpenSellSharesModal}
             >
-              Sell Shares
+              Sell
+            </button>
+            <button
+              className="btn btn-sm btn-error bg-slate-800 text-red-500"
+              onClick={handleDelete}
+            >
+              Delete
             </button>
             <button
               className="btn btn-sm text-[#00ee00] border-[#00ee00] bg-[#002f00]"

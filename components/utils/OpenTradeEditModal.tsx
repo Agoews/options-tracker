@@ -143,7 +143,7 @@ const OpenTradeEditModal: React.FC<TradeEditModalProps> = ({
               Save
             </button>
             <button
-              className="btn btn-outline btn-error bg-slate-800 text-slate-200"
+              className="btn btn-outline btn-error bg-slate-800 text-red-500"
               onClick={handleDelete}
             >
               Delete Trade

@@ -1,7 +1,7 @@
 "use client";
 import { fetcher } from "@/components/utils/fetcher";
 import React, { FormEvent, SyntheticEvent, useEffect, useState } from "react";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import CurrentHoldingsModal from "./CurrentHoldingsModal";
 import SellSharesModal from "./SellSharesModal";
 
@@ -39,6 +39,8 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
 
+  const holdingsArray = data.result.rows;
+
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     console.log(
@@ -66,8 +68,6 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
     return dateString.split("T")[0];
   };
 
-  const holdingsArray = data.result.rows;
-
   const handleCurrentHoldingClick = (data: any) => {
     // console.log("clicked", data);
     setHoldingId(data.currentholdingsid);
@@ -85,6 +85,28 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
     setHoldingId(null);
     setCurrentHoldingsModalToggle(false);
     setSellSharesModalToggle(false);
+  };
+
+  const handleDelete = async () => {
+    const currentstockholdingsid = holdingsArray[0].currentstockholdingsid;
+    const url = "/api/delete-current-holding";
+
+    try {
+      const response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          "Conetent-Type": "application/json",
+        },
+        body: JSON.stringify(currentstockholdingsid),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete ${holdingsArray[0].ticker}`);
+      }
+      mutate(`/api/get-current-holdings?email=${userEmail}`);
+    } catch (error) {
+      console.log("Error deleting position:", error);
+    }
   };
 
   return (
@@ -131,6 +153,7 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
         setCoveredCallExpiration={setCoveredCallExpiration}
         handleSubmit={handleSubmit}
         handleOpenSellSharesModal={handleOpenSellSharesModal}
+        handleDelete={handleDelete}
         handleCancel={handleCancel}
       />
       <SellSharesModal
