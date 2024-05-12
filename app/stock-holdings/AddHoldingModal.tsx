@@ -5,6 +5,7 @@ interface AddPosiitonModalProps {
   setTicker: (value: string | null) => void;
   setQuantity: (value: string | null) => void;
   setEntryPrice: (value: string | null) => void;
+  handleAddHolding: (e: React.SyntheticEvent) => Promise<void>;
   handleCancel: () => void;
 }
 
@@ -13,6 +14,7 @@ const AddHoldingModal: React.FC<AddPosiitonModalProps> = ({
   setTicker,
   setQuantity,
   setEntryPrice,
+  handleAddHolding,
   handleCancel,
 }) => {
   if (!addPositionToggle) return null;
@@ -63,7 +65,7 @@ const AddHoldingModal: React.FC<AddPosiitonModalProps> = ({
           <div className="modal-action items-center justify-center">
             <button
               className="btn btn-sm text-[#00ee00] border-[#00ee00] bg-[#002f00]"
-              // onClick={handleSubmit}
+              onClick={handleAddHolding}
             >
               Submit
             </button>

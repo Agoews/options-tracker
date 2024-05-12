@@ -91,6 +91,13 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
     setSellSharesModalToggle(false);
   };
 
+  const handleAddHolding = async (e: SyntheticEvent) => {
+    e.preventDefault();
+    console.log(ticker, quantity, entryPrice);
+
+    setAddPositionToggle(false);
+  };
+
   const handleCancel = () => {
     setHoldingId(null);
     setCurrentHoldingsModalToggle(false);
@@ -175,6 +182,7 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
         setTicker={setTicker}
         setQuantity={setQuantity}
         setEntryPrice={setEntryPrice}
+        handleAddHolding={handleAddHolding}
         handleCancel={handleCancel}
       />
       <CurrentHoldingsModal
