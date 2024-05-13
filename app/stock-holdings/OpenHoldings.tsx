@@ -5,6 +5,7 @@ import useSWR, { mutate } from "swr";
 import CurrentHoldingsModal from "./CurrentHoldingsModal";
 import SellSharesModal from "./SellSharesModal";
 import AddHoldingModal from "./AddHoldingModal";
+import { useSession } from "next-auth/react";
 
 interface OpenHoldingsProps {
   userEmail: string;
@@ -93,7 +94,24 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
 
   const handleAddHolding = async (e: SyntheticEvent) => {
     e.preventDefault();
-    console.log(ticker, quantity, entryPrice);
+    try {
+      const response = await fetch("/api/add-current-holding", {
+        method: "POST",
+        body: JSON.stringify({
+          userEmail,
+          ticker,
+          quantity,
+          entryPrice,
+        }),
+      });
+
+      if (!response.ok) {
+        throw Error("Failed to save new stock holding");
+      }
+      mutate(`/api/get-current-holdings?email=${userEmail}`);
+    } catch (error) {
+      console.log(error);
+    }
 
     setAddPositionToggle(false);
   };
@@ -125,6 +143,8 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
     } catch (error) {
       console.log("Error deleting position:", error);
     }
+
+    setCurrentHoldingsModalToggle(false);
   };
 
   return (
