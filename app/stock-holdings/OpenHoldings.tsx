@@ -85,9 +85,24 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
     setCurrentHoldingsModalToggle(true);
   };
 
-  const handleSellShares = (closedQuantity: string, exitPrice: string) => {
+  const handleSellShares = async (e: SyntheticEvent) => {
+    e.preventDefault();
     console.log("Quantity:", closedQuantity, "Price:", exitPrice);
-    // additional logic here to process selling shares
+
+    try {
+      const response = await fetch("/api/sell-current-holdings", {
+        method: "POST",
+        body: JSON.stringify({
+          userEmail,
+          ticker,
+          quantity,
+          entryPrice,
+          holdingId,
+        }),
+      });
+    } catch (error) {
+      console.log(error);
+    }
     setSellSharesModalToggle(false);
   };
 
