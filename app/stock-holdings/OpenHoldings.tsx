@@ -80,8 +80,7 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
   };
 
   const handleCurrentHoldingClick = (data: any) => {
-    // console.log("clicked", data);
-    setHoldingId(data.currentholdingsid);
+    setHoldingId(data.currentstockholdingsid);
     setHoldingData({ ...data });
     setCurrentHoldingsModalToggle(true);
   };
@@ -124,27 +123,32 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
   };
 
   const handleDelete = async () => {
-    const currentstockholdingsid = holdingsArray[0].currentstockholdingsid;
-    const url = "/api/delete-current-holding";
+    if (!holdingId) {
+      console.log("No holding selected.");
+      return;
+    }
 
+    const url = "/api/delete-current-holding";
     try {
       const response = await fetch(url, {
         method: "DELETE",
         headers: {
-          "Conetent-Type": "application/json",
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(currentstockholdingsid),
+        body: JSON.stringify(holdingId),
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to delete ${holdingsArray[0].ticker}`);
+        throw new Error(`Failed to delete holding with ID: ${holdingId}`);
       }
       mutate(`/api/get-current-holdings?email=${userEmail}`);
+      console.log(`Deleted holding with ID: ${holdingId}`);
     } catch (error) {
       console.log("Error deleting position:", error);
     }
 
     setCurrentHoldingsModalToggle(false);
+    setHoldingId(null);
   };
 
   return (
