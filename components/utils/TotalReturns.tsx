@@ -1,76 +1,25 @@
-"use client";
-
-import React, { useState } from "react";
-import useSWR from "swr";
-import { Trade, fetcher } from "./fetcher";
+import React from "react";
 import StartingFundsModal from "../wheelUtils/StartingFundsModal";
 
 interface TotalReturnsProps {
   totalProfits: number;
-  userEmail: string;
+  startingFunds: number;
+  startingFundsModalToggle: boolean;
+  handleCancel: () => void;
+  handleSaveUpdateFunds: () => void;
+  handleUpdateFundsModal: () => void;
+  handleInputChange: (e: React.ChangeEvent<HTMLElement>) => void;
 }
 
 const TotalReturns: React.FC<TotalReturnsProps> = ({
   totalProfits,
-  userEmail,
+  startingFunds,
+  startingFundsModalToggle,
+  handleCancel,
+  handleSaveUpdateFunds,
+  handleUpdateFundsModal,
+  handleInputChange,
 }) => {
-  const { data, error, isLoading } = useSWR(
-    `/api/get-funds?email=${userEmail}`,
-    fetcher
-  );
-
-  const [startingFunds, setStartingFunds] = useState(Number);
-  const [editedStartingFunds, setEditedStartingFunds] = useState(0);
-  const [startingFundsModalToggle, setStartingFundsModalToggle] =
-    useState(false);
-
-  if (error) return <div>Failed to load</div>;
-  if (isLoading) return <div>Loading...</div>;
-
-  if (!startingFunds) {
-    setStartingFunds(
-      Number(data.result.rows[0].funds) ? Number(data.result.rows[0].funds) : 0
-    );
-  }
-
-  const handleSaveUpdateFunds = async () => {
-    const updatedStartingFunds = Number(startingFunds) + editedStartingFunds;
-    const url = `/api/update-funds?email=${userEmail}`;
-
-    try {
-      const response = await fetch(url, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ updatedStartingFunds }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update the funds.");
-      }
-      setStartingFunds(updatedStartingFunds);
-      setEditedStartingFunds(0);
-      handleUpdateFundsModal();
-    } catch (error) {
-      console.error("Error updating funds: ", error);
-    }
-  };
-
-  const handleUpdateFundsModal = () => {
-    setStartingFundsModalToggle(!startingFundsModalToggle);
-  };
-
-  const handleCancel = () => {
-    setStartingFundsModalToggle(!startingFundsModalToggle);
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLElement>) => {
-    const target = e.target as HTMLInputElement | HTMLSelectElement;
-    let funds: number = Number(target.value);
-    setEditedStartingFunds(funds);
-  };
-
   return (
     <>
       <div
@@ -93,8 +42,14 @@ const TotalReturns: React.FC<TotalReturnsProps> = ({
         </thead>
         <tbody className="text-slate-200 text-center">
           <tr>
-            <td>{`$${Number(startingFunds).toFixed(2)}`}</td>
-            <td>{`$${(Number(totalProfits) * 100).toFixed(2)}`}</td>
+            <td>
+              {startingFunds > 0 ? `$${Number(startingFunds).toFixed(2)}` : 0}
+            </td>
+            <td>
+              {totalProfits > 0
+                ? `$${(Number(totalProfits) * 100).toFixed(2)}`
+                : 0}
+            </td>
             <td>
               {startingFunds > 0
                 ? `${(

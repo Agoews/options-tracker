@@ -26,9 +26,13 @@ const PLReturns: React.FC<PLReturnsProps> = ({
         </thead>
         <tbody className="text-slate-200 text-center">
           <tr>
-            <td>${(Number(totalCredits) * 100).toFixed(2)}</td>
-            <td>${(Number(totalDebits) * 100).toFixed(2)}</td>
-            <td>${totalPL.toFixed(2)}</td>
+            <td>
+              $
+              {Number(totalDebits) > 0
+                ? (Number(totalDebits) * 100).toFixed(2)
+                : 0}
+            </td>
+            <td>${Number(totalPL) ? totalPL.toFixed(2) : 0}</td>
           </tr>
         </tbody>
       </table>

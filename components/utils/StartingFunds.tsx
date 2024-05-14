@@ -96,7 +96,11 @@ const StartingFunds: React.FC<StartingFundsProps> = ({
         <tbody className="text-slate-200 text-center">
           <tr>
             <td>{`$${Number(startingFunds).toFixed(2)}`}</td>
-            <td>{`$${(Number(totalCredits) * 100).toFixed(2)}`}</td>
+            <td>
+              {Number(totalCredits) > 0
+                ? `$${(Number(totalCredits) * 100).toFixed(2)}`
+                : 0}
+            </td>
             <td>
               {startingFunds > 0
                 ? `${(
