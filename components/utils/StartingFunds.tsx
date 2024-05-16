@@ -6,72 +6,86 @@ import useSWR from "swr";
 import { fetcher } from "./fetcher";
 
 interface StartingFundsProps {
-  funds: number;
+  // funds: number;
   totalCredits: string | number;
   userEmail: string;
+  startingFunds: number;
+  startingFundsModalToggle: boolean;
+  handleCancel: () => void;
+  handleUpdateFundsModal: () => void;
+  handleSaveUpdateFunds: () => void;
+  handleStartingFundsInputChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => void;
 }
 
 const StartingFunds: React.FC<StartingFundsProps> = ({
-  funds,
+  // funds,
   totalCredits,
   userEmail,
+  startingFunds,
+  startingFundsModalToggle,
+  handleCancel,
+  handleUpdateFundsModal,
+  handleSaveUpdateFunds,
+  handleStartingFundsInputChange,
 }) => {
-  const { data, error, isLoading } = useSWR(
-    `/api/get-funds?email=${userEmail}`,
-    fetcher
-  );
+  // const { data, error, isLoading } = useSWR(
+  //   `/api/get-funds?email=${userEmail}`,
+  //   fetcher
+  // );
 
-  const [startingFunds, setStartingFunds] = useState(0);
-  const [editedStartingFunds, setEditedStartingFunds] = useState(0);
-  const [startingFundsModalToggle, setStartingFundsModalToggle] =
-    useState(false);
+  // const [startingFunds, setStartingFunds] = useState(0);
+  // const [editedStartingFunds, setEditedStartingFunds] = useState(0);
+  // const [startingFundsModalToggle, setStartingFundsModalToggle] =
+  //   useState(false);
 
-  if (error) return <div>Failed to load</div>;
-  if (isLoading) return <div>Loading...</div>;
+  // if (error) return <div>Failed to load</div>;
+  // if (isLoading) return <div>Loading...</div>;
 
-  if (!startingFunds) {
-    setStartingFunds(
-      Number(data.result.rows[0].funds) ? Number(data.result.rows[0].funds) : 0
-    );
-  }
+  // if (!startingFunds) {
+  //   setStartingFunds(
+  //     Number(data.result.rows[0].funds) ? Number(data.result.rows[0].funds) : 0
+  //   );
+  // }
 
-  const handleUpdateFundsModal = () => {
-    setStartingFundsModalToggle(!startingFundsModalToggle);
-  };
+  // const handleUpdateFundsModal = () => {
+  //   setStartingFundsModalToggle(!startingFundsModalToggle);
+  // };
 
-  const handleSaveUpdateFunds = async () => {
-    const updatedStartingFunds = Number(startingFunds) + editedStartingFunds;
-    const url = `/api/update-funds?email=${userEmail}`;
+  // const handleSaveUpdateFunds = async () => {
+  //   const updatedStartingFunds = Number(startingFunds) + editedStartingFunds;
+  //   const url = `/api/update-funds?email=${userEmail}`;
 
-    try {
-      const response = await fetch(url, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ updatedStartingFunds }),
-      });
+  //   try {
+  //     const response = await fetch(url, {
+  //       method: "PUT",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ updatedStartingFunds }),
+  //     });
 
-      if (!response.ok) {
-        throw new Error("Failed to update the funds.");
-      }
-      setStartingFunds(updatedStartingFunds);
-      setEditedStartingFunds(0);
-      handleUpdateFundsModal();
-    } catch (error) {
-      console.error("Error updating funds: ", error);
-    }
-  };
+  //     if (!response.ok) {
+  //       throw new Error("Failed to update the funds.");
+  //     }
+  //     setStartingFunds(updatedStartingFunds);
+  //     setEditedStartingFunds(0);
+  //     handleUpdateFundsModal();
+  //   } catch (error) {
+  //     console.error("Error updating funds: ", error);
+  //   }
+  // };
 
-  const handleCancel = () => {
-    setStartingFundsModalToggle(!startingFundsModalToggle);
-  };
+  // const handleCancel = () => {
+  //   setStartingFundsModalToggle(!startingFundsModalToggle);
+  // };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLElement>) => {
-    const target = e.target as HTMLInputElement | HTMLSelectElement;
-    let funds: number = Number(target.value);
-    setEditedStartingFunds(funds);
-  };
+  // const handleStartingFundsInputChange = (e: React.ChangeEvent<HTMLElement>) => {
+  //   const target = e.target as HTMLInputElement | HTMLSelectElement;
+  //   let funds: number = Number(target.value);
+  //   setEditedStartingFunds(funds);
+  // };
 
   return (
     <>
@@ -124,7 +138,7 @@ const StartingFunds: React.FC<StartingFundsProps> = ({
       <StartingFundsModal
         startingFunds={startingFunds}
         startingFundsModalToggle={startingFundsModalToggle}
-        handleInputChange={handleInputChange}
+        handleStartingFundsInputChange={handleStartingFundsInputChange}
         handleSaveUpdateFunds={handleSaveUpdateFunds}
         handleCancel={handleCancel}
       />

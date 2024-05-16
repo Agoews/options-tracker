@@ -3,7 +3,9 @@ import React from "react";
 interface StartingFundsModalProps {
   startingFunds: number;
   startingFundsModalToggle: boolean;
-  handleInputChange: (e: React.ChangeEvent<HTMLElement>) => void;
+  handleStartingFundsInputChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => void;
   handleSaveUpdateFunds: () => void;
   handleCancel: () => void;
 }
@@ -11,7 +13,7 @@ interface StartingFundsModalProps {
 const StartingFundsModal: React.FC<StartingFundsModalProps> = ({
   startingFunds,
   startingFundsModalToggle,
-  handleInputChange,
+  handleStartingFundsInputChange,
   handleSaveUpdateFunds,
   handleCancel,
 }) => {
@@ -28,7 +30,7 @@ const StartingFundsModal: React.FC<StartingFundsModalProps> = ({
           type="text"
           placeholder="Type here"
           onChange={(e) => {
-            handleInputChange(e);
+            handleStartingFundsInputChange(e);
           }}
           className="input input-bordered w-3/  4"
         />

@@ -71,7 +71,9 @@ const TotalReturnsTable: React.FC<TotalReturnsTableProps> = ({ userEmail }) => {
     setStartingFundsModalToggle(!startingFundsModalToggle);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLElement>) => {
+  const handleStartingFundsInputChange = (
+    e: React.ChangeEvent<HTMLElement>
+  ) => {
     const target = e.target as HTMLInputElement | HTMLSelectElement;
     let funds: number = Number(target.value);
     setEditedStartingFunds(funds);
@@ -139,7 +141,9 @@ const TotalReturnsTable: React.FC<TotalReturnsTableProps> = ({ userEmail }) => {
                   handleCancel={handleCancel}
                   handleSaveUpdateFunds={handleSaveUpdateFunds}
                   handleUpdateFundsModal={handleUpdateFundsModal}
-                  handleInputChange={handleInputChange}
+                  handleStartingFundsInputChange={
+                    handleStartingFundsInputChange
+                  }
                 />
               </div>
               <div className="col-span-1 xl:col-span-1"></div>

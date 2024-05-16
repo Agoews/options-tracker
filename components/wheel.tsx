@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useSWR, { mutate } from "swr";
 import { fetcher, Trade } from "./utils/fetcher";
 import { tradeTableFormatter } from "./utils/tradeTableFormatter";
@@ -36,9 +36,22 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
   };
 
   // fetch all data from /api/get-trades
-  const { data, error, isLoading } = useSWR(
+  const { data: tradesData, error: tradesError } = useSWR(
     `/api/get-trades?email=${userEmail}`,
     fetcher
+  );
+
+  // fetch funds data
+  const { data: fundsData, error: fundsError } = useSWR(
+    `/api/get-funds?email=${userEmail}`,
+    fetcher
+  );
+
+  console.log(
+    "tradesData in wheel: ",
+    tradesData,
+    "fundsData in wheel: ",
+    fundsData
   );
 
   const [editingTradeId, setEditingTradeId] = useState<number | null>(null);
@@ -49,8 +62,59 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
   const [rolloutModalToggle, setRolloutModalToggle] = useState(false);
   const [assignmentModalToggle, setAssignmentModalToggle] = useState(false);
 
-  if (error) return <div>Failed to load</div>;
-  if (isLoading) return <div>Loading...</div>;
+  const [startingFunds, setStartingFunds] = useState(0);
+  const [editedStartingFunds, setEditedStartingFunds] = useState(0);
+  const [startingFundsModalToggle, setStartingFundsModalToggle] =
+    useState(false);
+
+  useEffect(() => {
+    if (fundsData) {
+      setStartingFunds(
+        Number(fundsData.result.rows[0].funds)
+          ? Number(fundsData.result.rows[0].funds)
+          : 0
+      );
+    }
+  }, [fundsData]);
+
+  if (tradesError || fundsError) return <div>Failed to load</div>;
+  if (!tradesData || !fundsData) return <div>Loading...</div>;
+
+  const handleUpdateFundsModal = () => {
+    setStartingFundsModalToggle(!startingFundsModalToggle);
+  };
+
+  const handleSaveUpdateFunds = async () => {
+    const updatedStartingFunds = Number(startingFunds) + editedStartingFunds;
+    const url = `/api/update-funds?email=${userEmail}`;
+
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ updatedStartingFunds }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update the funds.");
+      }
+      setStartingFunds(updatedStartingFunds);
+      setEditedStartingFunds(0);
+      handleUpdateFundsModal();
+    } catch (error) {
+      console.error("Error updating funds: ", error);
+    }
+  };
+
+  const handleStartingFundsInputChange = (
+    e: React.ChangeEvent<HTMLElement>
+  ) => {
+    const target = e.target as HTMLInputElement | HTMLSelectElement;
+    let funds: number = Number(target.value);
+    setEditedStartingFunds(funds);
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLElement>,
@@ -154,7 +218,7 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
       console.error("Error updating closed trade: ", error);
     }
 
-    aggregatedTrades = tradeTableFormatter(data.result.rows);
+    aggregatedTrades = tradeTableFormatter(tradesData.result.rows);
     setEditingTradeId(null);
     setClosedTradeModalToggle(false);
   };
@@ -193,18 +257,16 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
     setAssignmentModalToggle(true);
   };
 
-  const handleAssignmentModalCancel = () => {
-    setAssignmentModalToggle(false);
-  };
-
   const handleCancel = () => {
     setEditingTradeId(null);
     setOpenTradeModalToggle(false);
     setClosedTradeModalToggle(false);
     setRolloutModalToggle(false);
+    setStartingFundsModalToggle(false);
+    setAssignmentModalToggle(false);
   };
 
-  let aggregatedTrades = tradeTableFormatter(data.result.rows);
+  let aggregatedTrades = tradeTableFormatter(tradesData.result.rows);
 
   return (
     <div className="space-y-4 xl:space-y-0">
@@ -229,7 +291,6 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
           handleRolloutModalCancel={handleRolloutModalCancel}
           handleAssignment={handleAssignment}
           handleOpenAssignmentModal={handleOpenAssignmentRolloutModal}
-          handleAssignmentModalCancel={handleAssignmentModalCancel}
           handleCancel={handleCancel}
           openTradeModalToggle={openTradeModalToggle}
           rolloutModalToggle={rolloutModalToggle}
@@ -243,7 +304,16 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
           closedTradeModalToggle={closedTradeModalToggle}
         />
       </div>
-      <TotalsTable aggregatedTrades={aggregatedTrades} userEmail={userEmail} />
+      <TotalsTable
+        aggregatedTrades={aggregatedTrades}
+        userEmail={userEmail}
+        startingFunds={startingFunds}
+        startingFundsModalToggle={startingFundsModalToggle}
+        handleCancel={handleCancel}
+        handleStartingFundsInputChange={handleStartingFundsInputChange}
+        handleUpdateFundsModal={handleUpdateFundsModal}
+        handleSaveUpdateFunds={handleSaveUpdateFunds}
+      />
     </div>
   );
 };

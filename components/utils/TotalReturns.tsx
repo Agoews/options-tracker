@@ -8,7 +8,7 @@ interface TotalReturnsProps {
   handleCancel: () => void;
   handleSaveUpdateFunds: () => void;
   handleUpdateFundsModal: () => void;
-  handleInputChange: (e: React.ChangeEvent<HTMLElement>) => void;
+  handleStartingFundsInputChange: (e: React.ChangeEvent<HTMLElement>) => void;
 }
 
 const TotalReturns: React.FC<TotalReturnsProps> = ({
@@ -18,7 +18,7 @@ const TotalReturns: React.FC<TotalReturnsProps> = ({
   handleCancel,
   handleSaveUpdateFunds,
   handleUpdateFundsModal,
-  handleInputChange,
+  handleStartingFundsInputChange,
 }) => {
   return (
     <>
@@ -72,7 +72,7 @@ const TotalReturns: React.FC<TotalReturnsProps> = ({
       <StartingFundsModal
         startingFunds={startingFunds}
         startingFundsModalToggle={startingFundsModalToggle}
-        handleInputChange={handleInputChange}
+        handleStartingFundsInputChange={handleStartingFundsInputChange}
         handleSaveUpdateFunds={handleSaveUpdateFunds}
         handleCancel={handleCancel}
       />

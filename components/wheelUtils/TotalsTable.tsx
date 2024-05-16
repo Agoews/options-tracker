@@ -37,22 +37,36 @@ interface TotalsTableProps {
     };
   };
   userEmail: string;
+  startingFunds: number;
+  startingFundsModalToggle: boolean;
+  handleStartingFundsInputChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => void;
+  handleUpdateFundsModal: () => void;
+  handleSaveUpdateFunds: () => void;
+  handleCancel: () => void;
 }
 
 const TotalsTable: React.FC<TotalsTableProps> = ({
   aggregatedTrades,
   userEmail,
+  startingFunds,
+  startingFundsModalToggle,
+  handleStartingFundsInputChange,
+  handleUpdateFundsModal,
+  handleSaveUpdateFunds,
+  handleCancel,
 }) => {
-  const { data, error, isLoading } = useSWR(
-    `/api/get-trades?email=${userEmail}`,
-    fetcher
-  );
+  // const { data, error, isLoading } = useSWR(
+  //   `/api/get-trades?email=${userEmail}`,
+  //   fetcher
+  // );
 
-  if (error) return <div>Failed to load</div>;
-  if (isLoading) return <div>Loading...</div>;
+  // if (error) return <div>Failed to load</div>;
+  // if (isLoading) return <div>Loading...</div>;
 
-  console.log(data.result.rows);
-  const funds = Number(data.result.rows[0].funds);
+  // console.log(data.result);
+  // const funds = Number(data.result.rows[0].funds);
 
   let totalDebits = 0;
   let totalCredits = 0;
@@ -78,9 +92,15 @@ const TotalsTable: React.FC<TotalsTableProps> = ({
         totalPL={totalPL}
       />
       <StartingFunds
-        funds={funds}
+        // funds={funds}
         totalCredits={totalCredits}
         userEmail={userEmail}
+        startingFunds={startingFunds}
+        startingFundsModalToggle={startingFundsModalToggle}
+        handleStartingFundsInputChange={handleStartingFundsInputChange}
+        handleSaveUpdateFunds={handleSaveUpdateFunds}
+        handleCancel={handleCancel}
+        handleUpdateFundsModal={handleUpdateFundsModal}
       />
     </div>
   );

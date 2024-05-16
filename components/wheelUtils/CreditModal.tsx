@@ -14,7 +14,6 @@ interface CreditModalProps {
   handleRolloutModalCancel: () => void;
   handleAssignment: () => void;
   handleOpenAssignmentModal: () => void;
-  handleAssignmentModalCancel: () => void;
   handleCancel: () => void;
   openTradeModalToggle: boolean;
   rolloutModalToggle: boolean;
@@ -29,7 +28,6 @@ const CreditModal: React.FC<CreditModalProps> = ({
   handleRolloutModalCancel,
   handleAssignment,
   handleOpenAssignmentModal,
-  handleAssignmentModalCancel,
   handleCancel,
   openTradeModalToggle,
   rolloutModalToggle,
@@ -174,7 +172,7 @@ const CreditModal: React.FC<CreditModalProps> = ({
       <AssignedModal
         editedTrade={editedTrade}
         assignmentModalToggle={assignmentModalToggle}
-        handleAssignmentModalCancel={handleAssignmentModalCancel}
+        handleCancel={handleCancel}
         handleAssignment={handleAssignment}
       />
     </div>

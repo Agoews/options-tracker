@@ -4,14 +4,14 @@ import { Trade } from "../utils/fetcher";
 interface AssignmentModalProps {
   editedTrade: Trade;
   assignmentModalToggle: boolean;
-  handleAssignmentModalCancel: () => void;
+  handleCancel: () => void;
   handleAssignment: () => void;
 }
 
 const AssignedModal: React.FC<AssignmentModalProps> = ({
   editedTrade,
   assignmentModalToggle,
-  handleAssignmentModalCancel,
+  handleCancel,
   handleAssignment,
 }) => {
   if (!assignmentModalToggle) return null;
@@ -53,7 +53,7 @@ const AssignedModal: React.FC<AssignmentModalProps> = ({
           </button>
           <button
             className="btn btn-sm bg-[#002f00] text-[#00ee00] border-[#00ee00]"
-            onClick={handleAssignmentModalCancel}
+            onClick={handleCancel}
           >
             Cancel
           </button>
