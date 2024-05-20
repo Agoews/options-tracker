@@ -6,6 +6,7 @@ export async function POST(request: Request) {
     const url = new URL(request.url);
     const userEmail = url.searchParams.get("email");
 
+    console.log("request data in server", await request.json());
     if (!userEmail) {
       return NextResponse.json(
         { error: "userEmail is required" },

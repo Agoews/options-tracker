@@ -7,6 +7,16 @@ import SellSharesModal from "./SellSharesModal";
 import AddHoldingModal from "./AddHoldingModal";
 import { useSession } from "next-auth/react";
 
+interface HoldingData {
+  currentstockholdingsid: number;
+  ticker: string;
+  quantity: number;
+  entryprice: number;
+  costbasis: number;
+  optionsprofit: number;
+  openoptions: string;
+  datepurchased: string;
+}
 interface OpenHoldingsProps {
   userEmail: string;
 }
@@ -23,7 +33,7 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
   const [sellSharesModalToggle, setSellSharesModalToggle] = useState(false);
   const [addPositionToggle, setAddPositionToggle] = useState(false);
   const [holdingId, setHoldingId] = useState<number | null>(null);
-  const [holdingData, setHoldingData] = useState<null>(null);
+  const [holdingData, setHoldingData] = useState<HoldingData | null>(null);
   const [coveredCallStrike, setCoveredCallStrike] = useState<string | null>(
     null
   );
@@ -73,6 +83,9 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
     console.log("sell shares clicked");
     setSellSharesModalToggle(true);
     setCurrentHoldingsModalToggle(false);
+    if (holdingData?.ticker) {
+      setTicker(holdingData?.ticker);
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -87,7 +100,14 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
 
   const handleSellShares = async (e: SyntheticEvent) => {
     e.preventDefault();
-    console.log("Quantity:", closedQuantity, "Price:", exitPrice);
+    console.log(
+      "Quantity:",
+      closedQuantity,
+      "Price:",
+      exitPrice,
+      "ticker",
+      ticker
+    );
 
     try {
       const response = await fetch("/api/sell-current-holdings", {
@@ -95,8 +115,8 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
         body: JSON.stringify({
           userEmail,
           ticker,
-          quantity,
-          entryPrice,
+          closedQuantity,
+          exitPrice,
           holdingId,
         }),
       });
