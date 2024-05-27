@@ -51,6 +51,10 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
   const [ticker, setTicker] = useState<string | null>(null);
   const [quantity, setQuantity] = useState<string | null>(null);
   const [entryPrice, setEntryPrice] = useState<string | null>(null);
+  const [quantityError, setQuantityError] = useState<string | null>(null);
+  const [quantityTouched, setQuantityTouched] = useState<boolean>(false);
+  const [priceError, setPriceError] = useState<string | null>(null);
+  const [priceTouched, setPriceTouched] = useState<boolean>(false);
 
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
@@ -100,6 +104,25 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
 
   const handleSellShares = async (e: SyntheticEvent) => {
     e.preventDefault();
+    let valid = true;
+
+    if (!closedQuantity) {
+      setQuantityError("Please enter the quantity.");
+      setQuantityTouched(true);
+      valid = false;
+    } else {
+      setQuantityError("");
+    }
+
+    if (!exitPrice) {
+      setPriceError("Please enter the price.");
+      setPriceTouched(true);
+      valid = false;
+    } else {
+      setPriceError("");
+    }
+
+    if (!valid) return;
 
     try {
       const response = await fetch("/api/sell-current-holdings", {
@@ -112,6 +135,12 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
           holdingId,
         }),
       });
+      if (response.ok) {
+        setSellSharesModalToggle(false);
+        mutate(`/api/get-current-holdings?email=${userEmail}`);
+      } else {
+        console.log("Error selling shares");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -258,14 +287,13 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
         setExitPrice={setExitPrice}
         handleSellShares={handleSellShares}
         handleCancel={handleCancel}
+        quantityError={quantityError}
+        quantityTouched={quantityTouched}
+        priceError={priceError}
+        priceTouched={priceTouched}
       />
     </div>
   );
 };
 
 export default OpenHoldings;
-
-// make the assignments work for covered calls as well as CSP
-// modal for current holdings
-// sell calls on current holdings
-// sell holdings

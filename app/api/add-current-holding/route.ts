@@ -4,22 +4,50 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest, response: NextResponse) {
   const { userEmail, ticker, quantity, entryPrice } = await request.json();
 
-  const totalValue = quantity * entryPrice;
-  const maxOptions = Math.floor(quantity / 100) * 100;
+  // Convert incoming data to numbers
+  const quantityNum = Number(quantity);
+  const entryPriceNum = Number(entryPrice);
+
+  const totalValue = quantityNum * entryPriceNum;
+  const maxOptions = Math.floor(quantityNum / 100) * 100;
 
   try {
-    // Insert the new trade into the database
-    const result = await sql`
-      INSERT INTO CurrentStockHoldings (
-        email, ticker, quantity, entryprice, totalvalue, costbasis, openoptions, maxoptions, datepurchased
-      )
-      VALUES (
-        ${userEmail}, ${ticker}, ${quantity}, ${entryPrice}, ${totalValue}, ${entryPrice}, 0, ${maxOptions}, CURRENT_DATE
-      );
+    // Check if the record already exists
+    const existingRecord = await sql`
+      SELECT * FROM CurrentStockHoldings
+      WHERE Email = ${userEmail} AND Ticker = ${ticker};
     `;
 
-    return NextResponse.json({ result }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    if (existingRecord.rowCount > 0) {
+      // Update the existing record
+      const newQuantity = Number(existingRecord.rows[0].quantity) + quantityNum;
+      const newTotalValue =
+        Number(existingRecord.rows[0].totalvalue) + totalValue;
+      const newMaxOptions = Math.floor(newQuantity / 100) * 100;
+
+      await sql`
+        UPDATE CurrentStockHoldings
+        SET
+          Quantity = ${newQuantity},
+          TotalValue = ${newTotalValue},
+          MaxOptions = ${newMaxOptions}
+        WHERE
+          Email = ${userEmail} AND Ticker = ${ticker};
+      `;
+    } else {
+      // Insert a new record
+      await sql`
+        INSERT INTO CurrentStockHoldings (
+          Email, Ticker, Quantity, EntryPrice, TotalValue, CostBasis, OpenOptions, MaxOptions, DatePurchased
+        )
+        VALUES (
+          ${userEmail}, ${ticker}, ${quantityNum}, ${entryPriceNum}, ${totalValue}, ${entryPriceNum}, 0, ${maxOptions}, CURRENT_DATE
+        );
+      `;
+    }
+
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

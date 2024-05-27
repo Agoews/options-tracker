@@ -9,6 +9,10 @@ interface SellSharesModalProps {
   setExitPrice: any;
   handleSellShares: (e: React.SyntheticEvent) => Promise<void>;
   handleCancel: () => void;
+  quantityError: string | null;
+  quantityTouched: boolean;
+  priceError: string | null;
+  priceTouched: boolean;
 }
 
 const SellSharesModal: React.FC<SellSharesModalProps> = ({
@@ -20,6 +24,10 @@ const SellSharesModal: React.FC<SellSharesModalProps> = ({
   setExitPrice,
   handleSellShares,
   handleCancel,
+  quantityError,
+  quantityTouched,
+  priceError,
+  priceTouched,
 }) => {
   if (!sellSharesModalToggle) return null;
 
@@ -43,6 +51,11 @@ const SellSharesModal: React.FC<SellSharesModalProps> = ({
               required
               className="bg-slate-700 text-slate-200 rounded-md flex-1 col-span-2 text-center"
             />
+            {quantityTouched && quantityError && (
+              <p className="text-red-500 text-xs col-span-3 text-center">
+                {quantityError}
+              </p>
+            )}
           </div>
           <div className="grid grid-cols-3 gap-4 mb-4">
             <label className="text-[#00ee00] text-left col-span-1">
@@ -55,6 +68,11 @@ const SellSharesModal: React.FC<SellSharesModalProps> = ({
               required
               className="bg-slate-700 text-slate-200 rounded-md flex-1 col-span-2 text-center"
             />
+            {priceTouched && priceError && (
+              <p className="text-red-500 text-xs col-span-3 text-center">
+                {priceError}
+              </p>
+            )}
           </div>
           <div className="modal-action items-center justify-center">
             <button

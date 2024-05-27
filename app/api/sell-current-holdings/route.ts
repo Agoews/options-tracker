@@ -3,53 +3,95 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    const { userEmail, ticker, closedQuantity, exitPrice, holdingId } =
+    // const log = await request.json();
+    // console.log("request.json(): ", log);
+    const { userEmail, ticker, closedQuantity, exitPrice } =
       await request.json();
-    if (!userEmail || !ticker || !closedQuantity || !exitPrice || !holdingId) {
+    if (!userEmail || !ticker || !closedQuantity || !exitPrice) {
       return NextResponse.json(
         { error: "All fields are required" },
         { status: 400 }
       );
     }
 
-    // Retrieve current holding
-    const currentHolding = await sql`
-      SELECT * FROM CurrentStockHoldings
-      WHERE CurrentStockHoldingsID = ${holdingId}
+    // Check if the ticker already exists in the SoldStockHoldings for the user
+    const existingSoldHolding = await sql`
+      SELECT * FROM SoldStockHoldings
+      WHERE Email = ${userEmail} AND Ticker = ${ticker}
     `;
 
-    if (currentHolding.rowCount === 0) {
-      throw new Error("Holding not found");
-    }
+    console.log("existingSoldHolding: ", existingSoldHolding.rows[0]);
+    if (existingSoldHolding.rowCount > 0) {
+      // Update the existing sold holding
+      const holding = existingSoldHolding.rows[0];
+      const newQuantity = holding.quantity + closedQuantity;
+      const newCostBasis =
+        (holding.costbasis * holding.quantity +
+          holding.entryPrice * closedQuantity) /
+        newQuantity;
 
-    const holding = currentHolding.rows[0];
+      console.log("holdings: ", holding);
+      await sql`
+        UPDATE SoldStockHoldings
+        SET Quantity = ${newQuantity}, EntryPrice = ${holding.entryprice}, CostBasis = ${newCostBasis}
+        WHERE SoldStockHoldingsID = ${holding.soldstockholdingsid}
+      `;
 
-    // Insert into SoldStockHoldings
-    await sql`
-      INSERT INTO SoldStockHoldings (
-        Email, Ticker, Quantity, EntryPrice, ExitPrice, SaleDate, CostBasis
-      ) VALUES (
-        ${userEmail}, ${ticker}, ${closedQuantity}, ${holding.entryprice}, ${exitPrice}, NOW(), ${holding.costbasis}
-      )
-    `;
-
-    // Update the quantity in CurrentStockHoldings or delete if fully sold
-    const remainingQuantity = holding.quantity - closedQuantity;
-    if (remainingQuantity > 0) {
       await sql`
         UPDATE CurrentStockHoldings
-        SET Quantity = ${remainingQuantity}
-        WHERE CurrentStockHoldingsID = ${holdingId}
+        SET
+          Quantity = ${existingSoldHolding.rows[0].quantity - closedQuantity},
+          MaxOptions = ${
+            (existingSoldHolding.rows[0].quantity - closedQuantity) / 100
+          }
+        WHERE
+          Email = ${userEmail} AND Ticker = ${ticker}
       `;
     } else {
+      const existingSoldHolding = await sql`
+        SELECT * FROM CurrentStockHoldings
+        WHERE Email = ${userEmail} AND Ticker = ${ticker}
+      `;
+
+      // console.log(
+      //   "existingSoldHolding after: ",
+      //   existingSoldHolding.rows[0],
+      //   "userEmail: ",
+      //   userEmail,
+      //   "ticker: ",
+      //   ticker,
+      //   "closedQuantity: ",
+      //   closedQuantity,
+      //   "entryPrice: ",
+      //   existingSoldHolding.rows[0].entryprice,
+      //   "costbasis: ",
+      //   existingSoldHolding.rows[0].costbasis
+      // );
+      // Insert a new holding into CurrentStockHoldings
       await sql`
-        DELETE FROM CurrentStockHoldings
-        WHERE CurrentStockHoldingsID = ${holdingId}
+        INSERT INTO SoldStockHoldings (
+          Email, Ticker, Quantity, ExitPrice, EntryPrice, SaleDate, CostBasis
+        ) VALUES (
+          ${userEmail}, ${ticker}, ${closedQuantity}, ${exitPrice}, ${Number(
+        existingSoldHolding.rows[0].entryprice
+      )}, NOW(), ${Number(existingSoldHolding.rows[0].costbasis)}
+        )
+      `;
+
+      await sql`
+        UPDATE CurrentStockHoldings
+        SET
+          Quantity = ${existingSoldHolding.rows[0].quantity - closedQuantity},
+          MaxOptions = ${
+            (existingSoldHolding.rows[0].quantity - closedQuantity) / 100
+          }
+        WHERE
+          Email = ${userEmail} AND Ticker = ${ticker}
       `;
     }
 
     return NextResponse.json(
-      { message: "Stock sold successfully" },
+      { message: "Stock holding updated successfully" },
       { status: 200 }
     );
   } catch (error) {
