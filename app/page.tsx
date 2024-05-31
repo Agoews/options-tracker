@@ -14,7 +14,7 @@ export default function Home() {
             <p className="mb-5">
               {session && session.user
                 ? `Welcome ${session.user.name?.split(" ", 1)}`
-                : "Welcome to your all in one trade tracker. This is a work in progress! A Gmail account is the only way to log in at the moment."}
+                : "Welcome to your all in one trade tracker. This is a work in progress! A Gmail account is the only way to log in at the moment. This is a proof of concept and not intended for use right now."}
             </p>
             <Link
               href={session && session.user ? "/summary" : "/api/auth/signin"}
