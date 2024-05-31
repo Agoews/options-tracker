@@ -30,6 +30,12 @@ export async function POST(request: NextRequest, response: NextResponse) {
         SET
           Quantity = ${newQuantity},
           TotalValue = ${newTotalValue},
+          CostBasis = ${
+            (quantityNum * entryPriceNum +
+              existingRecord.rows[0].entryprice *
+                existingRecord.rows[0].quantity) /
+            newQuantity
+          },
           MaxOptions = ${newMaxOptions}
         WHERE
           Email = ${userEmail} AND Ticker = ${ticker};

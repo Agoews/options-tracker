@@ -48,10 +48,8 @@ CREATE TABLE SoldStockHoldings (
     Email VARCHAR(255) NOT NULL REFERENCES Users(Email) ON DELETE CASCADE,
     Ticker VARCHAR(255) NOT NULL,
     Quantity DECIMAL NOT NULL,
-    EntryPrice DECIMAL NOT NULL,
     ExitPrice DECIMAL NOT NULL,
-    SaleDate DATE NOT NULL,
-    CostBasis DECIMAL
+    SaleDate DATE NOT NULL
 );
 
 -- Insert dummy data into Users table
