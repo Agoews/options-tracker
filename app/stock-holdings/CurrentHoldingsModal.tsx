@@ -11,6 +11,7 @@ interface CurrentHoldingsModalProps {
   setCoveredCallPremium: (value: string | null) => void;
   setCoveredCallQuantity: (value: string | null) => void;
   setCoveredCallExpiration: (value: string | null) => void;
+  setCoveredCallStockPrice: (value: string | null) => void;
 }
 
 const CurrentHoldingsModal: React.FC<CurrentHoldingsModalProps> = ({
@@ -24,6 +25,7 @@ const CurrentHoldingsModal: React.FC<CurrentHoldingsModalProps> = ({
   setCoveredCallPremium,
   setCoveredCallQuantity,
   setCoveredCallExpiration,
+  setCoveredCallStockPrice,
 }) => {
   if (!currentHoldingsModalToggle) {
     return null;
@@ -70,6 +72,18 @@ const CurrentHoldingsModal: React.FC<CurrentHoldingsModalProps> = ({
               type="text"
               placeholder={"Maximum " + holdingData.quantity / 100}
               onChange={(e) => setCoveredCallQuantity(e.target.value)}
+              required
+              className="bg-slate-700 text-slate-200 rounded-md flex-1 col-span-2 text-center"
+            />
+          </div>
+          <div className="grid grid-cols-3 gap-4 mb-4">
+            <label className="text-[#00ee00] text-left col-span-1">
+              Price:
+            </label>
+            <input
+              type="text"
+              placeholder={"Current Stock Price"}
+              onChange={(e) => setCoveredCallStockPrice(e.target.value)}
               required
               className="bg-slate-700 text-slate-200 rounded-md flex-1 col-span-2 text-center"
             />

@@ -26,8 +26,6 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
     fetcher
   );
 
-  const initialCallState = {};
-
   const [currentHoldingsModalToggle, setCurrentHoldingsModalToggle] =
     useState(false);
   const [sellSharesModalToggle, setSellSharesModalToggle] = useState(false);
@@ -44,6 +42,9 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
     null
   );
   const [coveredCallExpiration, setCoveredCallExpiration] = useState<
+    string | null
+  >(null);
+  const [coveredCallStockPrice, setCoveredCallStockPrice] = useState<
     string | null
   >(null);
   const [exitPrice, setExitPrice] = useState<string | null>(null);
@@ -63,7 +64,11 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
+    const ticker = holdingData?.ticker;
     console.log(
+      userEmail,
+      ticker,
+      coveredCallStockPrice,
       coveredCallStrike,
       coveredCallPremium,
       coveredCallQuantity,
@@ -273,6 +278,7 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
         setCoveredCallPremium={setCoveredCallPremium}
         setCoveredCallQuantity={setCoveredCallQuantity}
         setCoveredCallExpiration={setCoveredCallExpiration}
+        setCoveredCallStockPrice={setCoveredCallStockPrice}
         handleSubmit={handleSubmit}
         handleOpenSellSharesModal={handleOpenSellSharesModal}
         handleDelete={handleDelete}
