@@ -75,12 +75,37 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
       coveredCallExpiration
     );
 
+    try {
+      const response = await fetch("/api/write-call", {
+        method: "POST",
+        body: JSON.stringify({
+          userEmail,
+          ticker,
+          coveredCallStockPrice,
+          coveredCallStrike,
+          coveredCallPremium,
+          coveredCallQuantity,
+          coveredCallExpiration,
+        }),
+      });
+      if (response.ok) {
+        setCurrentHoldingsModalToggle(false);
+        setCurrentHoldingsModalToggle(false);
+        mutate(`/api/get-current-holdings?email=${userEmail}`);
+      } else {
+        console.log("Error selling shares");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    setCurrentHoldingsModalToggle(false);
+    setCurrentHoldingsModalToggle(false);
+    mutate(`/api/get-current-holdings?email=${userEmail}`);
+
     setCoveredCallStrike(null);
     setCoveredCallPremium(null);
     setCoveredCallQuantity(null);
     setCoveredCallExpiration(null);
-    setCurrentHoldingsModalToggle(false);
-    setCurrentHoldingsModalToggle(false);
   };
 
   const handleOpenAddPositionModal = () => {

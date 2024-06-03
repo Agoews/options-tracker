@@ -9,7 +9,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
   const entryPriceNum = Number(entryPrice);
 
   const totalValue = quantityNum * entryPriceNum;
-  const maxOptions = Math.floor(quantityNum / 100) * 100;
+  const maxOptions = Math.floor(quantityNum / 100);
 
   try {
     // Check if the record already exists
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
       const newQuantity = Number(existingRecord.rows[0].quantity) + quantityNum;
       const newTotalValue =
         Number(existingRecord.rows[0].totalvalue) + totalValue;
-      const newMaxOptions = Math.floor(newQuantity / 100) * 100;
+      const newMaxOptions = Math.floor(newQuantity / 100);
 
       await sql`
         UPDATE CurrentStockHoldings
