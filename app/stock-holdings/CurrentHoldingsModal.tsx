@@ -70,7 +70,7 @@ const CurrentHoldingsModal: React.FC<CurrentHoldingsModalProps> = ({
             </label>
             <input
               type="text"
-              placeholder={"Maximum " + holdingData.quantity / 100}
+              placeholder={"Maximum " + holdingData.maxoptions}
               onChange={(e) => setCoveredCallQuantity(e.target.value)}
               required
               className="bg-slate-700 text-slate-200 rounded-md flex-1 col-span-2 text-center"

@@ -17,6 +17,7 @@ export async function POST(request: Request) {
   const premiumNum = Number(coveredCallPremium);
   const quantityNum = Number(coveredCallQuantity);
 
+  // Get CurrentStockHoldings data
   const currentHoldingsData = await sql`
   SELECT * FROM CurrentStockHoldings WHERE Email = ${userEmail} AND Ticker = ${ticker}
   `;
@@ -24,36 +25,17 @@ export async function POST(request: Request) {
   const currentOptionsProfitNum = Number(
     currentHoldingsData.rows[0].optionsprofit
   );
+
   const currentCostBasisNum = Number(currentHoldingsData.rows[0].costbasis);
   const currentOpenOptions = Number(currentHoldingsData.rows[0].openoptions);
   const currentMaxOptions = Number(currentHoldingsData.rows[0].maxoptions);
 
-  console.log(
-    "server data: ",
-    userEmail,
-    ticker,
-    "stockPriceNum",
-    stockPriceNum,
-    "strikeNum",
-    strikeNum,
-    "premiumNum",
-    premiumNum,
-    "quantityNum",
-    quantityNum,
-    "currentOptionsProfitNum",
-    currentOptionsProfitNum,
-    "currentCostBasisNum",
-    currentCostBasisNum,
-    "currentOpenOptions",
-    currentOpenOptions,
-    "currentMaxOptions",
-    currentMaxOptions
-  );
   try {
-    // Get CurrentStockHoldings data
-
     const optionsProfit = currentOptionsProfitNum + premiumNum * quantityNum;
-    const costBasis = currentCostBasisNum - premiumNum * quantityNum;
+    const costBasis =
+      currentCostBasisNum - premiumNum * quantityNum
+        ? currentCostBasisNum - premiumNum * quantityNum > 0
+        : 0;
     const openOptions = currentOpenOptions + quantityNum;
     const maxOptions = currentMaxOptions - quantityNum;
 
