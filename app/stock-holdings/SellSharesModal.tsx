@@ -31,8 +31,6 @@ const SellSharesModal: React.FC<SellSharesModalProps> = ({
 }) => {
   if (!sellSharesModalToggle) return null;
 
-  console.log("Data in Sell Shares Modal", holdingData);
-
   return (
     <div className="modal modal-open">
       <div className="modal-box max-w-sm">

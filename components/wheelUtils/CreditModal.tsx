@@ -35,10 +35,6 @@ const CreditModal: React.FC<CreditModalProps> = ({
 }) => {
   if (!openTradeModalToggle) return null;
 
-  if (openTradeModalToggle) {
-    console.log("Open Modal Data", editedTrade);
-  }
-
   return (
     <div className="modal modal-open">
       <div className="modal-box max-w-sm">

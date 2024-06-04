@@ -29,8 +29,6 @@ const CurrentHoldingsModal: React.FC<CurrentHoldingsModalProps> = ({
 }) => {
   if (!currentHoldingsModalToggle) {
     return null;
-  } else {
-    console.log("Current Holding Data: ", holdingData);
   }
 
   return (

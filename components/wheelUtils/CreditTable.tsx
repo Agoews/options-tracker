@@ -55,10 +55,10 @@ export const CreditTable: React.FC<CreditTableProps> = ({
             <tr className="text-[#00ee00] text-center">
               <th>Ticker</th>
               <th>Action</th>
+              <th>Strike</th>
               <th># of Options</th>
               <th>Credit</th>
               <th>Total</th>
-              <th>Status</th>
               <th>Expiration</th>
             </tr>
           </thead>
@@ -78,6 +78,7 @@ export const CreditTable: React.FC<CreditTableProps> = ({
                     >
                       <td>{openTrades[0].ticker}</td>
                       <td>{getActionAbbreviation(openTrades[0].actions)}</td>
+                      <td>${Number(openTrades[0].strike).toFixed(2)}</td>
                       <td>{Number(openTrades[0].openquantity)}</td>
                       <td>{Number(openTrades[0].optionprice).toFixed(2)}</td>
                       <td>
@@ -87,9 +88,6 @@ export const CreditTable: React.FC<CreditTableProps> = ({
                           +openTrades[0].optionprice *
                           100
                         ).toFixed(2)}
-                      </td>
-                      <td>
-                        {openTrades[0].openquantity === 0 ? "Closed" : "Open"}
                       </td>
                       <td>{formatDate(openTrades[0].expirationdate)}</td>
                     </tr>

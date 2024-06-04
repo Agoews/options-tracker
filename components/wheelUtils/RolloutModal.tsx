@@ -22,7 +22,6 @@ const RolloutModal: React.FC<RolloutModallProps> = ({
 }) => {
   if (!rolloutModalToggle) return null;
 
-  console.log("Rollout modal: ", editedTrade);
   const formatDate = (dateString: string) => {
     return dateString.split("T")[0];
   };

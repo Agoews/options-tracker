@@ -47,13 +47,6 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
     fetcher
   );
 
-  console.log(
-    "tradesData in wheel: ",
-    tradesData,
-    "fundsData in wheel: ",
-    fundsData
-  );
-
   const [editingTradeId, setEditingTradeId] = useState<number | null>(null);
   const [editedTrade, setEditedTrade] = useState<Trade>(initialTradeState);
   const [openTradeModalToggle, setOpenTradeModalToggle] = useState(false);

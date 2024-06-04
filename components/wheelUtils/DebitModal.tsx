@@ -20,10 +20,6 @@ const DebitModal: React.FC<DebitModalProps> = ({
 }) => {
   if (!closedTradeModalToggle) return null;
 
-  if (closedTradeModalToggle) {
-    console.log("closedTrades", closedTrades);
-  }
-
   return (
     <div className="modal modal-open">
       <div className="modal-box max-w-md">

@@ -16,7 +16,6 @@ const AssignedModal: React.FC<AssignmentModalProps> = ({
 }) => {
   if (!assignmentModalToggle) return null;
 
-  console.log("Assigned Modal: ", editedTrade);
   return (
     <div className={`modal ${assignmentModalToggle ? "modal-open" : ""}`}>
       <div className="modal-box max-w-sm">

@@ -1,11 +1,11 @@
 "use client";
 import { fetcher } from "@/components/utils/fetcher";
-import React, { FormEvent, SyntheticEvent, useEffect, useState } from "react";
+import React, { SyntheticEvent, useState } from "react";
 import useSWR, { mutate } from "swr";
 import CurrentHoldingsModal from "./CurrentHoldingsModal";
 import SellSharesModal from "./SellSharesModal";
 import AddHoldingModal from "./AddHoldingModal";
-import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface HoldingData {
   currentstockholdingsid: number;
@@ -25,6 +25,8 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
     `/api/get-current-holdings?email=${userEmail}`,
     fetcher
   );
+
+  const router = useRouter();
 
   const [currentHoldingsModalToggle, setCurrentHoldingsModalToggle] =
     useState(false);
@@ -283,9 +285,9 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
         </button>
         <button
           className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2"
-          // onClick={handleCancel}
+          onClick={() => router.push("/")}
         >
-          Cancel
+          Back Home
         </button>
       </div>
       <AddHoldingModal

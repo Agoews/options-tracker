@@ -25,19 +25,13 @@ const OpenTradeEditModal: React.FC<TradeEditModalProps> = ({
 }) => {
   if (!openTradeModalToggle) return null;
 
-  if (openTradeModalToggle) {
-    console.log("Open Modal Data", editedTrade);
-  }
-
   return (
     <div className="modal modal-open">
-      <div className="modal-box max-w-sm bg-slate-600 opacity-95">
-        <h3 className="font-bold text-lg text-slate-200 mb-1">Update Trade</h3>
+      <div className="modal-box max-w-sm text-[#00ee00]">
+        <h3 className="font-bold text-lg mb-1">Update Trade</h3>
         <div className="py-2 text-sm">
           <div className="grid grid-cols-3 gap-4 mb-4">
-            <label className="text-slate-200 text-left col-span-1">
-              Ticker:
-            </label>
+            <label className="text-left col-span-1">Ticker:</label>
             <input
               type="text"
               value={editedTrade.ticker}
@@ -48,9 +42,7 @@ const OpenTradeEditModal: React.FC<TradeEditModalProps> = ({
           </div>
 
           <div className="grid grid-cols-3 gap-4 mb-4">
-            <span className="text-slate-200 text-left col-span-1 ">
-              Action:
-            </span>
+            <span className="text-left col-span-1 ">Action:</span>
             <select
               className="select select-bordered select-xs bg-slate-700 text-slate-200 flex-1 col-span-2 text-center"
               value={editedTrade.actions}
@@ -68,9 +60,7 @@ const OpenTradeEditModal: React.FC<TradeEditModalProps> = ({
           </div>
 
           <div className="grid grid-cols-3 gap-4 mb-4">
-            <label className="text-slate-200 text-left col-span-1">
-              Strike:
-            </label>
+            <label className="text-left col-span-1">Strike:</label>
             <input
               type="text"
               value={editedTrade.strike}
@@ -81,9 +71,7 @@ const OpenTradeEditModal: React.FC<TradeEditModalProps> = ({
           </div>
 
           <div className="grid grid-cols-3 gap-4 mb-4">
-            <label className="text-slate-200 text-left col-span-1">
-              Entry Price:
-            </label>
+            <label className="text-left col-span-1">Entry Price:</label>
             <input
               type="text"
               value={editedTrade.currentprice}
@@ -94,9 +82,7 @@ const OpenTradeEditModal: React.FC<TradeEditModalProps> = ({
           </div>
 
           <div className="grid grid-cols-3 gap-4 mb-4">
-            <label className="text-slate-200 text-left col-span-1">
-              Option Price:
-            </label>
+            <label className="text-left col-span-1">Option Price:</label>
             <input
               type="text"
               value={editedTrade.optionprice}
@@ -107,9 +93,7 @@ const OpenTradeEditModal: React.FC<TradeEditModalProps> = ({
           </div>
 
           <div className="grid grid-cols-3 gap-4 mb-4">
-            <label className="text-slate-200 text-left col-span-1">
-              Closing Price:
-            </label>
+            <label className="text-left col-span-1">Closing Price:</label>
             <input
               type="number"
               value={editedTrade.closingprice || ""}
@@ -120,9 +104,7 @@ const OpenTradeEditModal: React.FC<TradeEditModalProps> = ({
           </div>
 
           <div className="grid grid-cols-3 gap-4 mb-4">
-            <label className="text-slate-200 text-left col-span-1">
-              Close Quantity:
-            </label>
+            <label className="text-left col-span-1">Close Quantity:</label>
             <input
               type="number"
               value={editedTrade.closedquantity || ""}
@@ -131,25 +113,25 @@ const OpenTradeEditModal: React.FC<TradeEditModalProps> = ({
             />
           </div>
           <div className="gap-4 items-center">
-            <label className="text-slate-200 text-left col-span-1">
+            <label className="text-left col-span-1">
               {`Current Open Quantity: ${editedTrade.openquantity}`}
             </label>
           </div>
           <div className="modal-action items-center justify-center">
             <button
-              className="btn bg-slate-800 text-slate-200"
+              className="btn btn-sm text-[#00ee00] border-[#00ee00] bg-[#002f00]"
               onClick={handleSaveOpenTrades}
             >
               Save
             </button>
             <button
-              className="btn btn-outline btn-error bg-slate-800 text-red-500"
+              className="btn btn-sm btn-error bg-slate-800 text-red-500"
               onClick={handleDelete}
             >
               Delete Trade
             </button>
             <button
-              className="btn bg-slate-800 text-slate-200"
+              className="btn btn-sm text-[#00ee00] border-[#00ee00] bg-[#002f00]"
               onClick={handleCancel}
             >
               Cancel
