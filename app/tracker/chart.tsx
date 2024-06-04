@@ -194,7 +194,7 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
           <h2 className="text-[#00ee00] text-2xl mb-1 text-left">
             Open Positions
           </h2>
-          <div className="overflow-auto max-w-[800px] max-h-[200px] rounded border-2 border-[#00ee00]">
+          <div className="overflow-y-auto max-w-[800px] max-h-[200px] rounded border-2 border-[#00ee00]">
             <table className="table table-xs table-pin-rows text-xs">
               <thead>
                 <tr className="text-[#00ee00] text-center">
@@ -267,7 +267,7 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
           <h2 className="text-[#00ee00] text-2xl mb-1 text-left">
             Closed Positions
           </h2>
-          <div className="overflow-auto max-w-[800px] h-[200px] rounded border-2 border-[#00ee00]">
+          <div className="overflow-y-auto max-w-[800px] max-h-[200px] rounded border-2 border-[#00ee00]">
             <table className="table table-xs table-pin-rows text-xs">
               <thead>
                 <tr className="text-[#00ee00] text-center">

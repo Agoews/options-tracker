@@ -16,7 +16,7 @@ const Navbar = () => {
     <>
       <div className="navbar text-[#00ee00]">
         <div className="navbar-start">
-          <div className="dropdown">
+          <div className="dropdown lg:hidden">
             <div
               tabIndex={0}
               role="button"
@@ -39,7 +39,7 @@ const Navbar = () => {
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-slate-800 rounded-box w-52"
+              className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-slate-800 rounded-box w-52 z-50"
             >
               {session && session.user ? (
                 <li>
@@ -50,11 +50,30 @@ const Navbar = () => {
                   <a onClick={() => signIn()}>Sign In</a>
                 </li>
               )}
+              {session && session.user && (
+                <>
+                  <li>
+                    <Link href="/stock-holdings">Holdings</Link>
+                  </li>
+                  <li>
+                    <Link href="/tracker">All Trades</Link>
+                  </li>
+                  <li>
+                    <Link href="/summary">Summary</Link>
+                  </li>
+                  <li>
+                    <Link href="/calls-puts">Calls & Puts</Link>
+                  </li>
+                  <li>
+                    <Link href="/the-wheel">The Wheel</Link>
+                  </li>
+                </>
+              )}
               <li>
-                <Link href="/">Home</Link>
+                <Link href="/resources/calls-puts">Calls & Puts</Link>
               </li>
               <li>
-                <Link href="/about">About</Link>
+                <Link href="/resources/the-wheel">The Wheel</Link>
               </li>
             </ul>
           </div>
@@ -63,7 +82,7 @@ const Navbar = () => {
           </Link>
         </div>
 
-        <div className="navbar-center space-x-4 text-lg">
+        <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal">
             {session && session.user ? (
               <div className="flex">
@@ -91,12 +110,6 @@ const Navbar = () => {
                       <li>
                         <Link href="/the-wheel">The Wheel</Link>
                       </li>
-                      {/* <li>
-                      <Link href="/iron-condor">Iron Condor (WIP)</Link>
-                    </li>
-                    <li>
-                      <Link href="/iron-butterfly">Iron Butterfly (WIP)</Link>
-                    </li> */}
                     </ul>
                   </div>
                 </li>
@@ -117,14 +130,6 @@ const Navbar = () => {
                   <li>
                     <Link href="/resources/the-wheel">The Wheel</Link>
                   </li>
-                  {/* <li>
-                    <Link href="/resources/iron-condor">Iron Condor (WIP)</Link>
-                  </li>
-                  <li>
-                    <Link href="/resources/iron-butterfly">
-                      Iron Butterfly (WIP)
-                    </Link>
-                  </li> */}
                 </ul>
               </div>
             </li>
