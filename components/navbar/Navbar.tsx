@@ -39,12 +39,10 @@ const Navbar = () => {
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-slate-800 rounded-box w-52 z-50"
+              className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-slate-800 rounded-box w-40 z-50"
             >
               {session && session.user ? (
-                <li>
-                  <a onClick={signOutClickHandler}>Sign Out</a>
-                </li>
+                <></>
               ) : (
                 <li>
                   <a onClick={() => signIn()}>Sign In</a>
@@ -138,8 +136,18 @@ const Navbar = () => {
 
         <div className="navbar-end">
           {session && session.user ? (
-            <div className="flex gap-4 ml-auto">
-              <p>{session.user.name}</p>
+            <div className="dropdown dropdown-bottom p-0">
+              <div tabIndex={0} role="button" className="btn btn-ghost">
+                {session.user.name}
+              </div>
+              <ul
+                tabIndex={0}
+                className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-slate-800 rounded-box w-40 z-50"
+              >
+                <li>
+                  <a onClick={signOutClickHandler}>Sign Out</a>
+                </li>
+              </ul>
             </div>
           ) : (
             <></>
