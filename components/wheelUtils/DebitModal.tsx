@@ -23,7 +23,9 @@ const DebitModal: React.FC<DebitModalProps> = ({
   return (
     <div className="modal modal-open">
       <div className="modal-box max-w-md">
-        <h3 className="font-bold text-xl text-[#00ee00] mb-4">Closed Trades</h3>
+        <h3 className="font-bold text-xl text-[#00ee00] mb-4">
+          Closed Options
+        </h3>
         <div className="overflow-x-auto">
           <table className="table table-xs w-full">
             <thead>

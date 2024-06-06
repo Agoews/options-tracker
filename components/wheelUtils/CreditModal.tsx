@@ -38,7 +38,7 @@ const CreditModal: React.FC<CreditModalProps> = ({
   return (
     <div className="modal modal-open">
       <div className="modal-box max-w-sm">
-        <h3 className="font-bold text-xl text-[#00ee00] mb-4">Update Trade</h3>
+        <h3 className="font-bold text-xl text-[#00ee00] mb-4">Update Option</h3>
         <div className="text-sm">
           <div className="grid grid-cols-3 gap-4 mb-4">
             <label className="text-[#00ee00] text-left col-span-1">

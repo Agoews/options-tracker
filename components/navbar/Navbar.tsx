@@ -2,6 +2,7 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import React from "react";
 
 const Navbar = () => {
@@ -39,10 +40,12 @@ const Navbar = () => {
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-slate-800 rounded-box w-40 z-50"
+              className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-slate-800 rounded-box w-52 z-50"
             >
               {session && session.user ? (
-                <></>
+                <li>
+                  <a onClick={signOutClickHandler}>Sign Out</a>
+                </li>
               ) : (
                 <li>
                   <a onClick={() => signIn()}>Sign In</a>
@@ -75,7 +78,7 @@ const Navbar = () => {
               </li>
             </ul>
           </div>
-          <Link href="/" className="btn btn-ghost text-3xl">
+          <Link href="/" className="btn btn-ghost text-lg md:text-3xl ">
             TradeTracker
           </Link>
         </div>
@@ -136,18 +139,31 @@ const Navbar = () => {
 
         <div className="navbar-end">
           {session && session.user ? (
-            <div className="dropdown dropdown-bottom p-0">
-              <div tabIndex={0} role="button" className="btn btn-ghost">
-                {session.user.name}
+            <div className="flex gap-4 ml-auto">
+              <div className="dropdown">
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="btn btn-ghost avatar"
+                >
+                  <div className="w-8 rounded-full">
+                    <Image
+                      src={session.user.image || "/default-profile.png"}
+                      alt="User Profile Picture"
+                      width={32}
+                      height={32}
+                    />
+                  </div>
+                </div>
+                <ul
+                  tabIndex={0}
+                  className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-slate-800 rounded-box w-52 z-50"
+                >
+                  <li>
+                    <a onClick={signOutClickHandler}>Sign Out</a>
+                  </li>
+                </ul>
               </div>
-              <ul
-                tabIndex={0}
-                className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-slate-800 rounded-box w-40 z-50"
-              >
-                <li>
-                  <a onClick={signOutClickHandler}>Sign Out</a>
-                </li>
-              </ul>
             </div>
           ) : (
             <></>
