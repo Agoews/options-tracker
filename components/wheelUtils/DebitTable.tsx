@@ -41,7 +41,8 @@ const DebitTable: React.FC<DebitTableProps> = ({
   handleClosedTradeClick,
 }) => {
   const formatDate = (dateString: string) => {
-    return dateString.split("T")[0];
+    const [year, month, day] = dateString.split("T")[0].split("-");
+    return `${year}/${month}/${day}`;
   };
 
   return (
@@ -53,13 +54,14 @@ const DebitTable: React.FC<DebitTableProps> = ({
         <table className="table table-xs w-full table-pin-rows text-xs">
           <thead>
             <tr className="text-[#00ee00] text-center">
-              <th>Ticker</th>
-              <th>Action</th>
-              <th># of Options</th>
+              <th className="md:hidden">Trade Details</th>
+              <th className="hidden md:table-cell">Ticker</th>
+              <th className="hidden md:table-cell">Action</th>
+              <th>Quantity</th>
               <th>Debit</th>
               <th>Total</th>
               <th>P/L</th>
-              <th>Date Closed</th>
+              <th className="hidden md:table-cell">Date Closed</th>
             </tr>
           </thead>
           <tbody className="text-slate-200 text-center">
@@ -75,8 +77,19 @@ const DebitTable: React.FC<DebitTableProps> = ({
                       className="hover:bg-slate-700 hover:text-slate-200 hover:cursor-pointer text-center"
                       onClick={() => handleClosedTradeClick(closedTrades[0])}
                     >
-                      <td>{openTrades[0].ticker}</td>
-                      <td>{getActionAbbreviation(openTrades[0].actions)}</td>
+                      <td className="md:hidden">
+                        {`${openTrades[0].ticker} ${getActionAbbreviation(
+                          openTrades[0].actions
+                        )} $${Number(openTrades[0].strike).toFixed(
+                          2
+                        )} ${formatDate(openTrades[0].expirationdate)}`}
+                      </td>
+                      <td className="hidden md:table-cell">
+                        {openTrades[0].ticker}
+                      </td>
+                      <td className="hidden md:table-cell">
+                        {getActionAbbreviation(openTrades[0].actions)}
+                      </td>
                       <td>
                         {aggregatedTrades[Number(tradeId)].totalClosingQuantity}
                       </td>
@@ -108,7 +121,7 @@ const DebitTable: React.FC<DebitTableProps> = ({
                             ).toFixed(2) + "%"
                           : "N/A"}
                       </td>
-                      <td>
+                      <td className="hidden md:table-cell">
                         {closedTrades[0].completiondate
                           ? formatDate(closedTrades[0].completiondate)
                           : "N/A"}
