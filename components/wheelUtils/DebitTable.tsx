@@ -50,7 +50,7 @@ const DebitTable: React.FC<DebitTableProps> = ({
       <h2 className="text-[#00ee00] text-2xl text-left xl:text-center">
         Closed Options
       </h2>
-      <div className="overflow-y-auto xl:h-[200px] max-h-[200px] rounded border-2 border-[#00ee00]">
+      <div className="overflow-y-auto overflow-x-auto xl:h-[200px] max-h-[200px] rounded border-2 border-[#00ee00]">
         <table className="table table-xs w-full table-pin-rows text-xs">
           <thead>
             <tr className="text-[#00ee00] text-center">
@@ -77,7 +77,7 @@ const DebitTable: React.FC<DebitTableProps> = ({
                       className="hover:bg-slate-700 hover:text-slate-200 hover:cursor-pointer text-center"
                       onClick={() => handleClosedTradeClick(closedTrades[0])}
                     >
-                      <td className="md:hidden">
+                      <td className="md:hidden text-left">
                         {`${openTrades[0].ticker} ${getActionAbbreviation(
                           openTrades[0].actions
                         )} $${Number(openTrades[0].strike).toFixed(

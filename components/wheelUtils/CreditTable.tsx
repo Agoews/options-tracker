@@ -50,7 +50,7 @@ export const CreditTable: React.FC<CreditTableProps> = ({
       <h2 className="text-[#00ee00] text-2xl text-left xl:text-center">
         Open Options
       </h2>
-      <div className="overflow-y-auto xl:h-[200px] max-h-[200px] rounded border-2 border-[#00ee00]">
+      <div className="overflow-y-auto overflow-x-auto xl:h-[200px] max-h-[200px] rounded border-2 border-[#00ee00]">
         <div className="overflow-x-auto">
           <table className="table table-xs w-full table-pin-rows text-xs">
             <thead>
@@ -79,12 +79,17 @@ export const CreditTable: React.FC<CreditTableProps> = ({
                         className="hover:bg-slate-700 hover:text-slate-200 cursor-pointer text-center"
                         onClick={() => handleOpenTradeClick(openTrades[0])}
                       >
-                        <td className="md:hidden">
-                          {`${openTrades[0].ticker} ${getActionAbbreviation(
-                            openTrades[0].actions
-                          )} $${Number(openTrades[0].strike).toFixed(
-                            2
-                          )} ${formatDate(openTrades[0].expirationdate)}`}
+                        <td className="md:hidden flex flex-col items-start space-y-1">
+                          <span>{openTrades[0].ticker}</span>
+                          <span>
+                            - {getActionAbbreviation(openTrades[0].actions)}
+                          </span>
+                          <span>
+                            - ${Number(openTrades[0].strike).toFixed(2)}
+                          </span>
+                          <span>
+                            - {formatDate(openTrades[0].expirationdate)}
+                          </span>
                         </td>
                         <td className="hidden md:table-cell">
                           {openTrades[0].ticker}
