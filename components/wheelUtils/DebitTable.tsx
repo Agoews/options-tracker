@@ -57,7 +57,7 @@ const DebitTable: React.FC<DebitTableProps> = ({
               <th className="md:hidden">Trade Details</th>
               <th className="hidden md:table-cell">Ticker</th>
               <th className="hidden md:table-cell">Action</th>
-              <th>Quantity</th>
+              <th>#</th>
               <th>Debit</th>
               <th>Total</th>
               <th>P/L</th>
@@ -77,12 +77,22 @@ const DebitTable: React.FC<DebitTableProps> = ({
                       className="hover:bg-slate-700 hover:text-slate-200 hover:cursor-pointer text-center"
                       onClick={() => handleClosedTradeClick(closedTrades[0])}
                     >
-                      <td className="md:hidden text-left">
-                        {`${openTrades[0].ticker} ${getActionAbbreviation(
+                      <td className="md:hidden flex flex-col items-start space-y-1">
+                        <span>{openTrades[0].ticker}</span>
+                        <span>
+                          - {getActionAbbreviation(openTrades[0].actions)}
+                        </span>
+                        <span>
+                          - ${Number(openTrades[0].strike).toFixed(2)}
+                        </span>
+                        <span>
+                          - {formatDate(openTrades[0].expirationdate)}
+                        </span>
+                        {/* {`${openTrades[0].ticker} ${getActionAbbreviation(
                           openTrades[0].actions
                         )} $${Number(openTrades[0].strike).toFixed(
                           2
-                        )} ${formatDate(openTrades[0].expirationdate)}`}
+                        )} ${formatDate(openTrades[0].expirationdate)}`} */}
                       </td>
                       <td className="hidden md:table-cell">
                         {openTrades[0].ticker}

@@ -59,7 +59,7 @@ export const CreditTable: React.FC<CreditTableProps> = ({
                 <th className="hidden md:table-cell">Ticker</th>
                 <th className="hidden md:table-cell">Action</th>
                 <th className="hidden md:table-cell">Strike</th>
-                <th>Quantity</th>
+                <th>#</th>
                 <th>Credit</th>
                 <th>Total</th>
                 <th className="hidden md:table-cell">Expiration</th>

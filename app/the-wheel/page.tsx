@@ -14,8 +14,8 @@ const TheWheel = async () => {
   }
 
   return (
-    <main className="flex min-h-screen min-w-screen items-center">
-      <div className="hero min-h-screen">
+    <main className="flex min-h-screen items-center justify-center">
+      <div className="hero w-full max-w-md mx-auto">
         <div className="text-center text-[#00ee00]">
           <div>
             {userEmail ? (
@@ -24,16 +24,18 @@ const TheWheel = async () => {
               <div>Loading...</div>
             )}
           </div>
-          <Link className="p-1" href="/new-trade">
-            <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2">
-              New Trade
-            </button>
-          </Link>
-          <Link className="p-1" href="/tracker">
-            <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2">
-              All Trades
-            </button>
-          </Link>
+          <div className="flex flex-col items-center space-y-2 mt-4">
+            <Link href="/new-trade">
+              <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] w-full">
+                New Trade
+              </button>
+            </Link>
+            <Link href="/tracker">
+              <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] w-full">
+                All Trades
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
     </main>
