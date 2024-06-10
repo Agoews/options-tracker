@@ -16,8 +16,9 @@ const Navbar = () => {
   return (
     <div className="navbar text-[#00ee00]">
       <div className="navbar-start">
+        {/* Mobile Navbar */}
         <div className="dropdown lg:hidden">
-          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+          <label tabIndex={0} className="btn btn-ghost btn-circle m-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -32,10 +33,10 @@ const Navbar = () => {
                 d="M4 6h16M4 12h16M4 18h7"
               />
             </svg>
-          </div>
+          </label>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-slate-800 rounded-box w-52 z-50"
+            className="menu bg-base-200 w-56 rounded-box dropdown-content z-[10] mt-3 p-2 shadow"
           >
             {session && session.user ? (
               <li>
@@ -47,53 +48,13 @@ const Navbar = () => {
               </li>
             )}
             {session && session.user && (
-              <>
-                <li>
-                  <Link href="/stock-holdings">Holdings</Link>
-                </li>
-                <li>
-                  <Link href="/tracker">All Trades</Link>
-                </li>
-                <li>
-                  <Link href="/summary">Summary</Link>
-                </li>
-                <li>
-                  <Link href="/calls-puts">Calls & Puts</Link>
-                </li>
-                <li>
-                  <Link href="/the-wheel">The Wheel</Link>
-                </li>
-              </>
-            )}
-            <li>
-              <Link href="/resources/calls-puts">Calls & Puts</Link>
-            </li>
-            <li>
-              <Link href="/resources/the-wheel">The Wheel</Link>
-            </li>
-          </ul>
-        </div>
-        <Link href="/" className="btn btn-ghost text-lg md:text-3xl ">
-          TradeTracker
-        </Link>
-      </div>
-
-      <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal">
-          {session && session.user ? (
-            <div className="flex">
-              <Link href="/stock-holdings">
-                <div className="btn btn-ghost">Holdings</div>
-              </Link>
               <li>
-                <div className="dropdown dropdown-hover dropdown-bottom p-0">
-                  <div tabIndex={0} role="button" className="btn btn-ghost">
-                    Strategies
-                  </div>
-                  <ul
-                    tabIndex={0}
-                    className="dropdown-content p-1 bg-slate-800 min-w-36 rounded-lg z-10"
-                  >
+                <details open>
+                  <summary>Strategies</summary>
+                  <ul>
+                    <li>
+                      <Link href="/stock-holdings">Holdings</Link>
+                    </li>
                     <li>
                       <Link href="/tracker">All Trades</Link>
                     </li>
@@ -107,27 +68,79 @@ const Navbar = () => {
                       <Link href="/the-wheel">The Wheel</Link>
                     </li>
                   </ul>
-                </div>
+                </details>
               </li>
-            </div>
+            )}
+            <li>
+              <details open>
+                <summary>Resources</summary>
+                <ul>
+                  <li>
+                    <Link href="/resources/calls-puts">Calls & Puts</Link>
+                  </li>
+                  <li>
+                    <Link href="/resources/the-wheel">The Wheel</Link>
+                  </li>
+                </ul>
+              </details>
+            </li>
+          </ul>
+        </div>
+        <Link href="/" className="btn btn-ghost text-lg md:text-3xl">
+          TradeTracker
+        </Link>
+      </div>
+
+      <div className="navbar-center hidden lg:flex">
+        <ul className="menu menu-horizontal">
+          {session && session.user ? (
+            <>
+              <Link href="/stock-holdings">
+                <div className="btn btn-ghost">Holdings</div>
+              </Link>
+              <li className="dropdown">
+                <label tabIndex={0} className="btn m-1">
+                  <p>Strategies</p>
+                  <div className="divider divider-horizontal mx-0 px-0"></div>
+                  Arrow
+                </label>
+                <ul
+                  tabIndex={0}
+                  className="menu bg-base-200 w-56 rounded-box dropdown-content z-[1] mt-3 p-2 shadow"
+                >
+                  <li>
+                    <Link href="/tracker">All Trades</Link>
+                  </li>
+                  <li>
+                    <Link href="/summary">Summary</Link>
+                  </li>
+                  <li>
+                    <Link href="/calls-puts">Calls & Puts</Link>
+                  </li>
+                  <li>
+                    <Link href="/the-wheel">The Wheel</Link>
+                  </li>
+                </ul>
+              </li>
+            </>
           ) : null}
-          <li>
-            <div className="dropdown dropdown-hover dropdown-bottom p-0">
-              <div tabIndex={0} role="button" className="btn btn-ghost">
-                Resources (WIP)
-              </div>
-              <ul
-                tabIndex={0}
-                className="dropdown-content p-1 bg-slate-800 min-w-36 rounded-lg z-10"
-              >
-                <li>
-                  <Link href="/resources/calls-puts">Calls & Puts</Link>
-                </li>
-                <li>
-                  <Link href="/resources/the-wheel">The Wheel</Link>
-                </li>
-              </ul>
-            </div>
+          <li className="dropdown">
+            <label tabIndex={0} className="btn m-1">
+              <p>Resources (WIP)</p>
+              <div className="divider divider-horizontal mx-0 px-0"></div>
+              Arrow
+            </label>
+            <ul
+              tabIndex={0}
+              className="menu bg-base-200 w-56 rounded-box dropdown-content z-[1] mt-3 p-2 shadow"
+            >
+              <li>
+                <Link href="/resources/calls-puts">Calls & Puts</Link>
+              </li>
+              <li>
+                <Link href="/resources/the-wheel">The Wheel</Link>
+              </li>
+            </ul>
           </li>
         </ul>
       </div>
@@ -136,7 +149,7 @@ const Navbar = () => {
         {session && session.user ? (
           <div className="flex gap-4 ml-auto">
             <div className="dropdown">
-              <div tabIndex={0} role="button" className="btn btn-ghost avatar">
+              <label tabIndex={3} className="btn btn-ghost avatar">
                 <div className="w-8 rounded-full">
                   <Image
                     src={session.user.image || "/default-profile.png"}
@@ -145,9 +158,9 @@ const Navbar = () => {
                     height={32}
                   />
                 </div>
-              </div>
+              </label>
               <ul
-                tabIndex={0}
+                tabIndex={3}
                 className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-slate-800 rounded-box w-52 z-50"
               >
                 <li>
