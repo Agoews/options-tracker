@@ -94,53 +94,53 @@ const Navbar = () => {
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal">
           {session && session.user ? (
-            <>
+            <div className="flex">
               <Link href="/stock-holdings">
                 <div className="btn btn-ghost">Holdings</div>
               </Link>
-              <li className="dropdown">
-                <label tabIndex={0} className="btn m-1">
-                  <p>Strategies</p>
-                  <div className="divider divider-horizontal mx-0 px-0"></div>
-                  Arrow
-                </label>
-                <ul
-                  tabIndex={0}
-                  className="menu bg-base-200 w-56 rounded-box dropdown-content z-[1] mt-3 p-2 shadow"
-                >
-                  <li>
-                    <Link href="/tracker">All Trades</Link>
-                  </li>
-                  <li>
-                    <Link href="/summary">Summary</Link>
-                  </li>
-                  <li>
-                    <Link href="/calls-puts">Calls & Puts</Link>
-                  </li>
-                  <li>
-                    <Link href="/the-wheel">The Wheel</Link>
-                  </li>
-                </ul>
+              <li>
+                <div className="dropdown dropdown-hover dropdown-bottom p-0">
+                  <div tabIndex={3} role="button" className="btn btn-ghost">
+                    Strategies
+                  </div>
+                  <ul
+                    tabIndex={3}
+                    className="dropdown-content p-1 bg-slate-800 min-w-36 rounded-lg z-10"
+                  >
+                    <li>
+                      <Link href="/tracker">All Trades</Link>
+                    </li>
+                    <li>
+                      <Link href="/summary">Summary</Link>
+                    </li>
+                    <li>
+                      <Link href="/calls-puts">Calls & Puts</Link>
+                    </li>
+                    <li>
+                      <Link href="/the-wheel">The Wheel</Link>
+                    </li>
+                  </ul>
+                </div>
               </li>
-            </>
+            </div>
           ) : null}
-          <li className="dropdown">
-            <label tabIndex={0} className="btn m-1">
-              <p>Resources (WIP)</p>
-              <div className="divider divider-horizontal mx-0 px-0"></div>
-              Arrow
-            </label>
-            <ul
-              tabIndex={0}
-              className="menu bg-base-200 w-56 rounded-box dropdown-content z-[1] mt-3 p-2 shadow"
-            >
-              <li>
-                <Link href="/resources/calls-puts">Calls & Puts</Link>
-              </li>
-              <li>
-                <Link href="/resources/the-wheel">The Wheel</Link>
-              </li>
-            </ul>
+          <li>
+            <div className="dropdown dropdown-hover dropdown-bottom p-0">
+              <div tabIndex={4} role="button" className="btn btn-ghost">
+                Resources (WIP)
+              </div>
+              <ul
+                tabIndex={4}
+                className="dropdown-content p-1 bg-slate-800 min-w-36 rounded-lg z-10"
+              >
+                <li>
+                  <Link href="/resources/calls-puts">Calls & Puts</Link>
+                </li>
+                <li>
+                  <Link href="/resources/the-wheel">The Wheel</Link>
+                </li>
+              </ul>
+            </div>
           </li>
         </ul>
       </div>
@@ -149,7 +149,7 @@ const Navbar = () => {
         {session && session.user ? (
           <div className="flex gap-4 ml-auto">
             <div className="dropdown">
-              <label tabIndex={3} className="btn btn-ghost avatar">
+              <div tabIndex={5} role="button" className="btn btn-ghost avatar">
                 <div className="w-8 rounded-full">
                   <Image
                     src={session.user.image || "/default-profile.png"}
@@ -158,9 +158,9 @@ const Navbar = () => {
                     height={32}
                   />
                 </div>
-              </label>
+              </div>
               <ul
-                tabIndex={3}
+                tabIndex={5}
                 className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-slate-800 rounded-box w-52 z-50"
               >
                 <li>
