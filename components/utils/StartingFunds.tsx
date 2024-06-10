@@ -1,9 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import StartingFundsModal from "../wheelUtils/StartingFundsModal";
-import useSWR from "swr";
-import { fetcher } from "./fetcher";
 
 interface StartingFundsProps {
   totalCredits: string | number;
