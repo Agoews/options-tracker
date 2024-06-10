@@ -15,7 +15,7 @@ const TheWheel = async () => {
 
   return (
     <main className="flex min-h-screen items-center justify-center">
-      <div className="hero w-full max-w-md mx-auto">
+      <div className="hero w-full mx-auto">
         <div className="text-center text-[#00ee00]">
           <div>
             {userEmail ? (

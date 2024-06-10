@@ -7,7 +7,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen min-w-screen flex-col items-center">
-      <div className="flex flex-col justify-center items-center min-h-screen">
+      <div className="flex flex-col justify-center">
         <div className="text-center text-[#00ee00]">
           <div className="max-w-md">
             <h1 className="mb-5 text-5xl font-bold">Hello there</h1>
