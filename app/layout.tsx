@@ -28,7 +28,7 @@ export default function RootLayout({
       <body className={space_mono.className}>
         <Providers>
           <Navbar />
-          {children}
+          <main className="min-h-screen p-1 md:p-4">{children}</main>
           <Footer />
         </Providers>
       </body>
