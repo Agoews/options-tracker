@@ -35,7 +35,7 @@ const StartingFunds: React.FC<StartingFundsProps> = ({
         data-tip="P/L of the wheel trades on the starting funds"
       >
         <h2 className="text-[#00ee00] text-2xl text-left xl:text-center mt-2">
-          Return on Initial Investments
+          Return on Investments
         </h2>
       </div>
 
