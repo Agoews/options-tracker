@@ -26,15 +26,15 @@ const TheWheel = async () => {
           </div>
           <div className="flex flex-col items-center space-y-2 mt-4">
             <Link href="/new-trade">
-              <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] w-full">
+              <button className="btn btn-sm lg:btn-md text-[#00ee00] border-[#00ee00] bg-[#002f00] w-full">
                 New Trade
               </button>
             </Link>
-            <Link href="/tracker">
+            {/* <Link href="/tracker">
               <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] w-full">
                 All Trades
               </button>
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>
