@@ -49,7 +49,7 @@ const Navbar = () => {
             )}
             {session && session.user && (
               <li>
-                <details open>
+                <details>
                   <summary>Strategies</summary>
                   <ul>
                     <li>
@@ -72,7 +72,7 @@ const Navbar = () => {
               </li>
             )}
             <li>
-              <details open>
+              <details>
                 <summary>Resources</summary>
                 <ul>
                   <li>

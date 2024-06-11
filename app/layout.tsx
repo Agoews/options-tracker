@@ -25,10 +25,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={space_mono.className}>
+      <body className={`${space_mono.className} max-w-full overflow-x-hidden`}>
         <Providers>
           <Navbar />
-          {children}
+          <div className="container mx-auto lg:px-4">{children}</div>
           <Footer />
         </Providers>
       </body>

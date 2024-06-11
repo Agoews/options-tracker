@@ -41,8 +41,8 @@ const StartingFunds: React.FC<StartingFundsProps> = ({
         <thead>
           <tr className="text-[#00ee00] text-center">
             <th>Starting Funds</th>
-            <th>Returns</th>
-            <th>Total P/L (%)</th>
+            <th>Return</th>
+            <th>P/L (%)</th>
           </tr>
         </thead>
         <tbody className="text-slate-200 text-center">

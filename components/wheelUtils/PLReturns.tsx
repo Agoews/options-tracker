@@ -19,9 +19,9 @@ const PLReturns: React.FC<PLReturnsProps> = ({
       <table className="table table-xs text-xs rounded border-2 border-[#00ee00]">
         <thead>
           <tr className="text-[#00ee00] text-center">
-            <th>Total Credits</th>
-            <th>Total Debits</th>
-            <th>Running P/L</th>
+            <th>Credits</th>
+            <th>Debits</th>
+            <th>P/L</th>
           </tr>
         </thead>
         <tbody className="text-slate-200 text-center">
