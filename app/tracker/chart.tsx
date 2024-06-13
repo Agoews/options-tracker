@@ -191,22 +191,23 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
       <div className="flex flex-col w-full overflow-x-auto space-y-4 2xl:flex-row 2xl:space-x-4 2xl:space-y-0">
         <div className="flex flex-col w-full 2xl:w-1/2">
           {/* OPEN TRADES */}
-          <h2 className="text-[#00ee00] text-2xl mb-1 text-left">
+          <h2 className="text-[#00ee00] text-2xl text-left xl:text-center">
             Open Positions
           </h2>
-          <div className="overflow-y-auto max-w-[800px] max-h-[200px] rounded border-2 border-[#00ee00]">
+          <div className="overflow-y-auto overflow-x-auto xl:h-[200px] max-h-[200px] rounded border-2 border-[#00ee00]">
             <table className="table table-xs table-pin-rows text-xs">
               <thead>
                 <tr className="text-[#00ee00] text-center">
-                  <td>Ticker</td>
-                  <td>Action</td>
-                  <td>Strategy</td>
-                  <td>Strike</td>
-                  <td>Positions</td>
-                  <td>Entry Price</td>
+                  <th className="md:hidden">Trade Details</th>
+                  <th className="hidden md:table-cell">Ticker</th>
+                  <th className="hidden md:table-cell">Action</th>
+                  <td className="hidden md:table-cell">Strategy</td>
+                  <th className="hidden md:table-cell">Strike</th>
+                  <td>#</td>
+                  <td>Entry</td>
                   <td>Breakeven</td>
                   <td>DTE</td>
-                  <td>Expiration Date</td>
+                  <td className="hidden md:table-cell">Expiration Date</td>
                 </tr>
               </thead>
               <tbody className="text-slate-200">
@@ -222,12 +223,31 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
                           className="hover:bg-slate-700 hover:text-slate-200 hover:cursor-pointer text-center"
                           onClick={() => handleRowClick(openTrades[0])}
                         >
-                          <td>{openTrades[0].ticker}</td>
-                          <td>
+                          <td className="md:hidden flex flex-col items-start space-y-1">
+                            <span>{openTrades[0].ticker}</span>
+                            <span>
+                              - {getActionAbbreviation(openTrades[0].actions)}
+                            </span>
+                            <span>
+                              - ${Number(openTrades[0].strike).toFixed(2)}
+                            </span>
+                            <span>- {openTrades[0].strategy}</span>
+                            <span>
+                              - {formatDate(openTrades[0].expirationdate)}
+                            </span>
+                          </td>
+                          <td className="hidden md:table-cell">
+                            {openTrades[0].ticker}
+                          </td>
+                          <td className="hidden md:table-cell">
                             {getActionAbbreviation(openTrades[0].actions)}
                           </td>
-                          <td>{openTrades[0].strategy}</td>
-                          <td>${Number(openTrades[0].strike).toFixed(2)}</td>
+                          <td className="hidden md:table-cell">
+                            {openTrades[0].strategy}
+                          </td>
+                          <td className="hidden md:table-cell">
+                            ${Number(openTrades[0].strike).toFixed(2)}
+                          </td>
                           <td>{openTrades[0].openquantity}</td>
                           <td>
                             {Number(openTrades[0].optionprice).toFixed(2)}
@@ -250,7 +270,9 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
                               formatDate(openTrades[0].expirationdate)
                             )}
                           </td>
-                          <td>{formatDate(openTrades[0].expirationdate)}</td>
+                          <td className="hidden md:table-cell">
+                            {formatDate(openTrades[0].expirationdate)}
+                          </td>
                         </tr>
                       );
                     }
@@ -264,28 +286,28 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
 
         <div className="flex flex-col w-full 2xl:w-1/2">
           {/* CLOSED TRADES */}
-          <h2 className="text-[#00ee00] text-2xl mb-1 text-left">
+          <h2 className="text-[#00ee00] text-2xl text-left xl:text-center">
             Closed Positions
           </h2>
-          <div className="overflow-y-auto max-w-[800px] max-h-[200px] rounded border-2 border-[#00ee00]">
+          <div className="overflow-y-auto overflow-x-auto xl:h-[200px] max-h-[200px] rounded border-2 border-[#00ee00]">
             <table className="table table-xs table-pin-rows text-xs">
               <thead>
                 <tr className="text-[#00ee00] text-center">
-                  <th>Ticker</th>
-                  <th>Action</th>
-                  <th>Strategy</th>
-                  <th>Strike</th>
-                  <th>Contracts</th>
-                  <th>Avg Closing</th>
-                  <th>Total</th>
-                  <th>P/L</th>
-                  <th>Closed Date</th>
+                  <th className="md:hidden">Trade Details</th>
+                  <th className="hidden md:table-cell">Ticker</th>
+                  <th className="hidden md:table-cell">Action</th>
+                  <td className="hidden md:table-cell">Strategy</td>
+                  <th className="hidden md:table-cell">Strike</th>
+                  <td>#</td>
+                  <td>Avg Closing</td>
+                  <td>Total</td>
+                  <td>P/L</td>
+                  <td className="hidden md:table-cell">Closed Date</td>
                 </tr>
               </thead>
               <tbody className="text-slate-200">
                 {Object.entries(aggregatedTrades).map(
                   ([tradeId, { openTrades, closedTrades }]) => {
-                    // Display only the first closed trade per tradeId
                     const trade = closedTrades[closedTrades.length - 1];
                     if (!trade) return null;
 
@@ -295,10 +317,29 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
                         className="hover:bg-slate-700 hover:text-slate-200 hover:cursor-pointer text-center"
                         onClick={() => handleRowClick(closedTrades[0])}
                       >
-                        <td>{openTrades[0].ticker}</td>
-                        <td>{getActionAbbreviation(openTrades[0].actions)}</td>
-                        <td>{openTrades[0].strategy}</td>
-                        <td>${Number(openTrades[0].strike).toFixed(2)}</td>
+                        <td className="md:hidden flex flex-col items-start space-y-1">
+                          <span>{openTrades[0].ticker}</span>
+                          <span>
+                            - {getActionAbbreviation(openTrades[0].actions)}
+                          </span>
+                          <span>
+                            - ${Number(openTrades[0].strike).toFixed(2)}
+                          </span>
+                          <span>- {openTrades[0].strategy}</span>
+                          <span>- {formatDate(trade.completiondate)}</span>
+                        </td>
+                        <td className="hidden md:table-cell">
+                          {openTrades[0].ticker}
+                        </td>
+                        <td className="hidden md:table-cell">
+                          {getActionAbbreviation(openTrades[0].actions)}
+                        </td>
+                        <td className="hidden md:table-cell">
+                          {openTrades[0].strategy}
+                        </td>
+                        <td className="hidden md:table-cell">
+                          ${Number(openTrades[0].strike).toFixed(2)}
+                        </td>
                         <td>
                           {
                             aggregatedTrades[Number(tradeId)]
@@ -325,7 +366,6 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
                           ).toFixed(2)}
                         </td>
                         <td>
-                          {/* If the option is a Covered Call or CSP the calculation returns positive returns for lower closing prices */}
                           {(closedTrades[0]?.closingprice &&
                             openTrades[0].actions === "COVERED CALL") ||
                           openTrades[0].actions === "CASH SECURED PUT"
@@ -348,8 +388,7 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
                                 100
                               ).toFixed(2) + "%"}
                         </td>
-
-                        <td>
+                        <td className="hidden md:table-cell">
                           {trade.completiondate
                             ? formatDate(trade.completiondate)
                             : "N/A"}
