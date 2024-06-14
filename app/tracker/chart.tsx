@@ -188,7 +188,7 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
 
   return (
     <>
-      <div className="flex flex-col w-[310px] md:w-full space-y-4 2xl:flex-row 2xl:space-x-4 2xl:space-y-0">
+      <div className="flex flex-col w-[320px] md:w-full space-y-4 2xl:flex-row 2xl:space-x-4 2xl:space-y-0">
         <div className="flex flex-col w-full 2xl:w-1/2">
           {/* OPEN TRADES */}
           <h2 className="text-[#00ee00] text-2xl text-left xl:text-center">

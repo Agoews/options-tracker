@@ -46,7 +46,7 @@ export const CreditTable: React.FC<CreditTableProps> = ({
   };
 
   return (
-    <div className="xl:w-1/2 w-[310px] md:w-full ">
+    <div className="xl:w-1/2 w-[320px] md:w-full ">
       <h2 className="text-[#00ee00] text-2xl text-left xl:text-center">
         Open Options
       </h2>
