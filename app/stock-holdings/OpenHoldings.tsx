@@ -236,8 +236,10 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
   };
 
   return (
-    <div className="overflow-y-auto overflow-x-auto w-[320px] md:w-full">
-      <h2 className="text-[#00ee00] text-2xl mb-1">Current Stock Holdings</h2>
+    <div className="overflow-y-auto overflow-x-auto w-[320px] md:w-full lg:w-3/4">
+      <h2 className="text-[#00ee00] text-xl md:text-2xl mb-1">
+        Current Stock Holdings
+      </h2>
       <table className="table table-xs w-full text-xs rounded border-2 border-[#00ee00]">
         <thead>
           <tr className="text-slate-200 text-center">
