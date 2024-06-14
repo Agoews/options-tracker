@@ -18,7 +18,6 @@ interface StartingFundsProps {
 
 const StartingFunds: React.FC<StartingFundsProps> = ({
   totalCredits,
-  userEmail,
   startingFunds,
   startingFundsModalToggle,
   handleCancel,
@@ -37,7 +36,7 @@ const StartingFunds: React.FC<StartingFundsProps> = ({
         </h2>
       </div>
 
-      <table className="table table-xs text-xs rounded border-2 border-[#00ee00]">
+      <table className="table table-xs text-xs border-2 border-[#00ee00]">
         <thead>
           <tr className="text-[#00ee00] text-center">
             <th>Starting Funds</th>

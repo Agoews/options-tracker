@@ -46,11 +46,11 @@ const DebitTable: React.FC<DebitTableProps> = ({
   };
 
   return (
-    <div className="xl:w-1/2">
+    <div className="xl:w-1/2 w-[310px] md:w-full ">
       <h2 className="text-[#00ee00] text-2xl text-left xl:text-center">
         Closed Options
       </h2>
-      <div className="overflow-y-auto overflow-x-auto xl:h-[200px] max-h-[200px] rounded border-2 border-[#00ee00]">
+      <div className="overflow-y-auto overflow-x-auto xl:h-[200px] max-h-[200px] border-2 border-[#00ee00]">
         <table className="table table-xs w-full table-pin-rows text-xs">
           <thead>
             <tr className="text-[#00ee00] text-center">

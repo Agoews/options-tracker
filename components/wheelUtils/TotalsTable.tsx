@@ -57,17 +57,6 @@ const TotalsTable: React.FC<TotalsTableProps> = ({
   handleSaveUpdateFunds,
   handleCancel,
 }) => {
-  // const { data, error, isLoading } = useSWR(
-  //   `/api/get-trades?email=${userEmail}`,
-  //   fetcher
-  // );
-
-  // if (error) return <div>Failed to load</div>;
-  // if (isLoading) return <div>Loading...</div>;
-
-  // console.log(data.result);
-  // const funds = Number(data.result.rows[0].funds);
-
   let totalDebits = 0;
   let totalCredits = 0;
 
@@ -92,7 +81,6 @@ const TotalsTable: React.FC<TotalsTableProps> = ({
         totalPL={totalPL}
       />
       <StartingFunds
-        // funds={funds}
         totalCredits={totalCredits}
         userEmail={userEmail}
         startingFunds={startingFunds}
