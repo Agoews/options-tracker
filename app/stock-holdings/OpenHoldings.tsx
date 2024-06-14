@@ -5,7 +5,6 @@ import useSWR, { mutate } from "swr";
 import CurrentHoldingsModal from "./CurrentHoldingsModal";
 import SellSharesModal from "./SellSharesModal";
 import AddHoldingModal from "./AddHoldingModal";
-import { useRouter } from "next/navigation";
 
 interface HoldingData {
   currentstockholdingsid: number;
@@ -25,8 +24,6 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
     `/api/get-current-holdings?email=${userEmail}`,
     fetcher
   );
-
-  const router = useRouter();
 
   const [currentHoldingsModalToggle, setCurrentHoldingsModalToggle] =
     useState(false);
@@ -213,7 +210,6 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
 
   const handleDelete = async () => {
     if (!holdingId) {
-      console.log("No holding selected.");
       return;
     }
 
@@ -231,7 +227,6 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
         throw new Error(`Failed to delete holding with ID: ${holdingId}`);
       }
       mutate(`/api/get-current-holdings?email=${userEmail}`);
-      console.log(`Deleted holding with ID: ${holdingId}`);
     } catch (error) {
       console.log("Error deleting position:", error);
     }
@@ -241,19 +236,20 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
   };
 
   return (
-    <div className="">
-      <h2 className="text-[#00ee00] text-2xl mb-1">Current Stock Positions</h2>
+    <div className="overflow-y-auto overflow-x-auto w-[320px] md:w-full">
+      <h2 className="text-[#00ee00] text-2xl mb-1">Current Stock Holdings</h2>
       <table className="table table-xs w-full text-xs rounded border-2 border-[#00ee00]">
         <thead>
           <tr className="text-slate-200 text-center">
-            <th>Ticker</th>
-            <th>Quantity</th>
-            <th>Entry Price</th>
-            <th>Total Value</th>
-            <th>Cost Basis</th>
-            <th>Options Profit</th>
-            <th>Open Options</th>
-            <th>Date Purchased</th>
+            <th className="md:hidden">Trade Details</th>
+            <th className="hidden md:table-cell">Ticker</th>
+            <th>#</th>
+            <th className="hidden md:table-cell">Entry Price</th>
+            <th>Total</th>
+            <th className="hidden md:table-cell">Cost Basis</th>
+            <th className="hidden md:table-cell">Options Profit</th>
+            <th>Options</th>
+            <th className="hidden md:table-cell">Date Purchased</th>
           </tr>
         </thead>
         <tbody className="text-slate-200 text-center">
@@ -263,14 +259,30 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
               className="hover:bg-slate-700 hover:text-slate-200 hover: cursor-pointer text-center"
               onClick={() => handleCurrentHoldingClick(obj)}
             >
-              <td>{obj.ticker}</td>
+              <td className="md:hidden flex flex-col items-start space-y-1">
+                <span>{obj.ticker}</span>
+                <span>Entry: {"$" + Number(obj.entryprice).toFixed(2)}</span>
+                <span>Basis: {"$" + Number(obj.costbasis).toFixed(2)}</span>
+                <span>
+                  Profit: {"$" + (obj.optionsprofit * 100).toFixed(2)}
+                </span>
+              </td>
+              <td className="hidden md:table-cell">{obj.ticker}</td>
               <td>{obj.quantity}</td>
-              <td>{"$" + Number(obj.entryprice).toFixed(2)}</td>
+              <td className="hidden md:table-cell">
+                {"$" + Number(obj.entryprice).toFixed(2)}
+              </td>
               <td>{"$" + Number(obj.quantity * obj.entryprice).toFixed(2)}</td>
-              <td>{"$" + Number(obj.costbasis).toFixed(2)}</td>
-              <td>{"$" + (obj.optionsprofit * 100).toFixed(2)}</td>
+              <td className="hidden md:table-cell">
+                {"$" + Number(obj.costbasis).toFixed(2)}
+              </td>
+              <td className="hidden md:table-cell">
+                {"$" + (obj.optionsprofit * 100).toFixed(2)}
+              </td>
               <td>{obj.openoptions}</td>
-              <td>{formatDate(obj.datepurchased)}</td>
+              <td className="hidden md:table-cell">
+                {formatDate(obj.datepurchased)}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -282,12 +294,6 @@ const OpenHoldings: React.FC<OpenHoldingsProps> = ({ userEmail }) => {
           onClick={handleOpenAddPositionModal}
         >
           Add Position
-        </button>
-        <button
-          className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2"
-          onClick={() => router.push("/")}
-        >
-          Back Home
         </button>
       </div>
       <AddHoldingModal
