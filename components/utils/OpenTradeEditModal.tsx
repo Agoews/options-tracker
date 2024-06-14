@@ -114,7 +114,9 @@ const OpenTradeEditModal: React.FC<TradeEditModalProps> = ({
           </div>
           <div className="gap-4 items-center">
             <label className="text-left col-span-1">
-              {`Current Open Quantity: ${editedTrade.openquantity}`}
+              {`Current Open Quantity: ${
+                editedTrade.openquantity ? editedTrade.openquantity : 0
+              }`}
             </label>
           </div>
           <div className="modal-action items-center justify-center">

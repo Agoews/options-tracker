@@ -231,7 +231,12 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
                             <span>
                               - ${Number(openTrades[0].strike).toFixed(2)}
                             </span>
-                            <span>- {openTrades[0].strategy}</span>
+                            <span>
+                              -{" "}
+                              {openTrades[0].strategy.length === 0
+                                ? openTrades[0].strategy
+                                : "NONE"}
+                            </span>{" "}
                             <span>
                               - {formatDate(openTrades[0].expirationdate)}
                             </span>
@@ -325,7 +330,12 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
                           <span>
                             - ${Number(openTrades[0].strike).toFixed(2)}
                           </span>
-                          <span>- {openTrades[0].strategy}</span>
+                          <span>
+                            -{" "}
+                            {openTrades[0].strategy.length === 0
+                              ? openTrades[0].strategy
+                              : "NONE"}
+                          </span>
                           <span>- {formatDate(trade.completiondate)}</span>
                         </td>
                         <td className="hidden md:table-cell">

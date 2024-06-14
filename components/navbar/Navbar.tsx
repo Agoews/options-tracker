@@ -36,7 +36,7 @@ const Navbar = () => {
           </label>
           <ul
             tabIndex={0}
-            className="menu bg-base-200 w-56 rounded-box dropdown-content z-[10] mt-3 p-2 shadow"
+            className="menu bg-base-300 w-56 rounded-box dropdown-content z-[10] mt-3 p-2 shadow"
           >
             {session && session.user ? (
               <li>
@@ -105,7 +105,7 @@ const Navbar = () => {
                   </div>
                   <ul
                     tabIndex={3}
-                    className="dropdown-content p-1 bg-slate-800 min-w-36 rounded-lg z-10"
+                    className="dropdown-content p-1 bg-base-300 min-w-36 rounded-lg z-10"
                   >
                     <li>
                       <Link href="/tracker">All Trades</Link>
@@ -131,7 +131,7 @@ const Navbar = () => {
               </div>
               <ul
                 tabIndex={4}
-                className="dropdown-content p-1 bg-slate-800 min-w-36 rounded-lg z-10"
+                className="dropdown-content p-1 bg-base-300 min-w-36 rounded-lg z-10"
               >
                 <li>
                   <Link href="/resources/calls-puts">Calls & Puts</Link>
@@ -148,7 +148,7 @@ const Navbar = () => {
       <div className="navbar-end">
         {session && session.user ? (
           <div className="flex gap-4 ml-auto">
-            <div className="dropdown">
+            <div className="dropdown dropdown-bottom dropdown-end">
               <div tabIndex={5} role="button" className="btn btn-ghost avatar">
                 <div className="w-8 rounded-full">
                   <Image
@@ -161,7 +161,7 @@ const Navbar = () => {
               </div>
               <ul
                 tabIndex={5}
-                className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-slate-800 rounded-box w-52 z-50"
+                className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-300 rounded-box w-32 z-50"
               >
                 <li>
                   <a onClick={signOutClickHandler}>Sign Out</a>
