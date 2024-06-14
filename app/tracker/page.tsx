@@ -25,19 +25,9 @@ const Tracker = async () => {
                 <div>Loading...</div>
               )}
             </div>
-            <Link className="p-1" href="/new-trade">
+            <Link href="/new-trade">
               <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2">
                 New Trade
-              </button>
-            </Link>
-            <Link className="p-1" href="/calls-puts">
-              <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2">
-                Calls & Puts
-              </button>
-            </Link>
-            <Link className="p-1" href="/the-wheel">
-              <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2">
-                The Wheel
               </button>
             </Link>
           </div>

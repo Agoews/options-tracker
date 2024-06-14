@@ -188,40 +188,137 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
 
   return (
     <>
-      <div className="flex flex-col w-full overflow-x-auto space-y-4 2xl:flex-row 2xl:space-x-4 2xl:space-y-0">
+      <div className="flex flex-col w-[310px] md:w-full space-y-4 2xl:flex-row 2xl:space-x-4 2xl:space-y-0">
         <div className="flex flex-col w-full 2xl:w-1/2">
           {/* OPEN TRADES */}
           <h2 className="text-[#00ee00] text-2xl text-left xl:text-center">
             Open Positions
           </h2>
-          <div className="overflow-y-auto overflow-x-auto xl:h-[200px] max-h-[200px] rounded border-2 border-[#00ee00]">
-            <table className="table table-xs table-pin-rows text-xs">
-              <thead>
-                <tr className="text-[#00ee00] text-center">
-                  <th className="md:hidden">Trade Details</th>
-                  <th className="hidden md:table-cell">Ticker</th>
-                  <th className="hidden md:table-cell">Action</th>
-                  <td className="hidden md:table-cell">Strategy</td>
-                  <th className="hidden md:table-cell">Strike</th>
-                  <td>#</td>
-                  <td>Entry</td>
-                  <td>Breakeven</td>
-                  <td>DTE</td>
-                  <td className="hidden md:table-cell">Expiration Date</td>
-                </tr>
-              </thead>
-              <tbody className="text-slate-200">
-                {Object.entries(aggregatedTrades).map(
-                  ([tradeId, { openTrades }]) => {
-                    if (
-                      openTrades.length > 0 &&
-                      openTrades[0].isclosed !== true
-                    ) {
+          <div className="overflow-x-auto max-w-full">
+            <div className="overflow-y-auto max-h-[200px] lg:max-w-screen-lg rounded border-2 border-[#00ee00]">
+              <table className="table table-xs table-pin-rows text-xs w-full">
+                <thead>
+                  <tr className="text-[#00ee00] text-center">
+                    <th className="md:hidden">Trade Details</th>
+                    <th className="hidden md:table-cell">Ticker</th>
+                    <th className="hidden md:table-cell">Action</th>
+                    <th className="hidden md:table-cell">Strategy</th>
+                    <th className="hidden md:table-cell">Strike</th>
+                    <th>#</th>
+                    <th>Entry</th>
+                    <th>Breakeven</th>
+                    <th>DTE</th>
+                    <th className="hidden md:table-cell">Expiration Date</th>
+                  </tr>
+                </thead>
+                <tbody className="text-slate-200">
+                  {Object.entries(aggregatedTrades).map(
+                    ([tradeId, { openTrades }]) => {
+                      if (
+                        openTrades.length > 0 &&
+                        openTrades[0].isclosed !== true
+                      ) {
+                        return (
+                          <tr
+                            key={tradeId}
+                            className="hover:bg-slate-700 hover:text-slate-200 hover:cursor-pointer text-center"
+                            onClick={() => handleRowClick(openTrades[0])}
+                          >
+                            <td className="md:hidden flex flex-col items-start space-y-1">
+                              <span>{openTrades[0].ticker}</span>
+                              <span>
+                                - {getActionAbbreviation(openTrades[0].actions)}
+                              </span>
+                              <span>
+                                - ${Number(openTrades[0].strike).toFixed(2)}
+                              </span>
+                              <span>- {openTrades[0].strategy}</span>
+                              <span>
+                                - {formatDate(openTrades[0].expirationdate)}
+                              </span>
+                            </td>
+                            <td className="hidden md:table-cell">
+                              {openTrades[0].ticker}
+                            </td>
+                            <td className="hidden md:table-cell">
+                              {getActionAbbreviation(openTrades[0].actions)}
+                            </td>
+                            <td className="hidden md:table-cell">
+                              {openTrades[0].strategy}
+                            </td>
+                            <td className="hidden md:table-cell">
+                              ${Number(openTrades[0].strike).toFixed(2)}
+                            </td>
+                            <td>{openTrades[0].openquantity}</td>
+                            <td>
+                              {Number(openTrades[0].optionprice).toFixed(2)}
+                            </td>
+                            <td>
+                              $
+                              {openTrades[0].actions === "COVERED CALL" ||
+                              openTrades[0].actions === "CALL"
+                                ? Number(
+                                    +openTrades[0].strike +
+                                      +openTrades[0].optionprice
+                                  ).toFixed(2)
+                                : Number(
+                                    +openTrades[0].strike -
+                                      +openTrades[0].optionprice
+                                  ).toFixed(2)}
+                            </td>
+                            <td>
+                              {calculateDTE(
+                                formatDate(openTrades[0].expirationdate)
+                              )}
+                            </td>
+                            <td className="hidden md:table-cell">
+                              {formatDate(openTrades[0].expirationdate)}
+                            </td>
+                          </tr>
+                        );
+                      }
+                      return null; // Skip rendering if there are no open trades
+                    }
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col w-full 2xl:w-1/2">
+          {/* CLOSED TRADES */}
+          <h2 className="text-[#00ee00] text-2xl text-left xl:text-center">
+            Closed Positions
+          </h2>
+          <div className="overflow-x-auto max-w-full">
+            <div className="overflow-y-auto max-h-[200px] rounded border-2 border-[#00ee00]">
+              <table className="table table-xs table-pin-rows text-xs w-full">
+                <thead>
+                  <tr className="text-[#00ee00] text-center">
+                    <th className="md:hidden">Trade Details</th>
+                    <th className="hidden md:table-cell">Ticker</th>
+                    <th className="hidden md:table-cell">Action</th>
+                    <th className="hidden md:table-cell">Strategy</th>
+                    <th className="hidden md:table-cell">Strike</th>
+                    <th>#</th>
+                    <th>Avg Closing</th>
+                    <th>Total</th>
+                    <th>P/L</th>
+                    <th className="hidden md:table-cell">Closed Date</th>
+                  </tr>
+                </thead>
+                <tbody className="text-slate-200">
+                  {Object.entries(aggregatedTrades).map(
+                    ([tradeId, { openTrades, closedTrades }]) => {
+                      const trade = closedTrades[closedTrades.length - 1];
+                      if (!trade) return null;
+
                       return (
                         <tr
-                          key={tradeId}
+                          key={`${tradeId}-0`}
                           className="hover:bg-slate-700 hover:text-slate-200 hover:cursor-pointer text-center"
-                          onClick={() => handleRowClick(openTrades[0])}
+                          onClick={() => handleRowClick(closedTrades[0])}
                         >
                           <td className="md:hidden flex flex-col items-start space-y-1">
                             <span>{openTrades[0].ticker}</span>
@@ -231,15 +328,8 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
                             <span>
                               - ${Number(openTrades[0].strike).toFixed(2)}
                             </span>
-                            <span>
-                              -{" "}
-                              {openTrades[0].strategy.length === 0
-                                ? openTrades[0].strategy
-                                : "NONE"}
-                            </span>{" "}
-                            <span>
-                              - {formatDate(openTrades[0].expirationdate)}
-                            </span>
+                            <span>- {openTrades[0].strategy}</span>
+                            <span>- {formatDate(trade.completiondate)}</span>
                           </td>
                           <td className="hidden md:table-cell">
                             {openTrades[0].ticker}
@@ -253,162 +343,66 @@ const Chart: React.FC<ChartProps> = ({ userEmail }) => {
                           <td className="hidden md:table-cell">
                             ${Number(openTrades[0].strike).toFixed(2)}
                           </td>
-                          <td>{openTrades[0].openquantity}</td>
                           <td>
-                            {Number(openTrades[0].optionprice).toFixed(2)}
+                            {
+                              aggregatedTrades[Number(tradeId)]
+                                .totalClosingQuantity
+                            }
+                          </td>
+                          <td>
+                            {aggregatedTrades[
+                              Number(tradeId)
+                            ].averageClosingPrice?.toFixed(2)}
                           </td>
                           <td>
                             $
-                            {openTrades[0].actions === "COVERED CALL" ||
-                            openTrades[0].actions === "CALL"
-                              ? Number(
-                                  +openTrades[0].strike +
-                                    +openTrades[0].optionprice
-                                ).toFixed(2)
-                              : Number(
-                                  +openTrades[0].strike -
-                                    +openTrades[0].optionprice
-                                ).toFixed(2)}
+                            {(
+                              Number(
+                                aggregatedTrades[Number(tradeId)]
+                                  .averageClosingPrice
+                              ) *
+                              Number(
+                                aggregatedTrades[Number(tradeId)]
+                                  .totalClosingQuantity
+                              ) *
+                              100
+                            ).toFixed(2)}
                           </td>
                           <td>
-                            {calculateDTE(
-                              formatDate(openTrades[0].expirationdate)
-                            )}
+                            {(closedTrades[0]?.closingprice &&
+                              openTrades[0].actions === "COVERED CALL") ||
+                            openTrades[0].actions === "CASH SECURED PUT"
+                              ? (
+                                  ((Number(openTrades[0]?.optionprice) -
+                                    Number(
+                                      aggregatedTrades[Number(tradeId)]
+                                        .averageClosingPrice
+                                    )) /
+                                    Number(openTrades[0]?.optionprice)) *
+                                  100
+                                ).toFixed(2) + "%"
+                              : (
+                                  ((Number(
+                                    aggregatedTrades[Number(tradeId)]
+                                      .averageClosingPrice
+                                  ) -
+                                    Number(openTrades[0]?.optionprice)) /
+                                    Number(openTrades[0]?.optionprice)) *
+                                  100
+                                ).toFixed(2) + "%"}
                           </td>
                           <td className="hidden md:table-cell">
-                            {formatDate(openTrades[0].expirationdate)}
+                            {trade.completiondate
+                              ? formatDate(trade.completiondate)
+                              : "N/A"}
                           </td>
                         </tr>
                       );
                     }
-                    return null; // Skip rendering if there are no open trades
-                  }
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div className="flex flex-col w-full 2xl:w-1/2">
-          {/* CLOSED TRADES */}
-          <h2 className="text-[#00ee00] text-2xl text-left xl:text-center">
-            Closed Positions
-          </h2>
-          <div className="overflow-y-auto overflow-x-auto xl:h-[200px] max-h-[200px] rounded border-2 border-[#00ee00]">
-            <table className="table table-xs table-pin-rows text-xs">
-              <thead>
-                <tr className="text-[#00ee00] text-center">
-                  <th className="md:hidden">Trade Details</th>
-                  <th className="hidden md:table-cell">Ticker</th>
-                  <th className="hidden md:table-cell">Action</th>
-                  <td className="hidden md:table-cell">Strategy</td>
-                  <th className="hidden md:table-cell">Strike</th>
-                  <td>#</td>
-                  <td>Avg Closing</td>
-                  <td>Total</td>
-                  <td>P/L</td>
-                  <td className="hidden md:table-cell">Closed Date</td>
-                </tr>
-              </thead>
-              <tbody className="text-slate-200">
-                {Object.entries(aggregatedTrades).map(
-                  ([tradeId, { openTrades, closedTrades }]) => {
-                    const trade = closedTrades[closedTrades.length - 1];
-                    if (!trade) return null;
-
-                    return (
-                      <tr
-                        key={`${tradeId}-0`}
-                        className="hover:bg-slate-700 hover:text-slate-200 hover:cursor-pointer text-center"
-                        onClick={() => handleRowClick(closedTrades[0])}
-                      >
-                        <td className="md:hidden flex flex-col items-start space-y-1">
-                          <span>{openTrades[0].ticker}</span>
-                          <span>
-                            - {getActionAbbreviation(openTrades[0].actions)}
-                          </span>
-                          <span>
-                            - ${Number(openTrades[0].strike).toFixed(2)}
-                          </span>
-                          <span>
-                            -{" "}
-                            {openTrades[0].strategy.length === 0
-                              ? openTrades[0].strategy
-                              : "NONE"}
-                          </span>
-                          <span>- {formatDate(trade.completiondate)}</span>
-                        </td>
-                        <td className="hidden md:table-cell">
-                          {openTrades[0].ticker}
-                        </td>
-                        <td className="hidden md:table-cell">
-                          {getActionAbbreviation(openTrades[0].actions)}
-                        </td>
-                        <td className="hidden md:table-cell">
-                          {openTrades[0].strategy}
-                        </td>
-                        <td className="hidden md:table-cell">
-                          ${Number(openTrades[0].strike).toFixed(2)}
-                        </td>
-                        <td>
-                          {
-                            aggregatedTrades[Number(tradeId)]
-                              .totalClosingQuantity
-                          }
-                        </td>
-                        <td>
-                          {aggregatedTrades[
-                            Number(tradeId)
-                          ].averageClosingPrice?.toFixed(2)}
-                        </td>
-                        <td>
-                          $
-                          {(
-                            Number(
-                              aggregatedTrades[Number(tradeId)]
-                                .averageClosingPrice
-                            ) *
-                            Number(
-                              aggregatedTrades[Number(tradeId)]
-                                .totalClosingQuantity
-                            ) *
-                            100
-                          ).toFixed(2)}
-                        </td>
-                        <td>
-                          {(closedTrades[0]?.closingprice &&
-                            openTrades[0].actions === "COVERED CALL") ||
-                          openTrades[0].actions === "CASH SECURED PUT"
-                            ? (
-                                ((Number(openTrades[0]?.optionprice) -
-                                  Number(
-                                    aggregatedTrades[Number(tradeId)]
-                                      .averageClosingPrice
-                                  )) /
-                                  Number(openTrades[0]?.optionprice)) *
-                                100
-                              ).toFixed(2) + "%"
-                            : (
-                                ((Number(
-                                  aggregatedTrades[Number(tradeId)]
-                                    .averageClosingPrice
-                                ) -
-                                  Number(openTrades[0]?.optionprice)) /
-                                  Number(openTrades[0]?.optionprice)) *
-                                100
-                              ).toFixed(2) + "%"}
-                        </td>
-                        <td className="hidden md:table-cell">
-                          {trade.completiondate
-                            ? formatDate(trade.completiondate)
-                            : "N/A"}
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
-              </tbody>
-            </table>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
