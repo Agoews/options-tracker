@@ -81,15 +81,15 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
           <table className="table table-xs table-pin-rows table-pin-cols text-xs rounded border-2 border-[#00ee00]">
             <thead>
               <tr className="text-[#00ee00] text-center">
-                <td>Ticker</td>
-                <td>Action</td>
-                <td>Strike</td>
-                <td>Contracts</td>
-                <td>Entry Price</td>
-                <td>Stock Entry</td>
-                <td>Breakeven</td>
-                <td>DTE</td>
-                <td>Expiration Date</td>
+                <th className="md:hidden">Trade Details</th>
+                <th className="hidden md:table-cell">Ticker</th>
+                <th className="hidden md:table-cell">Action</th>
+                <th className="hidden md:table-cell">Strike</th>
+                <th>#</th>
+                <th>Entry</th>
+                <th>Breakeven</th>
+                <th>DTE</th>
+                <th className="hidden md:table-cell">Expiration Date</th>
               </tr>
             </thead>
             <tbody className="text-slate-200">
@@ -100,18 +100,33 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
                       key={trade[0]}
                       className="hover:bg-slate-700 hover:text-slate-200 hover:cursor-pointer text-center"
                     >
-                      <td>{trade[1].openTrades[0].ticker}</td>
-                      <td>
+                      <td className="md:hidden flex flex-col items-start space-y-1">
+                        <span>{trade[1].openTrades[0].ticker}</span>
+                        <span>
+                          -{" "}
+                          {getActionAbbreviation(
+                            trade[1].openTrades[0].actions
+                          )}
+                        </span>
+                        <span>
+                          - ${Number(trade[1].openTrades[0].strike).toFixed(2)}
+                        </span>
+                        <span>
+                          - {formatDate(trade[1].openTrades[0].expirationdate)}
+                        </span>
+                      </td>
+                      <td className="hidden md:table-cell">
+                        {trade[1].openTrades[0].ticker}
+                      </td>
+                      <td className="hidden md:table-cell">
                         {getActionAbbreviation(trade[1].openTrades[0].actions)}
                       </td>
-                      <td>
+                      <td className="hidden md:table-cell">
                         ${Number(trade[1].openTrades[0].strike).toFixed(2)}
                       </td>
                       <td>{trade[1].openTrades[0].openquantity}</td>
-                      <td>{trade[1].openTrades[0].optionprice}</td>
                       <td>
-                        $
-                        {Number(trade[1].openTrades[0].currentprice).toFixed(2)}
+                        {Number(trade[1].openTrades[0].optionprice).toFixed(2)}
                       </td>
                       <td>
                         $
@@ -119,11 +134,13 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
                         trade[1].openTrades[0].actions === "CALL"
                           ? Number(
                               +trade[1].openTrades[0].strike +
-                                +trade[1].openTrades[0].optionprice
+                                +trade[1].openTrades[0].optionprice *
+                                  trade[1].openTrades[0].openquantity
                             ).toFixed(2)
                           : Number(
                               +trade[1].openTrades[0].strike -
-                                +trade[1].openTrades[0].optionprice
+                                +trade[1].openTrades[0].optionprice *
+                                  trade[1].openTrades[0].openquantity
                             ).toFixed(2)}
                       </td>
                       <td>
@@ -131,7 +148,7 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
                           formatDate(trade[1].openTrades[0].expirationdate)
                         )}
                       </td>
-                      <td>
+                      <td className="hidden md:table-cell">
                         {formatDate(trade[1].openTrades[0].expirationdate)}
                       </td>
                     </tr>
@@ -151,13 +168,15 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
           <table className="table table-xs table-pin-rows table-pin-cols text-xs rounded border-2 border-[#00ee00]">
             <thead>
               <tr className="text-[#00ee00] text-center">
-                <th>Ticker</th>
-                <th>Action</th>
-                <th>Strike</th>
-                <th>Contracts</th>
-                <th>Avg Closing Price</th>
+                <th className="md:hidden">Trade Details</th>
+                <th className="hidden md:table-cell">Ticker</th>
+                <th className="hidden md:table-cell">Action</th>
+                <th className="hidden md:table-cell">Strike</th>
+                <th>#</th>
+                <th>Avg Closing</th>
                 <th>Total</th>
                 <th>P/L</th>
+                <th className="hidden md:table-cell">Closed Date</th>
               </tr>
             </thead>
             <tbody className="text-slate-200">
@@ -170,11 +189,29 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
                     key={trade[0]}
                     className="hover:bg-slate-700 hover:text-slate-200 hover:cursor-pointer text-center"
                   >
-                    <td>{trade[1].openTrades[0].ticker}</td>
-                    <td>
+                    <td className="md:hidden flex flex-col items-start space-y-1">
+                      <span>{trade[1].openTrades[0].ticker}</span>
+                      <span>
+                        -{" "}
+                        {getActionAbbreviation(trade[1].openTrades[0].actions)}
+                      </span>
+                      <span>
+                        - ${Number(trade[1].openTrades[0].strike).toFixed(2)}
+                      </span>
+                      <span>- {formatDate(closed.completiondate)}</span>
+                    </td>
+                    <td className="hidden md:table-cell">
+                      {trade[1].openTrades[0].ticker}
+                    </td>
+                    <td className="hidden md:table-cell">
                       {getActionAbbreviation(trade[1].openTrades[0].actions)}
                     </td>
-                    <td>${Number(trade[1].openTrades[0].strike).toFixed(2)}</td>
+                    <td className="hidden md:table-cell">
+                      {trade[1].openTrades[0].strategy}
+                    </td>
+                    <td className="hidden md:table-cell">
+                      ${Number(trade[1].openTrades[0].strike).toFixed(2)}
+                    </td>
                     <td>{trade[1].totalClosingQuantity}</td>
                     <td>{trade[1].averageClosingPrice.toFixed(2)}</td>
                     <td>
@@ -194,6 +231,9 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
                             100
                           ).toFixed(2) + "%"
                         : "N/A"}
+                    </td>
+                    <td className="hidden md:table-cell">
+                      {formatDate(closed.completiondate)}
                     </td>
                   </tr>
                 );

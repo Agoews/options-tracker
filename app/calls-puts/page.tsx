@@ -1,5 +1,4 @@
 import React from "react";
-import Background from "@/public/Background_1.png";
 import { options } from "../api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
@@ -31,11 +30,6 @@ const CallsPuts = async () => {
           <Link className="p-1" href="/new-trade">
             <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2">
               New Trade
-            </button>
-          </Link>
-          <Link className="p-1" href="/tracker">
-            <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2">
-              All Trades
             </button>
           </Link>
         </div>
