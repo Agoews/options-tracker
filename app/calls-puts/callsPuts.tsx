@@ -71,7 +71,7 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
   );
 
   return (
-    <>
+    <div className="w-[310px]">
       <div className="space-y-4">
         <div>
           {/* OPEN TRADES */}
@@ -174,7 +174,7 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
                 <th className="hidden md:table-cell">Strike</th>
                 <th>#</th>
                 <th>Avg Closing</th>
-                <th>Total</th>
+                {/* <th>Total</th> */}
                 <th>P/L</th>
                 <th className="hidden md:table-cell">Closed Date</th>
               </tr>
@@ -214,14 +214,14 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
                     </td>
                     <td>{trade[1].totalClosingQuantity}</td>
                     <td>{trade[1].averageClosingPrice.toFixed(2)}</td>
-                    <td>
+                    {/* <td>
                       $
                       {(
                         trade[1].totalClosingQuantity *
                         trade[1].averageClosingPrice *
                         100
                       ).toFixed(2)}
-                    </td>
+                    </td> */}
                     <td>
                       {trade[1].closedTrades[0].closingprice
                         ? (
@@ -242,7 +242,7 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
           </table>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
