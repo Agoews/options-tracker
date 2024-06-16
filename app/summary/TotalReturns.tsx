@@ -79,8 +79,6 @@ const TotalReturnsTable: React.FC<TotalReturnsTableProps> = ({ userEmail }) => {
     setEditedStartingFunds(funds);
   };
 
-  console.log("funds data: ", fundsData.result);
-  console.log("trade data: ", tradesData.result);
   const aggregatedTrades = tradeTableFormatter(tradesData.result.rows);
 
   let wheelTotalDebits = 0;

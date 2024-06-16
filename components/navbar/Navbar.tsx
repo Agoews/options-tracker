@@ -3,14 +3,25 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 
 const Navbar = () => {
   const { data: session } = useSession();
   const router = useRouter();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
   const signOutClickHandler = () => {
     router.push("/");
     signOut();
+    setDropdownOpen(false); // Close dropdown on sign out
+  };
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  const handleLinkClick = () => {
+    setDropdownOpen(false); // Close dropdown on link click
   };
 
   return (
@@ -18,7 +29,11 @@ const Navbar = () => {
       <div className="navbar-start">
         {/* Mobile Navbar */}
         <div className="dropdown lg:hidden">
-          <label tabIndex={0} className="btn btn-ghost btn-circle m-1">
+          <label
+            tabIndex={0}
+            className="btn btn-ghost btn-circle m-1"
+            onClick={toggleDropdown}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -34,59 +49,92 @@ const Navbar = () => {
               />
             </svg>
           </label>
-          <ul
-            tabIndex={0}
-            className="menu bg-base-300 w-56 rounded-box dropdown-content z-[10] mt-3 p-2 shadow"
-          >
-            {session && session.user ? (
-              <li>
-                <a onClick={signOutClickHandler}>Sign Out</a>
-              </li>
-            ) : (
-              <li>
-                <a onClick={() => signIn()}>Sign In</a>
-              </li>
-            )}
-            {session && session.user && (
+          {dropdownOpen && (
+            <ul
+              tabIndex={0}
+              className="menu bg-base-300 w-56 rounded-box dropdown-content z-[10] mt-3 p-2 shadow"
+            >
+              {session && session.user ? (
+                <li>
+                  <a onClick={signOutClickHandler}>Sign Out</a>
+                </li>
+              ) : (
+                <li>
+                  <a
+                    onClick={() => {
+                      signIn();
+                      handleLinkClick();
+                    }}
+                  >
+                    Sign In
+                  </a>
+                </li>
+              )}
+              {session && session.user && (
+                <li>
+                  <details>
+                    <summary>Strategies</summary>
+                    <ul>
+                      <li>
+                        <Link href="/stock-holdings" onClick={handleLinkClick}>
+                          Holdings
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/tracker" onClick={handleLinkClick}>
+                          All Trades
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/summary" onClick={handleLinkClick}>
+                          Summary
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/calls-puts" onClick={handleLinkClick}>
+                          Calls & Puts
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/the-wheel" onClick={handleLinkClick}>
+                          The Wheel
+                        </Link>
+                      </li>
+                    </ul>
+                  </details>
+                </li>
+              )}
               <li>
                 <details>
-                  <summary>Strategies</summary>
+                  <summary>Resources</summary>
                   <ul>
                     <li>
-                      <Link href="/stock-holdings">Holdings</Link>
+                      <Link
+                        href="/resources/calls-puts"
+                        onClick={handleLinkClick}
+                      >
+                        Calls & Puts
+                      </Link>
                     </li>
                     <li>
-                      <Link href="/tracker">All Trades</Link>
-                    </li>
-                    <li>
-                      <Link href="/summary">Summary</Link>
-                    </li>
-                    <li>
-                      <Link href="/calls-puts">Calls & Puts</Link>
-                    </li>
-                    <li>
-                      <Link href="/the-wheel">The Wheel</Link>
+                      <Link
+                        href="/resources/the-wheel"
+                        onClick={handleLinkClick}
+                      >
+                        The Wheel
+                      </Link>
                     </li>
                   </ul>
                 </details>
               </li>
-            )}
-            <li>
-              <details>
-                <summary>Resources</summary>
-                <ul>
-                  <li>
-                    <Link href="/resources/calls-puts">Calls & Puts</Link>
-                  </li>
-                  <li>
-                    <Link href="/resources/the-wheel">The Wheel</Link>
-                  </li>
-                </ul>
-              </details>
-            </li>
-          </ul>
+            </ul>
+          )}
         </div>
-        <Link href="/" className="btn btn-ghost text-lg md:text-3xl">
+        <Link
+          href="/"
+          className="btn btn-ghost text-lg md:text-3xl"
+          onClick={handleLinkClick}
+        >
           TradeTracker
         </Link>
       </div>

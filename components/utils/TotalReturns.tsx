@@ -37,7 +37,7 @@ const TotalReturns: React.FC<TotalReturnsProps> = ({
             <th>Starting Funds</th>
             <th>Returns</th>
             <th>Total P/L (%)</th>
-            <th>Add/Remove Funds</th>
+            <th className="hidden md:table-cell">Add/Remove Funds</th>
           </tr>
         </thead>
         <tbody className="text-slate-200 text-center">
@@ -58,10 +58,20 @@ const TotalReturns: React.FC<TotalReturnsProps> = ({
                   ).toFixed(2)}%`
                 : "Update Funds ->"}
             </td>
-            <td>
+            <td className="hidden md:table-cell">
               <button
                 onClick={handleUpdateFundsModal}
                 className="btn btn-xs text-[#00ee00] border-[#00ee00] bg-[#002f00]"
+              >
+                Update Funds
+              </button>
+            </td>
+          </tr>
+          <tr className="md:hidden">
+            <td colSpan={4}>
+              <button
+                onClick={handleUpdateFundsModal}
+                className="btn btn-xs text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2"
               >
                 Update Funds
               </button>
