@@ -128,46 +128,42 @@ const TotalReturnsTable: React.FC<TotalReturnsTableProps> = ({ userEmail }) => {
       {/* Total Returns */}
       <div className="text-2xl">
         {aggregatedTrades ? (
-          <>
-            <div className="grid grid-cols-1 xl:grid-cols-6 xl:space-x-4 space-y-2">
-              <div className="col-span-1 xl:col-span-1"></div>
-              <div className="col-span-1 xl:col-span-4 items-left text-left xl:items-center xl:text-center">
-                <TotalReturns
-                  totalProfits={totalProfits}
-                  startingFunds={startingFunds}
-                  startingFundsModalToggle={startingFundsModalToggle}
-                  handleCancel={handleCancel}
-                  handleSaveUpdateFunds={handleSaveUpdateFunds}
-                  handleUpdateFundsModal={handleUpdateFundsModal}
-                  handleStartingFundsInputChange={
-                    handleStartingFundsInputChange
-                  }
-                />
-              </div>
-              <div className="col-span-1 xl:col-span-1"></div>
-              <div className="col-span-1 xl:col-span-2">
-                <PLReturns
-                  totalCredits={wheelTotalCredits}
-                  totalDebits={wheelTotalDebits}
-                  totalPL={wheelTotalPL}
-                />
-              </div>
-              <div className="col-span-1 xl:col-span-2 ">
-                <CallReturns
-                  closingCosts={callClosingCost}
-                  openingCosts={callOpeningCost}
-                  totalPL={callTotalPL}
-                />
-              </div>
-              <div className="col-span-1 xl:col-span-2">
-                <PutReturns
-                  closingCosts={putClosingCost}
-                  openingCosts={putOpeningCost}
-                  totalPL={putTotalPL}
-                />
-              </div>
+          <div className="grid grid-cols-1 xl:grid-cols-6 xl:space-x-4 space-y-2">
+            <div className="col-span-1 xl:col-span-1"></div>
+            <div className="col-span-1 xl:col-span-4 items-left text-left xl:items-center xl:text-center">
+              <TotalReturns
+                totalProfits={totalProfits}
+                startingFunds={startingFunds}
+                startingFundsModalToggle={startingFundsModalToggle}
+                handleCancel={handleCancel}
+                handleSaveUpdateFunds={handleSaveUpdateFunds}
+                handleUpdateFundsModal={handleUpdateFundsModal}
+                handleStartingFundsInputChange={handleStartingFundsInputChange}
+              />
             </div>
-          </>
+            <div className="col-span-1 xl:col-span-1"></div>
+            <div className="col-span-1 xl:col-span-2">
+              <PLReturns
+                totalCredits={wheelTotalCredits}
+                totalDebits={wheelTotalDebits}
+                totalPL={wheelTotalPL}
+              />
+            </div>
+            <div className="col-span-1 xl:col-span-2 ">
+              <CallReturns
+                closingCosts={callClosingCost}
+                openingCosts={callOpeningCost}
+                totalPL={callTotalPL}
+              />
+            </div>
+            <div className="col-span-1 xl:col-span-2">
+              <PutReturns
+                closingCosts={putClosingCost}
+                openingCosts={putOpeningCost}
+                totalPL={putTotalPL}
+              />
+            </div>
+          </div>
         ) : (
           <div>Loading...</div>
         )}

@@ -1,9 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { SyntheticEvent, useState } from "react";
 import { Trade, fetcher } from "../../components/utils/fetcher";
 import useSWR from "swr";
 import { tradeTableFormatter } from "../../components/utils/tradeTableFormatter";
 import { getActionAbbreviation } from "../../components/utils/getActionAbbreviation";
+import CloseCallPutModal from "./CloseCallPutModal";
 
 interface CallsPutsProps {
   userEmail: string;
@@ -39,15 +40,36 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
 
   const [editingTradeId, setEditingTradeId] = useState<number | null>(null);
   const [editedTrade, setEditedTrade] = useState<Trade>(initialTradeState);
+  const [closingPrice, setClosingPrice] = useState<string | null>(null);
+  const [completionDate, setCompletionDate] = useState<string | null>(null);
+  const [closedQuantity, setClosedQuantity] = useState<string | null>(null);
   const [openTradeModalToggle, setOpenTradeModalToggle] = useState(false);
 
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
 
   const handleRowClick = (trade: Trade) => {
+    console.log(trade);
     setEditingTradeId(trade.tradeid);
     setEditedTrade({ ...trade });
     setOpenTradeModalToggle(true);
+  };
+
+  const handleCloseTrade = async (e: SyntheticEvent) => {
+    e.preventDefault();
+    console.log(
+      "closed trade data: ",
+      closingPrice,
+      completionDate,
+      closedQuantity
+    );
+  };
+
+  const handleCancel = () => {
+    setOpenTradeModalToggle(false);
+    setClosedQuantity(null);
+    setClosingPrice(null);
+    setCompletionDate(null);
   };
 
   const formatDate = (dateString: string) => {
@@ -99,6 +121,7 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
                     <tr
                       key={trade[0]}
                       className="hover:bg-slate-700 hover:text-slate-200 hover:cursor-pointer text-center"
+                      onClick={() => handleRowClick(trade[1].openTrades)}
                     >
                       <td className="md:hidden flex flex-col items-start space-y-1">
                         <span>{trade[1].openTrades[0].ticker}</span>
@@ -242,6 +265,15 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
           </table>
         </div>
       </div>
+      <CloseCallPutModal
+        editingTradeId={editingTradeId}
+        openTradeModalToggle={openTradeModalToggle}
+        setClosingPrice={setClosingPrice}
+        setCompletionDate={setCompletionDate}
+        setClosedQuantity={setClosedQuantity}
+        handleCancel={handleCancel}
+        handleCloseTrade={handleCloseTrade}
+      />
     </div>
   );
 };
