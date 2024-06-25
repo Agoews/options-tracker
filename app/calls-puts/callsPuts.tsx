@@ -1,7 +1,7 @@
 "use client";
 import React, { SyntheticEvent, useState } from "react";
 import { Trade, fetcher } from "../../components/utils/fetcher";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { tradeTableFormatter } from "../../components/utils/tradeTableFormatter";
 import { getActionAbbreviation } from "../../components/utils/getActionAbbreviation";
 import CloseCallPutModal from "./CloseCallPutModal";
@@ -49,7 +49,7 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
   if (isLoading) return <div>Loading...</div>;
 
   const handleRowClick = (trade: Trade) => {
-    console.log(trade);
+    console.log(trade.tradeid);
     setEditingTradeId(trade.tradeid);
     setEditedTrade({ ...trade });
     setOpenTradeModalToggle(true);
@@ -57,12 +57,37 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
 
   const handleCloseTrade = async (e: SyntheticEvent) => {
     e.preventDefault();
-    console.log(
-      "closed trade data: ",
-      closingPrice,
-      completionDate,
-      closedQuantity
-    );
+    setOpenTradeModalToggle(false);
+
+    const tradeData = {
+      tradeid: editingTradeId,
+      closingprice: closingPrice,
+      completiondate: completionDate,
+      closedquantity: closedQuantity,
+    };
+
+    console.log(tradeData);
+    // try {
+    //   const response = await fetch("/api/close-call-put-trade", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(tradeData),
+    //   });
+
+    //   const result = await response.json();
+
+    //   if (response.ok) {
+    //     console.log("Closed trade saved successfully!", result);
+    //   } else {
+    //     console.error("Error saving closed trade:", result);
+    //   }
+
+    //   mutate(`/api/get-trades?email=${userEmail}`);
+    // } catch (error) {
+    //   console.error("Error making request:", error);
+    // }
   };
 
   const handleCancel = () => {
@@ -115,64 +140,46 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
               </tr>
             </thead>
             <tbody className="text-slate-200">
-              {filteredOptions.map((trade) => {
-                if (trade[1].openTrades[0].openquantity) {
+              {filteredOptions.map((option) => {
+                const trade = option[1].openTrades[0]; // assuming each option has at least one openTrade
+                if (trade.openquantity) {
                   return (
                     <tr
-                      key={trade[0]}
+                      key={trade.tradeid}
                       className="hover:bg-slate-700 hover:text-slate-200 hover:cursor-pointer text-center"
-                      onClick={() => handleRowClick(trade[1].openTrades)}
+                      onClick={() => handleRowClick(trade)}
                     >
                       <td className="md:hidden flex flex-col items-start space-y-1">
-                        <span>{trade[1].openTrades[0].ticker}</span>
-                        <span>
-                          -{" "}
-                          {getActionAbbreviation(
-                            trade[1].openTrades[0].actions
-                          )}
-                        </span>
-                        <span>
-                          - ${Number(trade[1].openTrades[0].strike).toFixed(2)}
-                        </span>
-                        <span>
-                          - {formatDate(trade[1].openTrades[0].expirationdate)}
-                        </span>
+                        <span>{trade.ticker}</span>
+                        <span>- {getActionAbbreviation(trade.actions)}</span>
+                        <span>- ${Number(trade.strike).toFixed(2)}</span>
+                        <span>- {formatDate(trade.expirationdate)}</span>
+                      </td>
+                      <td className="hidden md:table-cell">{trade.ticker}</td>
+                      <td className="hidden md:table-cell">
+                        {getActionAbbreviation(trade.actions)}
                       </td>
                       <td className="hidden md:table-cell">
-                        {trade[1].openTrades[0].ticker}
+                        ${Number(trade.strike).toFixed(2)}
                       </td>
-                      <td className="hidden md:table-cell">
-                        {getActionAbbreviation(trade[1].openTrades[0].actions)}
-                      </td>
-                      <td className="hidden md:table-cell">
-                        ${Number(trade[1].openTrades[0].strike).toFixed(2)}
-                      </td>
-                      <td>{trade[1].openTrades[0].openquantity}</td>
-                      <td>
-                        {Number(trade[1].openTrades[0].optionprice).toFixed(2)}
-                      </td>
+                      <td>{trade.openquantity}</td>
+                      <td>{Number(trade.optionprice).toFixed(2)}</td>
                       <td>
                         $
-                        {trade[1].openTrades[0].actions === "COVERED CALL" ||
-                        trade[1].openTrades[0].actions === "CALL"
+                        {trade.actions === "COVERED CALL" ||
+                        trade.actions === "CALL"
                           ? Number(
-                              +trade[1].openTrades[0].strike +
-                                +trade[1].openTrades[0].optionprice *
-                                  trade[1].openTrades[0].openquantity
+                              trade.strike +
+                                trade.optionprice * trade.openquantity
                             ).toFixed(2)
                           : Number(
-                              +trade[1].openTrades[0].strike -
-                                +trade[1].openTrades[0].optionprice *
-                                  trade[1].openTrades[0].openquantity
+                              trade.strike -
+                                trade.optionprice * trade.openquantity
                             ).toFixed(2)}
                       </td>
-                      <td>
-                        {calculateDTE(
-                          formatDate(trade[1].openTrades[0].expirationdate)
-                        )}
-                      </td>
+                      <td>{calculateDTE(formatDate(trade.expirationdate))}</td>
                       <td className="hidden md:table-cell">
-                        {formatDate(trade[1].openTrades[0].expirationdate)}
+                        {formatDate(trade.expirationdate)}
                       </td>
                     </tr>
                   );
