@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 interface CloseCallPutModalProps {
   openTradeModalToggle: boolean;
@@ -25,7 +25,7 @@ const CloseCallPutModal: React.FC<CloseCallPutModalProps> = ({
     <div className="modal modal-open">
       <div className="modal-box max-w-sm">
         <h3 className="font-bold text-xl text-[#00ee00] mb-4">
-          {"Close Call/Put Position"}
+          Close Call/Put Position
         </h3>
         <div className="text-sm">
           <div className="grid grid-cols-3 gap-4 mb-4">
