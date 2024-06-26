@@ -67,27 +67,27 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
     };
 
     console.log(tradeData);
-    // try {
-    //   const response = await fetch("/api/close-call-put-trade", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(tradeData),
-    //   });
+    try {
+      const response = await fetch("/api/close-call-put-trade", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(tradeData),
+      });
 
-    //   const result = await response.json();
+      const result = await response.json();
 
-    //   if (response.ok) {
-    //     console.log("Closed trade saved successfully!", result);
-    //   } else {
-    //     console.error("Error saving closed trade:", result);
-    //   }
+      if (response.ok) {
+        console.log("Closed trade saved successfully!", result);
+      } else {
+        console.error("Error saving closed trade:", result);
+      }
 
-    //   mutate(`/api/get-trades?email=${userEmail}`);
-    // } catch (error) {
-    //   console.error("Error making request:", error);
-    // }
+      mutate(`/api/get-trades?email=${userEmail}`);
+    } catch (error) {
+      console.error("Error making request:", error);
+    }
   };
 
   const handleCancel = () => {
@@ -118,7 +118,7 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
   );
 
   return (
-    <div className="w-[310px]">
+    <div className="w-[310px] md:w-full">
       <div className="space-y-4">
         <div>
           {/* OPEN TRADES */}
@@ -236,9 +236,7 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
                     <td className="hidden md:table-cell">
                       {getActionAbbreviation(trade[1].openTrades[0].actions)}
                     </td>
-                    <td className="hidden md:table-cell">
-                      {trade[1].openTrades[0].strategy}
-                    </td>
+
                     <td className="hidden md:table-cell">
                       ${Number(trade[1].openTrades[0].strike).toFixed(2)}
                     </td>
