@@ -114,8 +114,8 @@ const NewTrade = () => {
   return (
     <main className="flex min-h-screen min-w-screen items-center">
       <div className="hero min-h-screen">
-        <div className="flex justify-center w-full">
-          <div className="grid grid-cols-2 gap-4 p-4">
+        <div className="flex justify-center w-full p-4">
+          <div className="grid grid-cols-1 max-w-[320px] md:grid-cols-2 md:max-w-2xl gap-4 w-full">
             <label className="form-control w-full">
               <div className="label">
                 <span className="label-text text-[#00ee00]">Stock Ticker</span>
@@ -223,7 +223,7 @@ const NewTrade = () => {
                 </option>
                 <option>WHEEL</option>
               </select>
-              <div className="flex-row justify-center form-control space-x-2 mt-4">
+              <div className="flex flex-col md:flex-row justify-center form-control space-y-2 md:space-y-0 md:space-x-2 mt-4">
                 <form onSubmit={handleSubmit}>
                   <button
                     type="submit"

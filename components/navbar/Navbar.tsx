@@ -55,9 +55,21 @@ const Navbar = () => {
               className="menu bg-base-300 w-56 rounded-box dropdown-content z-[10] mt-3 p-2 shadow"
             >
               {session && session.user ? (
-                <li>
-                  <a onClick={signOutClickHandler}>Sign Out</a>
-                </li>
+                <>
+                  <li>
+                    <a onClick={signOutClickHandler}>Sign Out</a>
+                  </li>
+                  <li>
+                    <Link href="/summary" onClick={handleLinkClick}>
+                      Summary
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/stock-holdings" onClick={handleLinkClick}>
+                      Stock Holdings
+                    </Link>
+                  </li>
+                </>
               ) : (
                 <li>
                   <a
@@ -76,18 +88,8 @@ const Navbar = () => {
                     <summary>Strategies</summary>
                     <ul>
                       <li>
-                        <Link href="/stock-holdings" onClick={handleLinkClick}>
-                          Holdings
-                        </Link>
-                      </li>
-                      <li>
                         <Link href="/tracker" onClick={handleLinkClick}>
                           All Trades
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="/summary" onClick={handleLinkClick}>
-                          Summary
                         </Link>
                       </li>
                       <li>
@@ -146,6 +148,9 @@ const Navbar = () => {
               <Link href="/stock-holdings">
                 <div className="btn btn-ghost">Holdings</div>
               </Link>
+              <Link href="/summary">
+                <div className="btn btn-ghost">Summary</div>
+              </Link>
               <li>
                 <div className="dropdown dropdown-hover dropdown-bottom p-0">
                   <div tabIndex={3} role="button" className="btn btn-ghost">
@@ -153,13 +158,10 @@ const Navbar = () => {
                   </div>
                   <ul
                     tabIndex={3}
-                    className="dropdown-content p-1 bg-base-300 min-w-36 rounded-lg z-10"
+                    className="dropdown-content bg-base-300 min-w-36 rounded-lg z-10"
                   >
                     <li>
                       <Link href="/tracker">All Trades</Link>
-                    </li>
-                    <li>
-                      <Link href="/summary">Summary</Link>
                     </li>
                     <li>
                       <Link href="/calls-puts">Calls & Puts</Link>
@@ -179,7 +181,7 @@ const Navbar = () => {
               </div>
               <ul
                 tabIndex={4}
-                className="dropdown-content p-1 bg-base-300 min-w-36 rounded-lg z-10"
+                className="dropdown-content bg-base-300 min-w-36 rounded-lg z-10"
               >
                 <li>
                   <Link href="/resources/calls-puts">Calls & Puts</Link>

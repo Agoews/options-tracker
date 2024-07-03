@@ -13,7 +13,7 @@ const PLReturns: React.FC<PLReturnsProps> = ({
 }) => {
   return (
     <>
-      <h2 className="text-[#00ee00] text-2xl text-left xl:text-center">
+      <h2 className="text-[#00ee00] text-2xl text-left md:text-center">
         Wheel P/L
       </h2>
       <table className="table table-xs text-xs border-2 border-[#00ee00]">

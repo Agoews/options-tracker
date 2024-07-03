@@ -262,8 +262,8 @@ const TheWheelChart: React.FC<WheelProps> = ({ userEmail }) => {
   let aggregatedTrades = tradeTableFormatter(tradesData.result.rows);
 
   return (
-    <div className="space-y-4 xl:space-y-0">
-      <div className="flex flex-col justify-center items-center space-y-4 xl:flex-row xl:space-x-4 xl:space-y-0">
+    <div className="space-y-4 md:space-y-0">
+      <div className="flex flex-col justify-center items-center space-y-4 md:flex-row md:space-x-2 md:space-y-0">
         <CreditTable
           aggregatedTrades={aggregatedTrades}
           handleOpenTradeClick={handleOpenTradeClick}

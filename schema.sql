@@ -25,7 +25,8 @@ CREATE TABLE ClosedTrades (
     ClosedTradeID SERIAL PRIMARY KEY,
     TradeID INT REFERENCES OpenTrades(TradeID) ON DELETE CASCADE,
     ClosingPrice DECIMAL,
-    CompletionDate DATE,
+    AverageClosingPrice DECIMAL,
+    CompletionDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     ClosedQuantity INT
 );
 

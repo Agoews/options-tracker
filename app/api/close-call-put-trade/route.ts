@@ -5,24 +5,62 @@ export async function POST(req: Request) {
   const { tradeid, closingprice, completiondate, closedquantity } =
     await req.json();
 
+  // Ensure closingprice and closedquantity are treated as numbers
+  const closingPriceNumber = Number(closingprice);
+  const closedQuantityNumber = Number(closedquantity);
+
+  if (isNaN(closingPriceNumber) || isNaN(closedQuantityNumber)) {
+    return NextResponse.json(
+      { error: "Invalid closing price or closed quantity" },
+      { status: 400 }
+    );
+  }
+
   try {
-    // Insert the closed trade into the database
-    await sql`
-      INSERT INTO ClosedTrades (
-        TradeID, ClosingPrice, CompletionDate, ClosedQuantity
-      )
-      VALUES (
-        ${tradeid}, ${closingprice}, ${completiondate}, ${closedquantity}
-      );
+    // Check if the closed trade already exists
+    const existingTrade = await sql`
+      SELECT * FROM ClosedTrades WHERE TradeID = ${tradeid};
     `;
 
-    // Update the OpenTrades table to decrease the openquantity and set isClosed if necessary
+    if (existingTrade.rowCount > 0) {
+      const existingTradeData = existingTrade.rows[0];
+      const newClosedQuantity =
+        existingTradeData.closedquantity + closedQuantityNumber;
+      const newAverageClosingPrice =
+        (existingTradeData.averageclosingprice *
+          existingTradeData.closedquantity +
+          closingPriceNumber * closedQuantityNumber) /
+        newClosedQuantity;
+
+      // Update the existing closed trade
+      await sql`
+        UPDATE ClosedTrades
+        SET
+          ClosingPrice = ${closingPriceNumber},
+          AverageClosingPrice = ${newAverageClosingPrice},
+          CompletionDate = ${completiondate},
+          ClosedQuantity = ${newClosedQuantity}
+        WHERE TradeID = ${tradeid};
+      `;
+    } else {
+      // Insert the new closed trade
+      await sql`
+        INSERT INTO ClosedTrades (
+          TradeID, ClosingPrice, AverageClosingPrice, CompletionDate, ClosedQuantity
+        )
+        VALUES (
+          ${tradeid}, ${closingPriceNumber}, ${closingPriceNumber}, ${completiondate}, ${closedQuantityNumber}
+        );
+      `;
+    }
+
+    // Update the OpenTrades table to decrease the open quantity and set isClosed if necessary
     await sql`
       UPDATE OpenTrades
       SET
-        OpenQuantity = OpenQuantity - ${closedquantity},
+        OpenQuantity = OpenQuantity - ${closedQuantityNumber},
         isClosed = CASE
-                    WHEN OpenQuantity - ${closedquantity} <= 0 THEN true
+                    WHEN OpenQuantity - ${closedQuantityNumber} <= 0 THEN true
                     ELSE isClosed
                    END
       WHERE TradeID = ${tradeid};

@@ -46,11 +46,11 @@ export const CreditTable: React.FC<CreditTableProps> = ({
   };
 
   return (
-    <div className="xl:w-1/2 w-[320px] md:w-full ">
-      <h2 className="text-[#00ee00] text-2xl text-left xl:text-center">
+    <div className="w-[320px] md:w-1/2 ">
+      <h2 className="text-[#00ee00] text-2xl text-left md:text-center">
         Open Options
       </h2>
-      <div className="overflow-y-auto overflow-x-auto xl:h-[200px] max-h-[200px] border-2 border-[#00ee00]">
+      <div className="overflow-y-auto overflow-x-auto md:h-[200px] max-h-[200px] border-2 border-[#00ee00]">
         <div className="overflow-x-auto">
           <table className="table table-xs w-full table-pin-rows text-xs">
             <thead>
@@ -62,7 +62,7 @@ export const CreditTable: React.FC<CreditTableProps> = ({
                 <th>#</th>
                 <th>Credit</th>
                 <th>Total</th>
-                <th className="hidden md:table-cell">Expiration</th>
+                <th className="hidden md:table-cell">Experation</th>
               </tr>
             </thead>
             <tbody className="text-slate-200 text-center">

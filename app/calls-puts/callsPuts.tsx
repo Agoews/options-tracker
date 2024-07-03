@@ -46,6 +46,11 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
   const [closedQuantity, setClosedQuantity] = useState<string | null>(null);
   const [openTradeModalToggle, setOpenTradeModalToggle] = useState(false);
   const [closedTradeModalToggle, setClosedTradeModalToggle] = useState(false);
+  const [reopenQuantity, setReopenQuantity] = useState<null | string>(null);
+
+  const [closingPriceValid, setClosingPriceValid] = useState(true);
+  const [completionDateValid, setCompletionDateValid] = useState(true);
+  const [closedQuantityValid, setClosedQuantityValid] = useState(true);
 
   if (error) return <div>Failed to load</div>;
   if (isLoading) return <div>Loading...</div>;
@@ -64,6 +69,14 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
 
   const handleCloseTrade = async (e: SyntheticEvent) => {
     e.preventDefault();
+
+    // Validate inputs
+    setClosingPriceValid(closingPrice !== null && closingPrice !== "");
+    setCompletionDateValid(completionDate !== null && completionDate !== "");
+    setClosedQuantityValid(closedQuantity !== null && closedQuantity !== "");
+
+    if (!closingPrice || !completionDate || !closedQuantity) return;
+
     setOpenTradeModalToggle(false);
 
     const tradeData = {
@@ -96,7 +109,37 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
 
   const handleOpenTrade = async (e: SyntheticEvent) => {
     e.preventDefault();
+
+    const reopenQuantityNumber = Number(reopenQuantity);
+
+    if (isNaN(reopenQuantityNumber)) {
+      console.error("Invalid reopen quantity");
+      return;
+    }
+
     setClosedTradeModalToggle(false);
+
+    try {
+      const response = await fetch("/api/open-call-put-trade", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tradeid: editingTradeId,
+          reopenquantity: reopenQuantityNumber,
+        }),
+      });
+
+      if (response.ok) {
+        mutate(`/api/get-trades?email=${userEmail}`);
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to reopen trade:", errorData);
+      }
+    } catch (error) {
+      console.error("Error reopening trade:", error);
+    }
   };
 
   const handleCancel = () => {
@@ -105,6 +148,10 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
     setClosedQuantity(null);
     setClosingPrice(null);
     setCompletionDate(null);
+    setReopenQuantity(null);
+    setClosingPriceValid(true);
+    setCompletionDateValid(true);
+    setClosedQuantityValid(true);
   };
 
   const formatDate = (dateString: string) => {
@@ -214,59 +261,49 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
                 <th className="hidden md:table-cell">Strike</th>
                 <th>#</th>
                 <th>Avg Close</th>
-                {/* <th>Total</th> */}
                 <th>P/L</th>
                 <th className="hidden md:table-cell">Closed Date</th>
               </tr>
             </thead>
             <tbody className="text-slate-200">
-              {filteredOptions.map((trade) => {
-                const closed = trade[1].closedTrades[0];
+              {filteredOptions.map((option) => {
+                const closed = option[1].closedTrades[0];
                 if (!closed) return null;
 
                 return (
                   <tr
-                    key={trade[0]}
+                    key={option[0]}
                     className="hover:bg-slate-700 hover:text-slate-200 hover:cursor-pointer text-center"
-                    onClick={() => handleClosedRowClick(trade)}
+                    onClick={() => handleClosedRowClick(closed)}
                   >
                     <td className="md:hidden flex flex-col items-start space-y-1">
-                      <span>{trade[1].openTrades[0].ticker}</span>
+                      <span>{option[1].openTrades[0].ticker}</span>
                       <span>
                         -{" "}
-                        {getActionAbbreviation(trade[1].openTrades[0].actions)}
+                        {getActionAbbreviation(option[1].openTrades[0].actions)}
                       </span>
                       <span>
-                        - ${Number(trade[1].openTrades[0].strike).toFixed(2)}
+                        - ${Number(option[1].openTrades[0].strike).toFixed(2)}
                       </span>
                       <span>- {formatDate(closed.completiondate)}</span>
                     </td>
                     <td className="hidden md:table-cell">
-                      {trade[1].openTrades[0].ticker}
+                      {option[1].openTrades[0].ticker}
                     </td>
                     <td className="hidden md:table-cell">
-                      {getActionAbbreviation(trade[1].openTrades[0].actions)}
+                      {getActionAbbreviation(option[1].openTrades[0].actions)}
                     </td>
-
                     <td className="hidden md:table-cell">
-                      ${Number(trade[1].openTrades[0].strike).toFixed(2)}
+                      ${Number(option[1].openTrades[0].strike).toFixed(2)}
                     </td>
-                    <td>{trade[1].totalClosingQuantity}</td>
-                    <td>{trade[1].averageClosingPrice.toFixed(2)}</td>
-                    {/* <td>
-                      $
-                      {(
-                        trade[1].totalClosingQuantity *
-                        trade[1].averageClosingPrice *
-                        100
-                      ).toFixed(2)}
-                    </td> */}
+                    <td>{option[1].totalClosingQuantity}</td>
+                    <td>{option[1].averageClosingPrice.toFixed(2)}</td>
                     <td>
-                      {trade[1].closedTrades[0].closingprice
+                      {closed.closingprice
                         ? (
-                            ((trade[1].averageClosingPrice -
-                              trade[1].openTrades[0].optionprice) /
-                              trade[1].openTrades[0].optionprice) *
+                            ((option[1].averageClosingPrice -
+                              option[1].openTrades[0].optionprice) /
+                              option[1].openTrades[0].optionprice) *
                             100
                           ).toFixed(2) + "%"
                         : "N/A"}
@@ -282,17 +319,21 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
         </div>
       </div>
       <CloseCallPutModal
-        editingTradeId={editingTradeId}
         openTradeModalToggle={openTradeModalToggle}
         setClosingPrice={setClosingPrice}
         setCompletionDate={setCompletionDate}
         setClosedQuantity={setClosedQuantity}
         handleCancel={handleCancel}
         handleCloseTrade={handleCloseTrade}
+        closingPriceValid={closingPriceValid}
+        completionDateValid={completionDateValid}
+        closedQuantityValid={closedQuantityValid}
       />
       <OpenCallPutModal
         closedTradeModalToggle={closedTradeModalToggle}
         handleCancel={handleCancel}
+        handleOpenTrade={handleOpenTrade}
+        setReopenQuantity={setReopenQuantity}
       />
     </div>
   );

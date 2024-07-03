@@ -12,7 +12,7 @@ const PutReturns: React.FC<PutReturnsProps> = ({
   totalPL,
 }) => {
   return (
-    <>
+    <div className="w-[320px] md:w-full">
       <h2 className="text-[#00ee00] mb-1 text-left xl:text-center">Put P/L</h2>
 
       <table className="table table-xs text-xs rounded border-2 border-[#00ee00]">
@@ -20,7 +20,7 @@ const PutReturns: React.FC<PutReturnsProps> = ({
           <tr className="text-[#00ee00] text-center">
             <th>Opening Price</th>
             <th>Closing Price</th>
-            <th>Running P/L</th>
+            <th>P/L</th>
           </tr>
         </thead>
         <tbody className="text-slate-200 text-center">
@@ -31,7 +31,7 @@ const PutReturns: React.FC<PutReturnsProps> = ({
           </tr>
         </tbody>
       </table>
-    </>
+    </div>
   );
 };
 

@@ -11,7 +11,7 @@ const CallReturns: React.FC<CallReturnsProps> = ({
   totalPL,
 }) => {
   return (
-    <>
+    <div className="w-[320px] md:w-full">
       <h2 className="text-[#00ee00] text-2xl mb-1 text-left xl:text-center">
         Call P/L
       </h2>
@@ -21,7 +21,7 @@ const CallReturns: React.FC<CallReturnsProps> = ({
           <tr className="text-[#00ee00] text-center">
             <th>Opening Price</th>
             <th>Closing Price</th>
-            <th>Running P/L</th>
+            <th>P/L</th>
           </tr>
         </thead>
         <tbody className="text-slate-200 text-center">
@@ -32,7 +32,7 @@ const CallReturns: React.FC<CallReturnsProps> = ({
           </tr>
         </tbody>
       </table>
-    </>
+    </div>
   );
 };
 

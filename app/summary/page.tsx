@@ -55,16 +55,6 @@ const SummaryPage = async () => {
                 New Trade
               </button>
             </Link>
-            <Link className="p-1" href="/calls-puts">
-              <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2">
-                Calls & Puts
-              </button>
-            </Link>
-            <Link className="p-1" href="/the-wheel">
-              <button className="btn text-[#00ee00] border-[#00ee00] bg-[#002f00] mt-2">
-                The Wheel
-              </button>
-            </Link>
           </div>
         </div>
       </main>
