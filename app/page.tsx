@@ -42,7 +42,7 @@ export default function Home() {
                       for that trade
                     </li>
                     <li>
-                      It should create a new row so that we don&amp;t lost data
+                      It should create a new row so that we don&apos;t lose data
                       if a user reopens the trade
                     </li>
                   </ul>
