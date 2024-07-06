@@ -5,7 +5,7 @@ import useSWR, { mutate } from "swr";
 import { tradeTableFormatter } from "../../components/utils/tradeTableFormatter";
 import { getActionAbbreviation } from "../../components/utils/getActionAbbreviation";
 import CloseCallPutModal from "./CloseCallPutModal";
-import OpenCallPutModal from "./OpenCallPutModal";
+import ReopenCallPutModal from "./ReopenCallPutModal";
 
 interface CallsPutsProps {
   userEmail: string;
@@ -41,12 +41,13 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
 
   const [editingTradeId, setEditingTradeId] = useState<number | null>(null);
   const [editedTrade, setEditedTrade] = useState<Trade>(initialTradeState);
+  const [selectedClosedTrades, setSelectedClosedTrades] = useState<Trade[]>([]);
+
   const [closingPrice, setClosingPrice] = useState<string | null>(null);
   const [completionDate, setCompletionDate] = useState<string | null>(null);
   const [closedQuantity, setClosedQuantity] = useState<string | null>(null);
   const [openTradeModalToggle, setOpenTradeModalToggle] = useState(false);
   const [closedTradeModalToggle, setClosedTradeModalToggle] = useState(false);
-  const [reopenQuantity, setReopenQuantity] = useState<null | string>(null);
 
   const [closingPriceValid, setClosingPriceValid] = useState(true);
   const [completionDateValid, setCompletionDateValid] = useState(true);
@@ -63,7 +64,9 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
 
   const handleClosedRowClick = (trade: Trade) => {
     setEditingTradeId(trade.tradeid);
-    setEditedTrade({ ...trade });
+    const closedTradesWithSameId: any =
+      aggregatedTrades[trade.tradeid].closedTrades;
+    setSelectedClosedTrades(closedTradesWithSameId);
     setClosedTradeModalToggle(true);
   };
 
@@ -107,18 +110,14 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
     }
   };
 
-  const handleOpenTrade = async (e: SyntheticEvent) => {
-    e.preventDefault();
-
-    const reopenQuantityNumber = Number(reopenQuantity);
-
-    if (isNaN(reopenQuantityNumber)) {
-      console.error("Invalid reopen quantity");
-      return;
-    }
-
+  const handleOpenTrade = async (
+    tradeId: number,
+    closedTradeId: number,
+    closedQuantity: number
+  ) => {
     setClosedTradeModalToggle(false);
 
+    console.log("numbers: ", tradeId, closedTradeId);
     try {
       const response = await fetch("/api/open-call-put-trade", {
         method: "POST",
@@ -126,8 +125,9 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          tradeid: editingTradeId,
-          reopenquantity: reopenQuantityNumber,
+          tradeid: tradeId,
+          closedtradeid: closedTradeId,
+          closedquantity: closedQuantity,
         }),
       });
 
@@ -148,7 +148,6 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
     setClosedQuantity(null);
     setClosingPrice(null);
     setCompletionDate(null);
-    setReopenQuantity(null);
     setClosingPriceValid(true);
     setCompletionDateValid(true);
     setClosedQuantityValid(true);
@@ -174,6 +173,7 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
       option[1].openTrades[0].actions === "PUT"
   );
 
+  console.log(aggregatedTrades);
   return (
     <div className="w-[320px] md:w-full">
       <div className="space-y-4">
@@ -198,7 +198,7 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
             </thead>
             <tbody className="text-slate-200">
               {filteredOptions.map((option) => {
-                const trade = option[1].openTrades[0]; // assuming each option has at least one openTrade
+                const trade = option[1].openTrades[0];
                 if (trade.openquantity) {
                   return (
                     <tr
@@ -329,11 +329,11 @@ const CallsPutsTable: React.FC<CallsPutsProps> = ({ userEmail }) => {
         completionDateValid={completionDateValid}
         closedQuantityValid={closedQuantityValid}
       />
-      <OpenCallPutModal
+      <ReopenCallPutModal
         closedTradeModalToggle={closedTradeModalToggle}
+        selectedClosedTrades={selectedClosedTrades}
         handleCancel={handleCancel}
         handleOpenTrade={handleOpenTrade}
-        setReopenQuantity={setReopenQuantity}
       />
     </div>
   );

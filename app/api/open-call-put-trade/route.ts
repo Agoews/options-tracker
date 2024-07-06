@@ -2,77 +2,23 @@ import { sql } from "@vercel/postgres";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  const { tradeid, reopenquantity } = await req.json();
-
-  // Ensure reopenquantity is treated as a number
-  const reopenQuantityNumber = Number(reopenquantity);
-
-  if (isNaN(reopenQuantityNumber)) {
-    return NextResponse.json(
-      { error: "Invalid reopen quantity" },
-      { status: 400 }
-    );
-  }
+  const { tradeid, closedtradeid, closedquantity } = await req.json();
+  const closedQuantityNumber = Number(closedquantity);
 
   try {
-    // Retrieve the closed trade
-    const closedTrade = await sql`
-      SELECT * FROM ClosedTrades WHERE TradeID = ${tradeid};
+    await sql`
+      DELETE FROM ClosedTrades WHERE ClosedTradeId = ${closedtradeid};
     `;
 
-    if (closedTrade.rows.length === 0) {
-      return NextResponse.json(
-        { error: "Closed trade not found" },
-        { status: 404 }
-      );
-    }
-
-    const closedTradeData = closedTrade.rows[0];
-
-    // Update ClosedTrades to reflect the reopened quantity
-    const remainingClosedQuantity =
-      Number(closedTradeData.closedquantity) - reopenQuantityNumber;
-
-    if (remainingClosedQuantity < 0) {
-      return NextResponse.json(
-        { error: "Reopen quantity exceeds closed quantity" },
-        { status: 400 }
-      );
-    } else if (remainingClosedQuantity === 0) {
-      // Delete the closed trade if all quantities are reopened
-      await sql`
-        DELETE FROM ClosedTrades WHERE TradeID = ${tradeid};
-      `;
-    } else {
-      // Update the closed trade with the remaining quantity
-      await sql`
-        UPDATE ClosedTrades
-        SET ClosedQuantity = ${remainingClosedQuantity}
-        WHERE TradeID = ${tradeid};
-      `;
-    }
-
-    // Update OpenTrades to reflect the reopened quantity
-    const openTrade = await sql`
-      SELECT * FROM OpenTrades WHERE TradeID = ${tradeid};
+    const { rows: currentQuantityRows } = await sql`
+      SELECT OpenQuantity FROM OpenTrades WHERE TradeId = ${tradeid};
     `;
-
-    if (openTrade.rows.length === 0) {
-      return NextResponse.json(
-        { error: "Open trade not found" },
-        { status: 404 }
-      );
-    }
-
-    const openTradeData = openTrade.rows[0];
-    const newOpenQuantity =
-      Number(openTradeData.openquantity) + reopenQuantityNumber;
+    const currentQuantity = Number(currentQuantityRows[0].openquantity);
 
     await sql`
       UPDATE OpenTrades
-      SET OpenQuantity = ${newOpenQuantity},
-          isClosed = ${false}
-      WHERE TradeID = ${tradeid};
+        SET OpenQuantity = ${Number(currentQuantity) + closedQuantityNumber}
+        WHERE TradeId = ${tradeid};
     `;
 
     return NextResponse.json(

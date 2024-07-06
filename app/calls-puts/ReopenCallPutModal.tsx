@@ -1,30 +1,30 @@
 import React from "react";
-import { Trade } from "../utils/fetcher";
 
-interface DebitModalProps {
-  closedTrades: Trade[];
-  handleReopenTrade: (
-    closedTradeId: number,
+interface ReopenCallPutModalProps {
+  closedTradeModalToggle: boolean;
+  selectedClosedTrades: any[]; // replace 'any' with your closed trade type
+  handleCancel: () => void;
+  handleOpenTrade: (
     tradeId: number,
+    closedTradeId: number,
     closedQuantity: number
   ) => void;
-  handleCancel: () => void;
-  closedTradeModalToggle: boolean;
 }
 
-const DebitModal: React.FC<DebitModalProps> = ({
-  closedTrades,
-  handleReopenTrade,
-  handleCancel,
+const ReopenCallPutModal: React.FC<ReopenCallPutModalProps> = ({
   closedTradeModalToggle,
+  selectedClosedTrades,
+  handleCancel,
+  handleOpenTrade,
 }) => {
   if (!closedTradeModalToggle) return null;
 
+  console.log("selectedClosedTrades: ", selectedClosedTrades);
   return (
     <div className="modal modal-open">
       <div className="modal-box max-w-md">
         <h3 className="font-bold text-xl text-[#00ee00] mb-4">
-          Closed Options
+          Reopen Position
         </h3>
         <div className="overflow-x-auto">
           <table className="table table-xs w-full">
@@ -36,17 +36,18 @@ const DebitModal: React.FC<DebitModalProps> = ({
               </tr>
             </thead>
             <tbody>
-              {closedTrades.map((trade, index) => (
+              {selectedClosedTrades.map((trade, index) => (
                 <tr key={index} className="text-center text-slate-200">
                   <td>{trade.closingprice}</td>
                   <td>{trade.closedquantity}</td>
+
                   <td>
                     <button
                       className="btn btn-xs bg-[#002f00] text-[#00ee00] border-[#00ee00]"
                       onClick={() =>
-                        handleReopenTrade(
-                          trade.closedtradeid,
+                        handleOpenTrade(
                           trade.tradeid,
+                          trade.closedtradeid,
                           trade.closedquantity
                         )
                       }
@@ -61,12 +62,6 @@ const DebitModal: React.FC<DebitModalProps> = ({
         </div>
 
         <div className="modal-action items-center justify-center">
-          {/* <button
-            className="btn bg-slate-800 text-slate-200"
-            onClick={handleReopenTrade}
-          >
-            Save
-          </button> */}
           <button
             className="btn btn-sm bg-[#002f00] text-[#00ee00] border-[#00ee00]"
             onClick={handleCancel}
@@ -79,4 +74,4 @@ const DebitModal: React.FC<DebitModalProps> = ({
   );
 };
 
-export default DebitModal;
+export default ReopenCallPutModal;
