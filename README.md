@@ -52,3 +52,9 @@ TradeTracker is a production-minded options trading journal built with Next.js A
 - `pnpm lint`
 - `pnpm test`
 - `pnpm test:e2e`
+
+## Deployment Notes
+
+- Set `NEXT_PUBLIC_APP_URL` to your production hostname, for example `https://www.optiontradetracker.com`.
+- Attach `www.optiontradetracker.com` to the Vercel project that deploys this repo.
+- Point the apex domain at Vercel and let the app redirect `optiontradetracker.com` to `www.optiontradetracker.com`.
