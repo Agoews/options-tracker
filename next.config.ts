@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  typedRoutes: true,
+  allowedDevOrigins: ["127.0.0.1"],
+  serverExternalPackages: ["firebase-admin"],
 };
 
 export default nextConfig;
