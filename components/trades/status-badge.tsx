@@ -1,17 +1,17 @@
-import { TradeStatus } from "@prisma/client";
+import type { TradeStatusValue } from "@/lib/domain/models";
 
 import { Badge } from "@/components/ui/badge";
 
-export function StatusBadge({ status }: { status: TradeStatus }) {
-  if (status === TradeStatus.CLOSED) {
+export function StatusBadge({ status }: { status: TradeStatusValue }) {
+  if (status === "CLOSED") {
     return <Badge variant="default">Closed</Badge>;
   }
 
-  if (status === TradeStatus.ASSIGNED) {
+  if (status === "ASSIGNED") {
     return <Badge variant="warning">Assigned</Badge>;
   }
 
-  if (status === TradeStatus.PARTIAL) {
+  if (status === "PARTIAL") {
     return <Badge variant="neutral">Partial</Badge>;
   }
 

@@ -1,6 +1,6 @@
-import { OptionType, StrategyType, TradeEventType } from "@prisma/client";
 import { z } from "zod";
 
+import { OPTION_TYPES, STRATEGY_TYPES, TRADE_EVENT_TYPES } from "@/lib/domain/models";
 import { usTimezones } from "@/lib/domain/timezones";
 
 export const onboardingSchema = z.object({
@@ -17,7 +17,7 @@ export const createTradeSchema = z
   .object({
     ticker: z.string().min(1).max(8).transform((value) => value.toUpperCase()),
     accountLabel: z.string().max(32).optional(),
-    strategy: z.nativeEnum(StrategyType),
+    strategy: z.enum(STRATEGY_TYPES),
     openedAt: z.coerce.date(),
     expiration: z.coerce.date().optional(),
     strikePrice: z.coerce.number().positive().optional(),
@@ -38,9 +38,9 @@ export const createTradeSchema = z
   });
 
 export const appendTradeEventSchema = z.object({
-  type: z.nativeEnum(TradeEventType),
+  type: z.enum(TRADE_EVENT_TYPES),
   occurredAt: z.coerce.date(),
-  optionType: z.nativeEnum(OptionType).optional(),
+  optionType: z.enum(OPTION_TYPES).optional(),
   contractsDelta: z.coerce.number().int().optional(),
   sharesDelta: z.coerce.number().int().optional(),
   strikePrice: z.coerce.number().positive().optional(),

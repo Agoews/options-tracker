@@ -2,12 +2,12 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { StrategyType } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 
 import { createTradeSchema, type CreateTradeFormValues } from "@/lib/domain/schemas";
 import { applyFieldErrors, readMutationError, withStatus } from "@/lib/client/mutation-feedback";
+import { STRATEGY_LABELS, STRATEGY_TYPES, type StrategyTypeValue } from "@/lib/domain/models";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DatePicker } from "@/components/ui/date-picker";
@@ -18,17 +18,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
-const STRATEGY_LABELS: Record<string, string> = {
-  WHEEL: "Wheel",
-  CASH_SECURED_PUT: "Cash-Secured Put",
-  COVERED_CALL: "Covered Call",
-  SHORT_CALL: "Short Call",
-  SHORT_PUT: "Short Put",
-  LONG_CALL: "Long Call",
-  LONG_PUT: "Long Put",
-};
-
-const OPTION_STRATEGIES = Object.values(StrategyType).filter((s) => s !== StrategyType.STOCK);
+const OPTION_STRATEGIES = STRATEGY_TYPES.filter((s) => s !== "STOCK");
 
 export function TradeEntryWorkbench() {
   const router = useRouter();
@@ -40,7 +30,7 @@ export function TradeEntryWorkbench() {
     defaultValues: {
       ticker: "",
       accountLabel: "Main",
-      strategy: StrategyType.WHEEL,
+      strategy: "WHEEL",
       openedAt: new Date(),
       contracts: 1,
       entryPer: 0,
@@ -100,8 +90,8 @@ export function TradeEntryWorkbench() {
           <div className="space-y-2">
             <Label>Strategy</Label>
             <Select
-              defaultValue={StrategyType.WHEEL}
-              onValueChange={(value: StrategyType) => form.setValue("strategy", value)}
+              defaultValue="WHEEL"
+              onValueChange={(value: StrategyTypeValue) => form.setValue("strategy", value)}
             >
               <SelectTrigger>
                 <SelectValue />

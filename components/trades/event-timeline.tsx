@@ -1,4 +1,4 @@
-import { TradeEventType } from "@prisma/client";
+import type { TradeEventTypeValue } from "@/lib/domain/models";
 
 import { formatCurrency, formatDateTime, toNumber } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 type EventItem = {
   id: string;
-  type: TradeEventType;
+  type: TradeEventTypeValue;
   occurredAt: Date;
   premium: unknown;
   realizedPnl: unknown;

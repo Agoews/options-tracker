@@ -1,5 +1,4 @@
 import { format } from "date-fns";
-import { StrategyType, TradeEventType, TradeStatus } from "@prisma/client";
 
 import type {
   FundingRow,
@@ -13,20 +12,21 @@ import type {
   TradeRow,
   TradeWithEvents,
 } from "@/lib/domain/types";
+import type { StrategyTypeValue, TradeEventTypeValue, TradeStatusValue } from "@/lib/domain/models";
 import { formatCurrency, sum, toNumber } from "@/lib/utils";
 
-const PREMIUM_TYPES = new Set<TradeEventType>([
-  TradeEventType.SELL_TO_OPEN,
-  TradeEventType.SELL_TO_CLOSE,
-  TradeEventType.ROLL,
+const PREMIUM_TYPES = new Set<TradeEventTypeValue>([
+  "SELL_TO_OPEN",
+  "SELL_TO_CLOSE",
+  "ROLL",
 ]);
 
-const SHARE_ENTRY_TYPES = new Set<TradeEventType>([TradeEventType.ASSIGNMENT, TradeEventType.STOCK_BUY]);
-const COLLATERALIZED_SHORT_STRATEGIES = new Set<StrategyType>([
-  StrategyType.WHEEL,
-  StrategyType.CASH_SECURED_PUT,
-  StrategyType.SHORT_PUT,
-  StrategyType.SHORT_CALL,
+const SHARE_ENTRY_TYPES = new Set<TradeEventTypeValue>(["ASSIGNMENT", "STOCK_BUY"]);
+const COLLATERALIZED_SHORT_STRATEGIES = new Set<StrategyTypeValue>([
+  "WHEEL",
+  "CASH_SECURED_PUT",
+  "SHORT_PUT",
+  "SHORT_CALL",
 ]);
 
 export function calculateAdjustedCostBasis(strikePrice: number, premiumApplied: number, shareQuantity: number) {
@@ -37,20 +37,20 @@ export function calculateAdjustedCostBasis(strikePrice: number, premiumApplied: 
   return strikePrice - premiumApplied / shareQuantity;
 }
 
-export function inferStatus(openContracts: number, shareExposure: number): TradeStatus {
+export function inferStatus(openContracts: number, shareExposure: number): TradeStatusValue {
   if (openContracts > 0 && shareExposure > 0) {
-    return TradeStatus.PARTIAL;
+    return "PARTIAL";
   }
 
   if (openContracts > 0) {
-    return TradeStatus.OPEN;
+    return "OPEN";
   }
 
   if (shareExposure > 0) {
-    return TradeStatus.ASSIGNED;
+    return "ASSIGNED";
   }
 
-  return TradeStatus.CLOSED;
+  return "CLOSED";
 }
 
 export function calculateHoldingUnrealizedPnl(holding: HoldingRow) {
@@ -62,7 +62,7 @@ export function calculateHoldingUnrealizedPnl(holding: HoldingRow) {
 }
 
 export function calculateStrategyBreakdown(trades: TradeRow[]): StrategyBreakdownPoint[] {
-  const map = new Map<StrategyType, StrategyBreakdownPoint>();
+  const map = new Map<StrategyTypeValue, StrategyBreakdownPoint>();
 
   for (const trade of trades) {
     const row = map.get(trade.strategy) ?? {
@@ -77,14 +77,14 @@ export function calculateStrategyBreakdown(trades: TradeRow[]): StrategyBreakdow
 
     row.premiumCollected += trade.premiumCollected;
     row.realizedPnl += trade.realizedPnl;
-    row.activeTrades += trade.status === TradeStatus.CLOSED ? 0 : 1;
-    row.closedTrades += trade.status === TradeStatus.CLOSED ? 1 : 0;
+    row.activeTrades += trade.status === "CLOSED" ? 0 : 1;
+    row.closedTrades += trade.status === "CLOSED" ? 1 : 0;
     map.set(trade.strategy, row);
   }
 
   return [...map.values()]
     .map((row) => {
-      const closedTrades = trades.filter((trade) => trade.strategy === row.strategy && trade.status === TradeStatus.CLOSED);
+      const closedTrades = trades.filter((trade) => trade.strategy === row.strategy && trade.status === "CLOSED");
       const winningTrades = closedTrades.filter((trade) => trade.realizedPnl > 0).length;
 
       return {
@@ -101,15 +101,15 @@ function getOpenTradeStrike(trade: TradeWithEvents) {
 }
 
 export function calculateOpenTradeExposure(trade: TradeWithEvents) {
-  if (trade.status === TradeStatus.CLOSED || trade.openContractCount === 0) {
+  if (trade.status === "CLOSED" || trade.openContractCount === 0) {
     return 0;
   }
 
-  if (trade.strategy === StrategyType.COVERED_CALL) {
+  if (trade.strategy === "COVERED_CALL") {
     return 0;
   }
 
-  if (trade.strategy === StrategyType.LONG_CALL || trade.strategy === StrategyType.LONG_PUT) {
+  if (trade.strategy === "LONG_CALL" || trade.strategy === "LONG_PUT") {
     return calculateOpenOptionPremiumBasis(
       trade.events
         .slice()
@@ -252,7 +252,7 @@ export function calculateDashboardMetrics(trades: TradeRow[], holdings: HoldingR
   const realizedPnl = sum(trades.map((trade) => trade.realizedPnl)) + sum(holdings.map((holding) => holding.realizedPnl));
   const unrealizedPnl = sum(holdings.map((holding) => holding.unrealizedPnl ?? 0));
   const assignedShares = sum(holdings.map((holding) => holding.remainingQuantity));
-  const openTrades = trades.filter((trade) => trade.status !== TradeStatus.CLOSED).length;
+  const openTrades = trades.filter((trade) => trade.status !== "CLOSED").length;
 
   return [
     {
@@ -283,7 +283,7 @@ export function buildDashboardSnapshot(
   portfolioBaselineAt: Date | null,
   portfolioFundings: FundingRow[],
 ): DashboardSnapshot {
-  const nonStockTrades = trades.filter((trade) => trade.strategy !== StrategyType.STOCK);
+  const nonStockTrades = trades.filter((trade) => trade.strategy !== "STOCK");
   const tradeRows = nonStockTrades.map<TradeRow>((trade) => {
     const nextExpiration = trade.events
       .filter((event) => Boolean(event.expiration))
@@ -302,7 +302,7 @@ export function buildDashboardSnapshot(
       realizedPnl: toNumber(trade.realizedPnl),
       openContractCount: trade.openContractCount,
       shareExposure: trade.shareExposure,
-      assignmentCount: trade.events.filter((event) => event.type === TradeEventType.ASSIGNMENT).length,
+      assignmentCount: trade.events.filter((event) => event.type === "ASSIGNMENT").length,
       linkedHoldingLotId: trade.holdingLotId,
     };
   });
@@ -386,7 +386,7 @@ export function deriveHoldingFromAssignment({
   };
 }
 
-export function eventCreatesShares(eventType: TradeEventType) {
+export function eventCreatesShares(eventType: TradeEventTypeValue) {
   return SHARE_ENTRY_TYPES.has(eventType);
 }
 
@@ -400,7 +400,7 @@ export function calculateAvailableShares(remainingQuantity: number, reservedShar
 
 export function calculateOpenOptionPremiumBasis(
   events: Array<{
-    type: TradeEventType;
+    type: TradeEventTypeValue;
     contractsDelta?: number | null;
     premium?: number | null;
   }>,
@@ -413,7 +413,7 @@ export function calculateOpenOptionPremiumBasis(
     const premium = event.premium ?? 0;
 
     if (!contractsDelta) {
-      if (event.type === TradeEventType.ROLL && openContracts !== 0) {
+      if (event.type === "ROLL" && openContracts !== 0) {
         openPremiumBasis += openContracts > 0 ? premium : -premium;
       }
       continue;

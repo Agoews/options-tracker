@@ -2,10 +2,10 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { OptionType, StrategyType } from "@prisma/client";
 import { Plus } from "lucide-react";
 
 import { readMutationError, withStatus } from "@/lib/client/mutation-feedback";
+import type { OptionTypeValue, StrategyTypeValue } from "@/lib/domain/models";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -30,8 +30,8 @@ type RollCandidate = {
 type Props = {
   tradeId: string;
   archivedAt: Date | null;
-  strategy: StrategyType;
-  optionType: OptionType | null;
+  strategy: StrategyTypeValue;
+  optionType: OptionTypeValue | null;
   openContractCount: number;
   linkedHoldingLotId: string | null;
   rollCandidates: RollCandidate[];
@@ -93,8 +93,8 @@ export function TradeLifecyclePanel({
 
   const hasOpenContracts = openContractCount !== 0;
   const shortOption = openContractCount > 0;
-  const canAssignPut = shortOption && optionType === OptionType.PUT;
-  const canAssignCall = shortOption && optionType === OptionType.CALL && Boolean(linkedHoldingLotId);
+  const canAssignPut = shortOption && optionType === "PUT";
+  const canAssignCall = shortOption && optionType === "CALL" && Boolean(linkedHoldingLotId);
   const enabledActions = useMemo(() => {
     const keys: ActionKey[] = [];
 
@@ -133,7 +133,7 @@ export function TradeLifecyclePanel({
     });
   }
 
-  if (archivedAt || strategy === StrategyType.STOCK || !enabledActions.length) {
+  if (archivedAt || strategy === "STOCK" || !enabledActions.length) {
     return null;
   }
 
