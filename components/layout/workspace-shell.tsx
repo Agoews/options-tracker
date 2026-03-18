@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { Route } from "next";
 import Link from "next/link";
-import { BookOpen, ChartCandlestick, History, LayoutDashboard, LogOut, Wallet } from "lucide-react";
+import { BookOpen, ChartCandlestick, History, LayoutDashboard, LogOut, User, Wallet } from "lucide-react";
 
 import type { AppUser } from "@/lib/domain/types";
 import { getTimezoneLabel } from "@/lib/domain/timezones";
@@ -14,6 +14,7 @@ const navigation: Array<{ href: Route; label: string; icon: typeof ChartCandlest
   { href: "/holdings", label: "Holdings", icon: Wallet },
   { href: "/history", label: "History", icon: History },
   { href: "/resources", label: "Resources", icon: BookOpen },
+  { href: "/profile", label: "Profile", icon: User },
 ];
 
 export function WorkspaceShell({
