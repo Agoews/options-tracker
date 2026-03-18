@@ -2,7 +2,9 @@
 
 import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
+import Link from "next/link";
 
+import { calculateAvailableShares } from "@/lib/domain/calculations";
 import type { HoldingRow } from "@/lib/domain/types";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { DataTable } from "@/components/tables/data-table";
@@ -28,27 +30,45 @@ function ActionsCell({ row }: { row: HoldingRow }) {
   const [coveredCallOpen, setCoveredCallOpen] = useState(false);
   const [closeOpen, setCloseOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const maxSellableShares = Math.max(row.remainingQuantity - row.reservedShares, 0);
-  const canSellCoveredCall = row.status === "OPEN" && maxSellableShares >= 100;
-  const canCloseHolding = row.status === "OPEN" && maxSellableShares > 0;
+  const maxSellableShares = calculateAvailableShares(row.remainingQuantity, row.reservedShares);
+  const canSellCoveredCall = row.status === "OPEN" && !row.archivedAt && maxSellableShares >= 100;
+  const canCloseHolding = row.status === "OPEN" && !row.archivedAt && maxSellableShares > 0;
 
   return (
     <>
       <div className="flex flex-wrap gap-2">
-        {row.status === "OPEN" ? (
-          <Button size="sm" variant="outline" onClick={() => setCloseOpen(true)} disabled={!canCloseHolding}>
+        {row.status === "OPEN" && !row.archivedAt ? (
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setCloseOpen(true)}
+            disabled={!canCloseHolding}
+            title={!canCloseHolding ? "No uncovered shares are available to sell from this lot." : undefined}
+          >
             Close
           </Button>
         ) : null}
-        {row.status === "OPEN" ? (
-          <Button size="sm" variant="outline" onClick={() => setCoveredCallOpen(true)} disabled={!canSellCoveredCall}>
+        {row.status === "OPEN" && !row.archivedAt ? (
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setCoveredCallOpen(true)}
+            disabled={!canSellCoveredCall}
+            title={!canSellCoveredCall ? "At least 100 uncovered shares are required to write a covered call." : undefined}
+          >
             Sell CC
           </Button>
         ) : null}
-        <Button size="sm" variant="danger" onClick={() => setDeleteOpen(true)}>
-          Delete
+        <Button size="sm" variant="secondary" onClick={() => setDeleteOpen(true)}>
+          {row.archivedAt ? "Restore" : "Archive"}
         </Button>
       </div>
+      {row.status === "OPEN" && !row.archivedAt && !canCloseHolding ? (
+        <p className="mt-2 text-xs text-slate-500">No uncovered shares are available to close from this lot right now.</p>
+      ) : null}
+      {row.status === "OPEN" && !row.archivedAt && !canSellCoveredCall ? (
+        <p className="mt-2 text-xs text-slate-500">Writing a covered call requires at least 100 uncovered shares.</p>
+      ) : null}
       <CloseHoldingModal
         open={closeOpen}
         onOpenChange={setCloseOpen}
@@ -61,8 +81,10 @@ function ActionsCell({ row }: { row: HoldingRow }) {
         onOpenChange={setDeleteOpen}
         holdingLotId={row.id}
         ticker={row.ticker}
+        archivedAt={row.archivedAt}
+        status={row.status}
       />
-      {row.status === "OPEN" ? (
+      {row.status === "OPEN" && !row.archivedAt ? (
         <SellCoveredCallModal
           open={coveredCallOpen}
           onOpenChange={setCoveredCallOpen}
@@ -72,6 +94,26 @@ function ActionsCell({ row }: { row: HoldingRow }) {
         />
       ) : null}
     </>
+  );
+}
+
+function CoveredCallCell({ row }: { row: HoldingRow }) {
+  if (!row.activeCoveredCalls.length) {
+    return <span className="text-slate-500">None</span>;
+  }
+
+  return (
+    <div className="flex flex-col gap-1">
+      {row.activeCoveredCalls.map((coveredCall) => (
+        <Link
+          key={coveredCall.tradeId}
+          href={`/trades/${coveredCall.tradeId}`}
+          className="text-sm text-slate-200 underline-offset-4 hover:underline"
+        >
+          {coveredCall.openContracts}x {coveredCall.status} · {formatCurrency(coveredCall.premiumCollected)}
+        </Link>
+      ))}
+    </div>
   );
 }
 
@@ -118,6 +160,11 @@ const columns = [
       </span>
     ),
   }),
+  columnHelper.display({
+    id: "coveredCalls",
+    header: "Linked CCs",
+    cell: ({ row }) => <CoveredCallCell row={row.original} />,
+  }),
   columnHelper.accessor("unrealizedPnl", {
     header: "Unrealized",
     cell: ({ getValue }) => {
@@ -141,7 +188,12 @@ const columns = [
   }),
   columnHelper.accessor("status", {
     header: "Status",
-    cell: ({ getValue }) => <Badge variant={getValue() === "OPEN" ? "success" : "default"}>{getValue()}</Badge>,
+    cell: ({ getValue, row }) =>
+      row.original.archivedAt ? (
+        <Badge variant="neutral">ARCHIVED</Badge>
+      ) : (
+        <Badge variant={getValue() === "OPEN" ? "success" : "default"}>{getValue()}</Badge>
+      ),
   }),
   columnHelper.accessor("openedAt", {
     header: "Opened",
@@ -162,14 +214,16 @@ const columns = [
 ] as ColumnDef<HoldingRow, unknown>[];
 
 export function HoldingsTable({ data }: { data: HoldingRow[] }) {
-  const openHoldings = data.filter((row) => row.status === "OPEN");
-  const closedHoldings = data.filter((row) => row.status === "CLOSED");
+  const archivedHoldings = data.filter((row) => Boolean(row.archivedAt));
+  const activeHoldings = data.filter((row) => !row.archivedAt);
+  const openHoldings = activeHoldings.filter((row) => row.status === "OPEN");
+  const closedHoldings = activeHoldings.filter((row) => row.status === "CLOSED");
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Holdings</CardTitle>
-        <CardDescription>Assigned and manual share lots with live quotes, basis, covered-call premium, and close/delete controls.</CardDescription>
+        <CardDescription>Assigned and manual share lots with live quotes, basis, linked covered calls, and archive-safe controls.</CardDescription>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="open">
@@ -177,6 +231,7 @@ export function HoldingsTable({ data }: { data: HoldingRow[] }) {
             <TabsTrigger value="open">Open</TabsTrigger>
             <TabsTrigger value="closed">Closed</TabsTrigger>
             <TabsTrigger value="all">All</TabsTrigger>
+            <TabsTrigger value="archived">Archived</TabsTrigger>
           </TabsList>
           <TabsContent value="open">
             <DataTable columns={columns} data={openHoldings} searchPlaceholder="Filter open holdings..." />
@@ -185,7 +240,10 @@ export function HoldingsTable({ data }: { data: HoldingRow[] }) {
             <DataTable columns={columns} data={closedHoldings} searchPlaceholder="Filter closed holdings..." />
           </TabsContent>
           <TabsContent value="all">
-            <DataTable columns={columns} data={data} searchPlaceholder="Filter all holdings..." />
+            <DataTable columns={columns} data={activeHoldings} searchPlaceholder="Filter all holdings..." />
+          </TabsContent>
+          <TabsContent value="archived">
+            <DataTable columns={columns} data={archivedHoldings} searchPlaceholder="Filter archived holdings..." />
           </TabsContent>
         </Tabs>
       </CardContent>

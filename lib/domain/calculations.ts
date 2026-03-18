@@ -1,10 +1,13 @@
+import { format } from "date-fns";
 import { StrategyType, TradeEventType, TradeStatus } from "@prisma/client";
 
 import type {
+  FundingRow,
   AppendTradeEventInput,
   DashboardMetric,
   DashboardSnapshot,
   HoldingRow,
+  PortfolioCapacitySnapshot,
   PerformancePoint,
   StrategyBreakdownPoint,
   TradeRow,
@@ -19,6 +22,12 @@ const PREMIUM_TYPES = new Set<TradeEventType>([
 ]);
 
 const SHARE_ENTRY_TYPES = new Set<TradeEventType>([TradeEventType.ASSIGNMENT, TradeEventType.STOCK_BUY]);
+const COLLATERALIZED_SHORT_STRATEGIES = new Set<StrategyType>([
+  StrategyType.WHEEL,
+  StrategyType.CASH_SECURED_PUT,
+  StrategyType.SHORT_PUT,
+  StrategyType.SHORT_CALL,
+]);
 
 export function calculateAdjustedCostBasis(strikePrice: number, premiumApplied: number, shareQuantity: number) {
   if (!shareQuantity) {
@@ -49,7 +58,7 @@ export function calculateHoldingUnrealizedPnl(holding: HoldingRow) {
     return null;
   }
 
-  return (holding.currentPrice - holding.costBasisPerShare) * holding.remainingQuantity;
+  return (holding.currentPrice - holding.effectiveCostBasis) * holding.remainingQuantity;
 }
 
 export function calculateStrategyBreakdown(trades: TradeRow[]): StrategyBreakdownPoint[] {
@@ -58,38 +67,184 @@ export function calculateStrategyBreakdown(trades: TradeRow[]): StrategyBreakdow
   for (const trade of trades) {
     const row = map.get(trade.strategy) ?? {
       strategy: trade.strategy,
-      premium: 0,
+      premiumCollected: 0,
       realizedPnl: 0,
       activeTrades: 0,
+      closedTrades: 0,
+      winRate: null,
+      averageClosedPnl: null,
     };
 
-    row.premium += trade.premiumCollected;
+    row.premiumCollected += trade.premiumCollected;
     row.realizedPnl += trade.realizedPnl;
     row.activeTrades += trade.status === TradeStatus.CLOSED ? 0 : 1;
+    row.closedTrades += trade.status === TradeStatus.CLOSED ? 1 : 0;
     map.set(trade.strategy, row);
   }
 
-  return [...map.values()].sort((a, b) => b.realizedPnl - a.realizedPnl);
+  return [...map.values()]
+    .map((row) => {
+      const closedTrades = trades.filter((trade) => trade.strategy === row.strategy && trade.status === TradeStatus.CLOSED);
+      const winningTrades = closedTrades.filter((trade) => trade.realizedPnl > 0).length;
+
+      return {
+        ...row,
+        winRate: closedTrades.length ? winningTrades / closedTrades.length : null,
+        averageClosedPnl: closedTrades.length ? row.realizedPnl / closedTrades.length : null,
+      };
+    })
+    .sort((a, b) => b.realizedPnl - a.realizedPnl);
 }
 
-export function calculatePerformancePoints(trades: TradeWithEvents[], holdings: HoldingRow[]): PerformancePoint[] {
-  const tradePoints = trades.map((trade) => ({
-    label: trade.ticker,
-    realizedPnl: toNumber(trade.realizedPnl),
-    premium: toNumber(trade.premiumCollected),
-    unrealizedPnl: 0,
-  }));
+function getOpenTradeStrike(trade: TradeWithEvents) {
+  return trade.events.find((event) => event.strikePrice !== null && event.strikePrice !== undefined)?.strikePrice;
+}
 
-  for (const holding of holdings) {
-    tradePoints.push({
-      label: holding.ticker,
-      realizedPnl: holding.realizedPnl,
-      premium: 0,
-      unrealizedPnl: calculateHoldingUnrealizedPnl(holding) ?? 0,
+export function calculateOpenTradeExposure(trade: TradeWithEvents) {
+  if (trade.status === TradeStatus.CLOSED || trade.openContractCount === 0) {
+    return 0;
+  }
+
+  if (trade.strategy === StrategyType.COVERED_CALL) {
+    return 0;
+  }
+
+  if (trade.strategy === StrategyType.LONG_CALL || trade.strategy === StrategyType.LONG_PUT) {
+    return calculateOpenOptionPremiumBasis(
+      trade.events
+        .slice()
+        .sort((a, b) => a.occurredAt.getTime() - b.occurredAt.getTime())
+        .map((event) => ({
+          type: event.type,
+          contractsDelta: event.contractsDelta,
+          premium: toNumber(event.premium),
+        })),
+    ).openPremiumBasis;
+  }
+
+  if (COLLATERALIZED_SHORT_STRATEGIES.has(trade.strategy)) {
+    const strikePrice = toNumber(getOpenTradeStrike(trade));
+    return Math.abs(trade.openContractCount) * strikePrice * 100;
+  }
+
+  return 0;
+}
+
+export function calculatePortfolioCapacitySnapshot(
+  portfolioBaselineValue: number,
+  portfolioFundings: FundingRow[],
+  trades: TradeWithEvents[],
+  holdings: HoldingRow[],
+  portfolioBaselineAt: Date | null,
+): PortfolioCapacitySnapshot {
+  const contributedFunds = sum(portfolioFundings.map((entry) => entry.amount));
+  const fundedCapital = portfolioBaselineValue + contributedFunds;
+  const realizedPnl = sum(trades.map((trade) => toNumber(trade.realizedPnl)));
+  const unrealizedPnl = sum(holdings.map((holding) => holding.unrealizedPnl ?? 0));
+  const currentPortfolioValue = fundedCapital + realizedPnl + unrealizedPnl;
+  const openHoldingValue = sum(holdings.map((holding) => holding.remainingQuantity * holding.costBasisPerShare));
+  const openTradeExposure = sum(trades.map((trade) => calculateOpenTradeExposure(trade)));
+  const openAssetValue = openHoldingValue + openTradeExposure;
+  const availableCapacity = currentPortfolioValue - openAssetValue;
+
+  return {
+    baselineValue: portfolioBaselineValue,
+    baselineAt: portfolioBaselineAt,
+    contributedFunds,
+    fundedCapital,
+    realizedPnl,
+    unrealizedPnl,
+    currentPortfolioValue,
+    openAssetValue,
+    availableCapacity,
+    overAllocated: availableCapacity < 0,
+  };
+}
+
+export function calculatePortfolioHistory(
+  portfolioBaselineValue: number,
+  portfolioBaselineAt: Date | null,
+  portfolioFundings: FundingRow[],
+  trades: TradeWithEvents[],
+  holdings: HoldingRow[],
+) {
+  const datedChanges = new Map<string, { date: Date; fundingDelta: number; realizedDelta: number }>();
+
+  for (const funding of portfolioFundings) {
+    const key = format(funding.occurredAt, "yyyy-MM-dd");
+    const current = datedChanges.get(key) ?? { date: funding.occurredAt, fundingDelta: 0, realizedDelta: 0 };
+    current.fundingDelta += funding.amount;
+    datedChanges.set(key, current);
+  }
+
+  for (const trade of trades) {
+    for (const event of trade.events) {
+      const realized = toNumber(event.realizedPnl);
+      if (!realized) {
+        continue;
+      }
+
+      const key = format(event.occurredAt, "yyyy-MM-dd");
+      const current = datedChanges.get(key) ?? { date: event.occurredAt, fundingDelta: 0, realizedDelta: 0 };
+      current.realizedDelta += realized;
+      datedChanges.set(key, current);
+    }
+  }
+
+  const sortedChanges = [...datedChanges.values()].sort((a, b) => a.date.getTime() - b.date.getTime());
+  const startDate =
+    portfolioBaselineAt ??
+    sortedChanges[0]?.date ??
+    holdings[0]?.openedAt ??
+    trades[0]?.openedAt ??
+    new Date();
+
+  let fundedCapital = portfolioBaselineValue;
+  let realizedPnl = 0;
+  const points: PerformancePoint[] = [
+    {
+      label: format(startDate, "MMM d"),
+      date: startDate,
+      fundedCapital,
+      realizedPnl: 0,
+      unrealizedPnl: 0,
+      portfolioValue: fundedCapital,
+    },
+  ];
+
+  for (const change of sortedChanges) {
+    fundedCapital += change.fundingDelta;
+    realizedPnl += change.realizedDelta;
+    points.push({
+      label: format(change.date, "MMM d"),
+      date: change.date,
+      fundedCapital,
+      realizedPnl,
+      unrealizedPnl: 0,
+      portfolioValue: fundedCapital + realizedPnl,
     });
   }
 
-  return tradePoints.slice(0, 8);
+  const currentUnrealized = sum(holdings.map((holding) => holding.unrealizedPnl ?? 0));
+  const latestDate = new Date();
+  const latestPoint = points.at(-1);
+  const currentValue = fundedCapital + realizedPnl + currentUnrealized;
+
+  if (!latestPoint || format(latestPoint.date, "yyyy-MM-dd") !== format(latestDate, "yyyy-MM-dd")) {
+    points.push({
+      label: format(latestDate, "MMM d"),
+      date: latestDate,
+      fundedCapital,
+      realizedPnl,
+      unrealizedPnl: currentUnrealized,
+      portfolioValue: currentValue,
+    });
+  } else {
+    latestPoint.unrealizedPnl = currentUnrealized;
+    latestPoint.portfolioValue = currentValue;
+  }
+
+  return points;
 }
 
 export function calculateDashboardMetrics(trades: TradeRow[], holdings: HoldingRow[]): DashboardMetric[] {
@@ -118,17 +273,18 @@ export function calculateDashboardMetrics(trades: TradeRow[], holdings: HoldingR
       tone: unrealizedPnl >= 0 ? "positive" : "negative",
       detail: `${assignedShares} shares still on book`,
     },
-    {
-      label: "Cost Basis at Risk",
-      value: sum(holdings.map((holding) => holding.costBasisPerShare * holding.remainingQuantity)),
-      tone: "neutral",
-      detail: formatCurrency(assignedShares, true),
-    },
   ];
 }
 
-export function buildDashboardSnapshot(trades: TradeWithEvents[], holdings: HoldingRow[]): DashboardSnapshot {
-  const tradeRows = trades.map<TradeRow>((trade) => {
+export function buildDashboardSnapshot(
+  trades: TradeWithEvents[],
+  holdings: HoldingRow[],
+  portfolioBaselineValue: number,
+  portfolioBaselineAt: Date | null,
+  portfolioFundings: FundingRow[],
+): DashboardSnapshot {
+  const nonStockTrades = trades.filter((trade) => trade.strategy !== StrategyType.STOCK);
+  const tradeRows = nonStockTrades.map<TradeRow>((trade) => {
     const nextExpiration = trade.events
       .filter((event) => Boolean(event.expiration))
       .sort((a, b) => new Date(a.occurredAt).getTime() - new Date(b.occurredAt).getTime())
@@ -139,6 +295,7 @@ export function buildDashboardSnapshot(trades: TradeWithEvents[], holdings: Hold
       ticker: trade.ticker,
       strategy: trade.strategy,
       status: trade.status,
+      archivedAt: trade.archivedAt,
       openedAt: trade.openedAt,
       nextExpiration,
       premiumCollected: toNumber(trade.premiumCollected),
@@ -146,8 +303,20 @@ export function buildDashboardSnapshot(trades: TradeWithEvents[], holdings: Hold
       openContractCount: trade.openContractCount,
       shareExposure: trade.shareExposure,
       assignmentCount: trade.events.filter((event) => event.type === TradeEventType.ASSIGNMENT).length,
+      linkedHoldingLotId: trade.holdingLotId,
     };
   });
+
+  const portfolioCapacity = calculatePortfolioCapacitySnapshot(
+    portfolioBaselineValue,
+    portfolioFundings,
+    trades,
+    holdings,
+    portfolioBaselineAt,
+  );
+  const portfolioDelta = portfolioCapacity.currentPortfolioValue - portfolioCapacity.fundedCapital;
+  const portfolioReturnPct =
+    portfolioCapacity.fundedCapital > 0 ? (portfolioDelta / portfolioCapacity.fundedCapital) * 100 : 0;
 
   const activity = trades
     .flatMap((trade) =>
@@ -166,8 +335,25 @@ export function buildDashboardSnapshot(trades: TradeWithEvents[], holdings: Hold
     .slice(0, 12);
 
   return {
-    metrics: calculateDashboardMetrics(tradeRows, holdings),
-    performance: calculatePerformancePoints(trades, holdings),
+    metrics: [
+      {
+        label: "Portfolio Total",
+        value: portfolioCapacity.currentPortfolioValue,
+        tone: portfolioDelta > 0 ? "positive" : portfolioDelta < 0 ? "negative" : "neutral",
+        change: portfolioCapacity.fundedCapital > 0 ? portfolioReturnPct : undefined,
+        detail: `Funded capital ${formatCurrency(portfolioCapacity.fundedCapital)}`,
+      },
+      ...calculateDashboardMetrics(tradeRows, holdings),
+    ],
+    performance: calculatePortfolioHistory(
+      portfolioBaselineValue,
+      portfolioBaselineAt,
+      portfolioFundings,
+      trades,
+      holdings,
+    ),
+    portfolioCapacity,
+    funding: portfolioFundings,
     strategies: calculateStrategyBreakdown(tradeRows),
     activity,
     trades: tradeRows,
@@ -206,6 +392,63 @@ export function eventCreatesShares(eventType: TradeEventType) {
 
 export function calculateReservedShares(openContracts: number) {
   return Math.max(openContracts, 0) * 100;
+}
+
+export function calculateAvailableShares(remainingQuantity: number, reservedShares: number) {
+  return Math.max(remainingQuantity - reservedShares, 0);
+}
+
+export function calculateOpenOptionPremiumBasis(
+  events: Array<{
+    type: TradeEventType;
+    contractsDelta?: number | null;
+    premium?: number | null;
+  }>,
+) {
+  let openContracts = 0;
+  let openPremiumBasis = 0;
+
+  for (const event of events) {
+    const contractsDelta = event.contractsDelta ?? 0;
+    const premium = event.premium ?? 0;
+
+    if (!contractsDelta) {
+      if (event.type === TradeEventType.ROLL && openContracts !== 0) {
+        openPremiumBasis += openContracts > 0 ? premium : -premium;
+      }
+      continue;
+    }
+
+    if (openContracts === 0 || Math.sign(contractsDelta) === Math.sign(openContracts)) {
+      openContracts += contractsDelta;
+      openPremiumBasis += Math.abs(premium);
+      continue;
+    }
+
+    const contractsClosed = Math.min(Math.abs(openContracts), Math.abs(contractsDelta));
+    const averageBasisPerContract = Math.abs(openContracts) > 0 ? openPremiumBasis / Math.abs(openContracts) : 0;
+
+    openPremiumBasis = Math.max(openPremiumBasis - averageBasisPerContract * contractsClosed, 0);
+    openContracts += contractsDelta;
+
+    if (openContracts === 0) {
+      openPremiumBasis = 0;
+    }
+  }
+
+  return {
+    openContracts,
+    openPremiumBasis,
+    averageBasisPerContract: Math.abs(openContracts) > 0 ? openPremiumBasis / Math.abs(openContracts) : 0,
+  };
+}
+
+export function calculateOptionCloseRealizedPnl(openContractCount: number, basisReleased: number, closePremium: number) {
+  return openContractCount > 0 ? basisReleased - closePremium : closePremium - basisReleased;
+}
+
+export function calculateOptionExpirationRealizedPnl(openContractCount: number, basisReleased: number) {
+  return openContractCount > 0 ? basisReleased : -basisReleased;
 }
 
 export function aggregateTradeState(events: AppendTradeEventInput[]) {

@@ -1,0 +1,5 @@
+ALTER TABLE "Trade"
+ADD COLUMN "archivedAt" TIMESTAMP(3);
+
+ALTER TABLE "HoldingLot"
+ADD COLUMN "archivedAt" TIMESTAMP(3);

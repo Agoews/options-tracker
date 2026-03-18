@@ -6,6 +6,19 @@ import type { AppUser } from "@/lib/domain/types";
 import { getSessionClaims } from "@/lib/auth/session";
 import { prisma } from "@/lib/server/db";
 
+const appUserSelect = {
+  id: true,
+  firebaseUid: true,
+  email: true,
+  displayName: true,
+  avatarUrl: true,
+  onboardingComplete: true,
+  timezone: true,
+  baseCurrency: true,
+  portfolioBaselineValue: true,
+  portfolioBaselineAt: true,
+} as const;
+
 export async function syncUserFromSession() {
   const claims = await getSessionClaims();
 
@@ -13,29 +26,44 @@ export async function syncUserFromSession() {
     return null;
   }
 
-  return prisma.user.upsert({
-    where: { firebaseUid: claims.uid },
-    update: {
-      email: claims.email,
-      displayName: claims.name ?? undefined,
-      avatarUrl: claims.picture ?? undefined,
-    },
-    create: {
-      firebaseUid: claims.uid,
-      email: claims.email,
-      displayName: claims.name,
-      avatarUrl: claims.picture,
-    },
-    select: {
-      id: true,
-      firebaseUid: true,
-      email: true,
-      displayName: true,
-      avatarUrl: true,
-      onboardingComplete: true,
-      timezone: true,
-      baseCurrency: true,
-    },
+  const nextValues = {
+    firebaseUid: claims.uid,
+    email: claims.email,
+    displayName: claims.name ?? undefined,
+    avatarUrl: claims.picture ?? undefined,
+  };
+
+  return prisma.$transaction(async (tx) => {
+    const existingByUid = await tx.user.findUnique({
+      where: { firebaseUid: claims.uid },
+      select: appUserSelect,
+    });
+
+    if (existingByUid) {
+      return tx.user.update({
+        where: { id: existingByUid.id },
+        data: nextValues,
+        select: appUserSelect,
+      });
+    }
+
+    const existingByEmail = await tx.user.findUnique({
+      where: { email: claims.email },
+      select: appUserSelect,
+    });
+
+    if (existingByEmail) {
+      return tx.user.update({
+        where: { id: existingByEmail.id },
+        data: nextValues,
+        select: appUserSelect,
+      });
+    }
+
+    return tx.user.create({
+      data: nextValues,
+      select: appUserSelect,
+    });
   });
 }
 

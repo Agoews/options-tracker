@@ -3,9 +3,12 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
+import { readMutationError } from "@/lib/client/mutation-feedback";
 import { usTimezones } from "@/lib/domain/timezones";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { FieldError } from "@/components/ui/field-error";
+import { FormMessage } from "@/components/ui/form-message";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -21,6 +24,7 @@ export function ProfileForm({ user }: { user: ProfileFormProps }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ text: string; ok: boolean } | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [displayName, setDisplayName] = useState(user.displayName ?? "");
   const [timezone, setTimezone] = useState(user.timezone);
   const [baseCurrency, setBaseCurrency] = useState(user.baseCurrency);
@@ -28,6 +32,7 @@ export function ProfileForm({ user }: { user: ProfileFormProps }) {
   function save() {
     startTransition(async () => {
       setMessage(null);
+      setFieldErrors({});
       const response = await fetch("/api/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -35,8 +40,9 @@ export function ProfileForm({ user }: { user: ProfileFormProps }) {
       });
 
       if (!response.ok) {
-        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
-        setMessage({ text: payload?.error ?? "Unable to update profile.", ok: false });
+        const error = await readMutationError(response, "Unable to update profile.");
+        setFieldErrors(error.fieldErrors);
+        setMessage({ text: error.message, ok: false });
         return;
       }
 
@@ -66,6 +72,7 @@ export function ProfileForm({ user }: { user: ProfileFormProps }) {
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="Your name"
             />
+            <FieldError message={fieldErrors.displayName} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="baseCurrency">Base currency</Label>
@@ -76,6 +83,7 @@ export function ProfileForm({ user }: { user: ProfileFormProps }) {
               maxLength={3}
               placeholder="USD"
             />
+            <FieldError message={fieldErrors.baseCurrency} />
           </div>
           <div className="space-y-2">
             <Label>Timezone</Label>
@@ -91,12 +99,13 @@ export function ProfileForm({ user }: { user: ProfileFormProps }) {
                 ))}
               </SelectContent>
             </Select>
+            <FieldError message={fieldErrors.timezone} />
           </div>
         </div>
 
         <div className="flex items-center justify-between">
           {message ? (
-            <p className={`text-sm ${message.ok ? "text-emerald-300" : "text-rose-300"}`}>{message.text}</p>
+            <FormMessage tone={message.ok ? "success" : "error"}>{message.text}</FormMessage>
           ) : (
             <div />
           )}

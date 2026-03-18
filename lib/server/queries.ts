@@ -1,17 +1,31 @@
 import "server-only";
 
-import { HoldingStatus, StrategyType, TradeStatus, TradeEventType } from "@prisma/client";
+import { HoldingStatus, TradeStatus, TradeEventType } from "@prisma/client";
 
-import { buildDashboardSnapshot, calculateHoldingUnrealizedPnl, calculateReservedShares } from "@/lib/domain/calculations";
+import {
+  buildDashboardSnapshot,
+  calculateHoldingUnrealizedPnl,
+  calculateReservedShares,
+} from "@/lib/domain/calculations";
 import type { HoldingRow, LinkedCoveredCall } from "@/lib/domain/types";
 import { prisma } from "@/lib/server/db";
 import { getCurrentPrices } from "@/lib/server/quotes";
 import { toNumber } from "@/lib/utils";
 
-export async function getDashboardSnapshot(userId: string) {
-  const [trades, holdings] = await Promise.all([
+export async function getDashboardSnapshot(userId: string, { includeArchived = false }: { includeArchived?: boolean } = {}) {
+  const [user, trades, holdings, fundingEvents] = await Promise.all([
+    prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: {
+        portfolioBaselineValue: true,
+        portfolioBaselineAt: true,
+      },
+    }),
     prisma.trade.findMany({
-      where: { userId },
+      where: {
+        userId,
+        ...(includeArchived ? {} : { archivedAt: null }),
+      },
       include: {
         events: {
           orderBy: { occurredAt: "desc" },
@@ -20,9 +34,16 @@ export async function getDashboardSnapshot(userId: string) {
       orderBy: { openedAt: "desc" },
     }),
     prisma.holdingLot.findMany({
-      where: { userId },
+      where: {
+        userId,
+        ...(includeArchived ? {} : { archivedAt: null }),
+      },
       include: { coveredCalls: true },
       orderBy: { openedAt: "desc" },
+    }),
+    prisma.portfolioFunding.findMany({
+      where: { userId },
+      orderBy: { occurredAt: "asc" },
     }),
   ]);
 
@@ -40,12 +61,14 @@ export async function getDashboardSnapshot(userId: string) {
         ? toNumber(holding.costBasisPerShare) - ccPremiumCollected / holding.remainingQuantity
         : toNumber(holding.costBasisPerShare);
 
-    const activeCoveredCalls: LinkedCoveredCall[] = holding.coveredCalls.map((cc) => ({
-      tradeId: cc.id,
-      status: cc.status,
-      premiumCollected: toNumber(cc.premiumCollected),
-      openContracts: cc.openContractCount,
-    }));
+    const activeCoveredCalls: LinkedCoveredCall[] = holding.coveredCalls
+      .filter((cc) => cc.status !== TradeStatus.CLOSED && !cc.archivedAt)
+      .map((cc) => ({
+        tradeId: cc.id,
+        status: cc.status,
+        premiumCollected: toNumber(cc.premiumCollected),
+        openContracts: cc.openContractCount,
+      }));
     const reservedShares = activeCoveredCalls
       .filter((cc) => cc.status !== TradeStatus.CLOSED)
       .reduce((total, cc) => total + calculateReservedShares(cc.openContracts), 0);
@@ -67,6 +90,7 @@ export async function getDashboardSnapshot(userId: string) {
       unrealizedPnl: null,
       realizedPnl: toNumber(holding.realizedPnl),
       status: holding.status,
+      archivedAt: holding.archivedAt,
       openedAt: holding.openedAt,
       closedAt: holding.closedAt,
     };
@@ -77,9 +101,18 @@ export async function getDashboardSnapshot(userId: string) {
     };
   });
 
-  const nonStockTrades = trades.filter((t) => t.strategy !== StrategyType.STOCK);
-
-  return buildDashboardSnapshot(nonStockTrades, holdingRows);
+  return buildDashboardSnapshot(
+    trades,
+    holdingRows,
+    toNumber(user.portfolioBaselineValue),
+    user.portfolioBaselineAt,
+    fundingEvents.map((event) => ({
+      id: event.id,
+      amount: toNumber(event.amount),
+      occurredAt: event.occurredAt,
+      notes: event.notes,
+    })),
+  );
 }
 
 export async function getTradeDetail(userId: string, tradeId: string) {
@@ -89,6 +122,7 @@ export async function getTradeDetail(userId: string, tradeId: string) {
       events: {
         orderBy: { occurredAt: "desc" },
       },
+      holdingLot: true,
       holdings: {
         orderBy: { openedAt: "desc" },
       },

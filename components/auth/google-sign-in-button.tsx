@@ -30,13 +30,23 @@ export function GoogleSignInButton() {
       });
 
       if (!response.ok) {
-        throw new Error("Unable to create session.");
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(payload?.error ?? "Unable to create session.");
       }
 
       router.push("/dashboard");
       router.refresh();
     } catch (caughtError) {
-      setError(caughtError instanceof Error ? caughtError.message : "Unable to sign in.");
+      const message =
+        caughtError && typeof caughtError === "object" && "code" in caughtError
+          ? String((caughtError as { code?: string }).code)
+          : null;
+
+      if (message === "auth/popup-closed-by-user" || message === "auth/cancelled-popup-request") {
+        setError("Google sign-in was cancelled before it finished.");
+      } else {
+        setError(caughtError instanceof Error ? caughtError.message : "Unable to sign in.");
+      }
     } finally {
       setPending(false);
     }

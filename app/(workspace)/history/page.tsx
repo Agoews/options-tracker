@@ -5,7 +5,7 @@ import { getDashboardSnapshot } from "@/lib/server/queries";
 
 export default async function HistoryPage() {
   const user = await requireAppUser();
-  const snapshot = await getDashboardSnapshot(user.id);
+  const snapshot = await getDashboardSnapshot(user.id, { includeArchived: true });
 
   if (!snapshot.activity.length) {
     return (

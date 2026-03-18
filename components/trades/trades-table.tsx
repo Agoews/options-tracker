@@ -8,6 +8,8 @@ import { formatCurrency, formatDate } from "@/lib/utils";
 import { DataTable } from "@/components/tables/data-table";
 import { StatusBadge } from "@/components/trades/status-badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 
 const columnHelper = createColumnHelper<TradeRow>();
 
@@ -25,7 +27,8 @@ const columns = [
   }),
   columnHelper.accessor("status", {
     header: "Status",
-    cell: ({ getValue }) => <StatusBadge status={getValue()} />,
+    cell: ({ getValue, row }) =>
+      row.original.archivedAt ? <Badge variant="neutral">Archived</Badge> : <StatusBadge status={getValue()} />,
   }),
   columnHelper.accessor("premiumCollected", {
     header: "Premium",
@@ -52,14 +55,38 @@ const columns = [
 ] as ColumnDef<TradeRow, unknown>[];
 
 export function TradesTable({ data }: { data: TradeRow[] }) {
+  const archivedTrades = data.filter((row) => Boolean(row.archivedAt));
+  const activeTrades = data.filter((row) => !row.archivedAt);
+  const openTrades = activeTrades.filter((row) => row.status !== "CLOSED");
+  const closedTrades = activeTrades.filter((row) => row.status === "CLOSED");
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Trades</CardTitle>
-        <CardDescription>Filter by ticker, strategy, status, or activity level.</CardDescription>
+        <CardDescription>Filter active and archived trades by ticker, strategy, status, or activity level.</CardDescription>
       </CardHeader>
       <CardContent>
-        <DataTable columns={columns} data={data} searchPlaceholder="Filter trades..." />
+        <Tabs defaultValue="open">
+          <TabsList>
+            <TabsTrigger value="open">Open</TabsTrigger>
+            <TabsTrigger value="closed">Closed</TabsTrigger>
+            <TabsTrigger value="all">All</TabsTrigger>
+            <TabsTrigger value="archived">Archived</TabsTrigger>
+          </TabsList>
+          <TabsContent value="open">
+            <DataTable columns={columns} data={openTrades} searchPlaceholder="Filter open trades..." />
+          </TabsContent>
+          <TabsContent value="closed">
+            <DataTable columns={columns} data={closedTrades} searchPlaceholder="Filter closed trades..." />
+          </TabsContent>
+          <TabsContent value="all">
+            <DataTable columns={columns} data={activeTrades} searchPlaceholder="Filter active trades..." />
+          </TabsContent>
+          <TabsContent value="archived">
+            <DataTable columns={columns} data={archivedTrades} searchPlaceholder="Filter archived trades..." />
+          </TabsContent>
+        </Tabs>
       </CardContent>
     </Card>
   );

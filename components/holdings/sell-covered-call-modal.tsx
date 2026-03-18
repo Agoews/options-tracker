@@ -1,19 +1,22 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { applyFieldErrors, readMutationError, withStatus } from "@/lib/client/mutation-feedback";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { FieldError } from "@/components/ui/field-error";
+import { FormMessage } from "@/components/ui/form-message";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 const sellCoveredCallSchema = z.object({
-  contracts: z.coerce.number().int().min(1).max(100),
+  contracts: z.coerce.number().int().min(1),
   strikePrice: z.coerce.number().positive(),
   entryPer: z.coerce.number().positive(),
   expiration: z.coerce.date(),
@@ -33,6 +36,8 @@ interface Props {
 
 export function SellCoveredCallModal({ open, onOpenChange, holdingLotId, ticker, availableShares }: Props) {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -50,9 +55,11 @@ export function SellCoveredCallModal({ open, onOpenChange, holdingLotId, ticker,
 
   const submit = form.handleSubmit((values) => {
     setError(null);
+    form.clearErrors();
 
     if (availableShares < values.contracts * 100) {
       setError("Not enough uncovered shares for that many covered call contracts.");
+      form.setError("contracts", { type: "manual", message: "That contract count would reserve more shares than this lot has uncovered." });
       return;
     }
 
@@ -74,12 +81,15 @@ export function SellCoveredCallModal({ open, onOpenChange, holdingLotId, ticker,
       });
 
       if (!response.ok) {
-        setError("Failed to create covered call trade.");
+        const message = await readMutationError(response, "Failed to create covered call trade.");
+        applyFieldErrors(form.setError, message.fieldErrors);
+        setError(message.message);
         return;
       }
 
       form.reset();
       onOpenChange(false);
+      router.replace(withStatus(pathname, searchParams, "covered-call-created"), { scroll: false });
       router.refresh();
     });
   });
@@ -130,14 +140,16 @@ export function SellCoveredCallModal({ open, onOpenChange, holdingLotId, ticker,
           <div className="space-y-2">
             <Label htmlFor="cc-openedAt">Opened At</Label>
             <Input id="cc-openedAt" type="date" {...form.register("openedAt", { valueAsDate: true })} />
+            <FieldError message={form.formState.errors.openedAt?.message} />
           </div>
           <div className="space-y-2 md:col-span-2">
             <Label htmlFor="cc-thesis">Thesis</Label>
             <Textarea id="cc-thesis" {...form.register("thesis")} />
+            <FieldError message={form.formState.errors.thesis?.message} />
           </div>
 
           <div className="md:col-span-2 flex items-center justify-between">
-            {error ? <p className="text-sm text-rose-400">{error}</p> : <div />}
+            {error ? <FormMessage tone="error">{error}</FormMessage> : <div />}
             <div className="flex gap-2">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancel

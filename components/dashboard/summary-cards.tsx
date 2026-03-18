@@ -1,7 +1,7 @@
 import { ArrowDownRight, ArrowUpRight, Dot } from "lucide-react";
 
 import type { DashboardMetric } from "@/lib/domain/types";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatPercent } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function SummaryCards({ metrics }: { metrics: DashboardMetric[] }) {
@@ -34,6 +34,11 @@ export function SummaryCards({ metrics }: { metrics: DashboardMetric[] }) {
               </div>
             </CardHeader>
             <CardContent>
+              {metric.change !== undefined ? (
+                <p className={positive ? "text-sm text-emerald-300" : negative ? "text-sm text-rose-300" : "text-sm text-slate-300"}>
+                  {formatPercent(metric.change)}
+                </p>
+              ) : null}
               <p className="text-sm text-slate-400">{metric.detail}</p>
             </CardContent>
           </Card>

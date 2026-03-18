@@ -61,6 +61,8 @@ model User {
   avatarUrl          String?
   timezone           String       @default("America/Los_Angeles")
   baseCurrency       String       @default("USD")
+  portfolioBaselineValue Decimal   @default(0) @db.Decimal(14, 2)
+  portfolioBaselineAt DateTime?
   onboardingComplete Boolean      @default(false)
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @updatedAt
@@ -69,6 +71,19 @@ model User {
   holdings           HoldingLot[]
   assignments        Assignment[]
   rolls              Roll[]
+  fundingEvents      PortfolioFunding[]
+}
+
+model PortfolioFunding {
+  id         String   @id @default(cuid())
+  userId     String
+  amount     Decimal  @db.Decimal(14, 2)
+  occurredAt DateTime
+  notes      String?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, occurredAt])
 }
 
 model Trade {
@@ -91,6 +106,7 @@ model Trade {
   feesPaid          Decimal       @db.Decimal(14, 2)
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
+  archivedAt        DateTime?
   holdingLotId      String?       @map("holding_lot_id")
   user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   holdingLot        HoldingLot?   @relation("CoveredCalls", fields: [holdingLotId], references: [id], onDelete: SetNull)
@@ -146,6 +162,7 @@ model HoldingLot {
   notes             String?
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
+  archivedAt        DateTime?
   user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   trade             Trade?        @relation(fields: [tradeId], references: [id], onDelete: SetNull)
   coveredCalls      Trade[]       @relation("CoveredCalls")

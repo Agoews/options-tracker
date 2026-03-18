@@ -1,16 +1,21 @@
 import { redirect } from "next/navigation";
 
 import { ActivityFeed } from "@/components/dashboard/activity-feed";
-import { SummaryCards } from "@/components/dashboard/summary-cards";
 import { PerformanceChart } from "@/components/charts/performance-chart";
 import { StrategyChart } from "@/components/charts/strategy-chart";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageStatusBanner } from "@/components/ui/page-status-banner";
 import { requireAppUser } from "@/lib/server/auth-user";
 import { getDashboardSnapshot } from "@/lib/server/queries";
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ status?: string }>;
+}) {
   const user = await requireAppUser();
   const snapshot = await getDashboardSnapshot(user.id);
+  const params = searchParams ? await searchParams : undefined;
 
   if (!user.onboardingComplete) {
     redirect("/onboarding");
@@ -20,7 +25,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <SummaryCards metrics={snapshot.metrics} />
+      <PageStatusBanner status={params?.status ?? null} />
       <PerformanceChart data={snapshot.performance} />
       {hasTradeData ? (
         <>

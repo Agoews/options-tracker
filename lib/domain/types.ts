@@ -1,6 +1,7 @@
 import type {
   HoldingStatus,
   OptionType,
+  PortfolioFunding,
   StrategyType,
   Trade,
   TradeEvent,
@@ -11,7 +12,16 @@ import type {
 
 export type AppUser = Pick<
   User,
-  "id" | "firebaseUid" | "email" | "displayName" | "avatarUrl" | "onboardingComplete" | "timezone" | "baseCurrency"
+  | "id"
+  | "firebaseUid"
+  | "email"
+  | "displayName"
+  | "avatarUrl"
+  | "onboardingComplete"
+  | "timezone"
+  | "baseCurrency"
+  | "portfolioBaselineValue"
+  | "portfolioBaselineAt"
 >;
 
 export type TradeWithEvents = Trade & {
@@ -28,16 +38,38 @@ export type DashboardMetric = {
 
 export type StrategyBreakdownPoint = {
   strategy: StrategyType;
-  premium: number;
+  premiumCollected: number;
   realizedPnl: number;
   activeTrades: number;
+  closedTrades: number;
+  winRate: number | null;
+  averageClosedPnl: number | null;
 };
 
 export type PerformancePoint = {
   label: string;
+  portfolioValue: number;
+  fundedCapital: number;
   realizedPnl: number;
-  premium: number;
   unrealizedPnl: number;
+  date: Date;
+};
+
+export type PortfolioCapacitySnapshot = {
+  baselineValue: number;
+  baselineAt: Date | null;
+  contributedFunds: number;
+  fundedCapital: number;
+  realizedPnl: number;
+  unrealizedPnl: number;
+  currentPortfolioValue: number;
+  openAssetValue: number;
+  availableCapacity: number;
+  overAllocated: boolean;
+};
+
+export type FundingRow = Pick<PortfolioFunding, "id" | "occurredAt" | "notes"> & {
+  amount: number;
 };
 
 export type ActivityItem = {
@@ -56,6 +88,7 @@ export type TradeRow = {
   ticker: string;
   strategy: StrategyType;
   status: TradeStatus;
+  archivedAt: Date | null;
   openedAt: Date;
   nextExpiration?: Date | null;
   premiumCollected: number;
@@ -63,6 +96,7 @@ export type TradeRow = {
   openContractCount: number;
   shareExposure: number;
   assignmentCount: number;
+  linkedHoldingLotId: string | null;
 };
 
 export type LinkedCoveredCall = {
@@ -87,13 +121,54 @@ export type HoldingRow = {
   unrealizedPnl: number | null;
   realizedPnl: number;
   status: HoldingStatus;
+  archivedAt: Date | null;
   openedAt: Date;
   closedAt: Date | null;
 };
 
+export type TradeLifecycleActionInput =
+  | {
+      action: "close_option";
+      occurredAt: Date;
+      contracts: number;
+      premium: number;
+      notes?: string;
+    }
+  | {
+      action: "expire_option";
+      occurredAt: Date;
+      contracts: number;
+      notes?: string;
+    }
+  | {
+      action: "roll_option";
+      occurredAt: Date;
+      netCredit: number;
+      nextExpiration: Date;
+      nextStrikePrice: number;
+      fromEventId: string;
+      notes?: string;
+    }
+  | {
+      action: "assign_put";
+      occurredAt: Date;
+      contracts: number;
+      strikePrice: number;
+      notes?: string;
+    }
+  | {
+      action: "assign_called_shares";
+      occurredAt: Date;
+      contracts: number;
+      strikePrice: number;
+      notes?: string;
+    };
+
 export type DashboardSnapshot = {
   metrics: DashboardMetric[];
   performance: PerformancePoint[];
+  portfolioCapacity: PortfolioCapacitySnapshot;
+  funding: FundingRow[];
   strategies: StrategyBreakdownPoint[];
   activity: ActivityItem[];
   trades: TradeRow[];
@@ -136,5 +211,16 @@ export type CloseHoldingInput = {
   quantityToSell: number;
   salePrice: number;
   soldAt: Date;
+  notes?: string;
+};
+
+export type UpdatePortfolioBaselineInput = {
+  portfolioBaselineValue: number;
+  portfolioBaselineAt: Date;
+};
+
+export type AddPortfolioFundingInput = {
+  amount: number;
+  occurredAt: Date;
   notes?: string;
 };

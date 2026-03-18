@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { usTimezones } from "@/lib/domain/timezones";
 import { requireAppUser } from "@/lib/server/auth-user";
 import { prisma } from "@/lib/server/db";
+import { mutationFailure, mutationSuccess } from "@/lib/server/mutation-response";
 
 const updateProfileSchema = z.object({
   displayName: z.string().min(2).max(60),
@@ -12,10 +12,9 @@ const updateProfileSchema = z.object({
 });
 
 export async function PATCH(request: Request) {
-  const user = await requireAppUser();
-  const payload = updateProfileSchema.parse(await request.json());
-
   try {
+    const user = await requireAppUser();
+    const payload = updateProfileSchema.parse(await request.json());
     await prisma.user.update({
       where: { id: user.id },
       data: {
@@ -24,9 +23,8 @@ export async function PATCH(request: Request) {
         baseCurrency: payload.baseCurrency.toUpperCase(),
       },
     });
-    return NextResponse.json({ ok: true });
+    return mutationSuccess({}, { message: "Profile updated." });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unable to update profile.";
-    return NextResponse.json({ error: message }, { status: 400 });
+    return mutationFailure(error, "Unable to update profile.");
   }
 }

@@ -4,12 +4,15 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { StrategyType } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { createTradeSchema, type CreateTradeFormValues } from "@/lib/domain/schemas";
+import { applyFieldErrors, readMutationError, withStatus } from "@/lib/client/mutation-feedback";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DatePicker } from "@/components/ui/date-picker";
+import { FieldError } from "@/components/ui/field-error";
+import { FormMessage } from "@/components/ui/form-message";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -30,7 +33,7 @@ const OPTION_STRATEGIES = Object.values(StrategyType).filter((s) => s !== Strate
 export function TradeEntryWorkbench() {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState<{ text: string; tone: "error" | "success" } | null>(null);
 
   const form = useForm<CreateTradeFormValues>({
     resolver: zodResolver(createTradeSchema),
@@ -43,9 +46,15 @@ export function TradeEntryWorkbench() {
       entryPer: 0,
     },
   });
+  const expiration = useWatch({ control: form.control, name: "expiration" });
+  const openedAt = useWatch({ control: form.control, name: "openedAt" });
+  const closedAt = useWatch({ control: form.control, name: "closedAt" });
 
   const submit = form.handleSubmit((values) => {
     startTransition(async () => {
+      setMessage(null);
+      form.clearErrors();
+
       const response = await fetch("/api/trades", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -53,12 +62,14 @@ export function TradeEntryWorkbench() {
       });
 
       if (!response.ok) {
-        setMessage("Trade entry failed. Check required fields and try again.");
+        const error = await readMutationError(response, "Trade entry failed. Check required fields and try again.");
+        applyFieldErrors(form.setError, error.fieldErrors);
+        setMessage({ text: error.message, tone: "error" });
         return;
       }
 
       const payload = (await response.json()) as { tradeId: string };
-      router.push(`/trades/${payload.tradeId}`);
+      router.push(withStatus(`/trades/${payload.tradeId}`, new URLSearchParams(), "trade-created"));
       router.refresh();
     });
   });
@@ -77,10 +88,12 @@ export function TradeEntryWorkbench() {
           <div className="space-y-2">
             <Label htmlFor="ticker">Ticker</Label>
             <Input id="ticker" placeholder="AAPL" {...form.register("ticker")} />
+            <FieldError message={form.formState.errors.ticker?.message} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="accountLabel">Account</Label>
             <Input id="accountLabel" {...form.register("accountLabel")} />
+            <FieldError message={form.formState.errors.accountLabel?.message} />
           </div>
 
           {/* Row 2 */}
@@ -101,61 +114,70 @@ export function TradeEntryWorkbench() {
                 ))}
               </SelectContent>
             </Select>
+            <FieldError message={form.formState.errors.strategy?.message} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="contracts">Contracts</Label>
             <Input id="contracts" type="number" min={1} {...form.register("contracts")} />
+            <FieldError message={form.formState.errors.contracts?.message} />
           </div>
 
           {/* Row 3 */}
           <div className="space-y-2">
             <Label htmlFor="strikePrice">Strike</Label>
             <Input id="strikePrice" type="number" step="0.01" placeholder="Optional" {...form.register("strikePrice")} />
+            <FieldError message={form.formState.errors.strikePrice?.message} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="entryPer">Entry per contract</Label>
             <Input id="entryPer" type="number" step="0.01" {...form.register("entryPer")} />
+            <FieldError message={form.formState.errors.entryPer?.message} />
           </div>
 
           {/* Row 4 */}
           <div className="space-y-2">
             <Label>Expiration</Label>
             <DatePicker
-              value={form.watch("expiration") ?? undefined}
+              value={expiration ?? undefined}
               onChange={(date) => form.setValue("expiration", date, { shouldValidate: true })}
               placeholder="Optional"
             />
+            <FieldError message={form.formState.errors.expiration?.message} />
           </div>
           <div className="space-y-2">
             <Label>Opened at</Label>
             <DatePicker
-              value={form.watch("openedAt")}
+              value={openedAt}
               onChange={(date) => form.setValue("openedAt", date ?? new Date(), { shouldValidate: true })}
             />
+            <FieldError message={form.formState.errors.openedAt?.message} />
           </div>
 
           {/* Row 5 — close fields */}
           <div className="space-y-2">
             <Label htmlFor="exitPer">Exit per contract <span className="text-white/40 text-xs font-normal">(optional)</span></Label>
             <Input id="exitPer" type="number" step="0.01" placeholder="Leave blank if still open" {...form.register("exitPer")} />
+            <FieldError message={form.formState.errors.exitPer?.message} />
           </div>
           <div className="space-y-2">
             <Label>Closed at <span className="text-white/40 text-xs font-normal">(optional)</span></Label>
             <DatePicker
-              value={form.watch("closedAt") ?? undefined}
+              value={closedAt ?? undefined}
               onChange={(date) => form.setValue("closedAt", date, { shouldValidate: true })}
               placeholder="Leave blank if still open"
             />
+            <FieldError message={form.formState.errors.closedAt?.message} />
           </div>
 
           {/* Thesis — full width */}
           <div className="space-y-2 md:col-span-2">
             <Label htmlFor="thesis">Thesis</Label>
             <Textarea id="thesis" placeholder="Setup, entry rules, and risk notes..." {...form.register("thesis")} />
+            <FieldError message={form.formState.errors.thesis?.message} />
           </div>
 
           <div className="md:col-span-2 flex items-center justify-between gap-3">
-            {message ? <p className="text-sm text-rose-300">{message}</p> : <div />}
+            {message ? <FormMessage tone={message.tone}>{message.text}</FormMessage> : <div />}
             <Button disabled={pending} type="submit">
               Create trade
             </Button>
