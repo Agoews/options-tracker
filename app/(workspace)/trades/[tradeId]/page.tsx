@@ -55,8 +55,8 @@ export default async function TradeDetailPage({
                     defaultStrikePrice={currentOptionLeg ? toNumber(currentOptionLeg.strikePrice) : null}
                     defaultExpiration={currentOptionLeg?.expiration ? currentOptionLeg.expiration.toISOString().slice(0, 10) : null}
                     rollCandidates={trade.events
-                      .filter((event) => event.optionType)
-                      .map((event) => ({
+                      .filter((event: (typeof trade.events)[number]) => event.optionType)
+                      .map((event: (typeof trade.events)[number]) => ({
                         id: event.id,
                         label: `${event.type.replaceAll("_", " ")} · ${formatDate(event.occurredAt)}`,
                       }))}
