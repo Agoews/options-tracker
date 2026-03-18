@@ -1,6 +1,7 @@
 import "server-only";
 
 import { redirect } from "next/navigation";
+import type { Prisma } from "@prisma/client";
 
 import type { AppUser } from "@/lib/domain/types";
 import { getSessionClaims } from "@/lib/auth/session";
@@ -17,9 +18,13 @@ const appUserSelect = {
   baseCurrency: true,
   portfolioBaselineValue: true,
   portfolioBaselineAt: true,
-} as const;
+} satisfies Prisma.UserSelect;
 
-export async function syncUserFromSession() {
+type SyncedAppUser = Prisma.UserGetPayload<{
+  select: typeof appUserSelect;
+}>;
+
+export async function syncUserFromSession(): Promise<SyncedAppUser | null> {
   const claims = await getSessionClaims();
 
   if (!claims?.uid || !claims.email) {
@@ -67,7 +72,7 @@ export async function syncUserFromSession() {
   });
 }
 
-export async function requireAppUser(options?: { allowIncompleteOnboarding?: boolean }) {
+export async function requireAppUser(options?: { allowIncompleteOnboarding?: boolean }): Promise<AppUser> {
   const user = await syncUserFromSession();
 
   if (!user) {
