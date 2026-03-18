@@ -9,7 +9,7 @@ export default async function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <ProfileForm user={user} />
+      <ProfileForm user={{ email: user.email, displayName: user.displayName, timezone: user.timezone, baseCurrency: user.baseCurrency }} />
       <PortfolioCapitalPanel capacity={snapshot.portfolioCapacity} funding={snapshot.funding} />
     </div>
   );
