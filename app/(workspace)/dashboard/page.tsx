@@ -12,29 +12,29 @@ export default async function DashboardPage() {
   const user = await requireAppUser();
   const snapshot = await getDashboardSnapshot(user.id);
 
-  if (!snapshot.trades.length && !snapshot.holdings.length) {
-    return (
-      <EmptyState
-        title="No trade data yet"
-        description="Start with a wheel trade, a standalone option, or an existing holding to populate the dashboard."
-        actionHref="/trades/new"
-        actionLabel="Log first trade"
-      />
-    );
-  }
-
   if (!user.onboardingComplete) {
     redirect("/onboarding");
   }
 
+  const hasTradeData = snapshot.trades.length > 0 || snapshot.holdings.length > 0;
+
   return (
     <div className="space-y-6">
       <SummaryCards metrics={snapshot.metrics} />
-      <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-        <PerformanceChart data={snapshot.performance} />
-        <StrategyChart data={snapshot.strategies} />
-      </div>
-      <ActivityFeed items={snapshot.activity} />
+      <PerformanceChart data={snapshot.performance} />
+      {hasTradeData ? (
+        <>
+          <StrategyChart data={snapshot.strategies} />
+          <ActivityFeed items={snapshot.activity} />
+        </>
+      ) : (
+        <EmptyState
+          title="No trade data yet"
+          description="Set your tracked portfolio value, add funds if needed, and log the first position when you are ready."
+          actionHref="/trades/new"
+          actionLabel="Log first trade"
+        />
+      )}
     </div>
   );
 }

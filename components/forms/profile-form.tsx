@@ -3,7 +3,6 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-import type { AppUser } from "@/lib/domain/types";
 import { usTimezones } from "@/lib/domain/timezones";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,7 +10,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export function ProfileForm({ user }: { user: AppUser }) {
+type ProfileFormProps = {
+  email: string;
+  displayName: string | null;
+  timezone: string;
+  baseCurrency: string;
+};
+
+export function ProfileForm({ user }: { user: ProfileFormProps }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ text: string; ok: boolean } | null>(null);
