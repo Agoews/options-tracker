@@ -157,15 +157,14 @@ export const tradeLifecycleActionSchema = z.discriminatedUnion("action", [
   }),
 ]);
 
-export const updatePortfolioBaselineSchema = z.object({
-  portfolioBaselineValue: z.coerce.number().nonnegative(),
-  portfolioBaselineAt: z.coerce.date(),
+export const setTrackedCapitalSchema = z.object({
+  trackedCapital: z.coerce.number().nonnegative(),
 });
 
-export const addPortfolioFundingSchema = z.object({
-  amount: z.coerce.number().positive(),
-  occurredAt: z.coerce.date(),
-  notes: z.string().max(1000).optional(),
+export const addCapitalAdjustmentSchema = z.object({
+  amount: z.coerce.number().refine((value) => value !== 0, {
+    message: "Enter a non-zero amount.",
+  }),
 });
 
 export const updateProfileSchema = z.object({
@@ -182,6 +181,6 @@ export type CloseHoldingFormValues = z.infer<typeof closeHoldingSchema>;
 export type ArchiveEntityFormValues = z.infer<typeof archiveEntitySchema>;
 export type DeleteEntityFormValues = z.infer<typeof deleteEntitySchema>;
 export type TradeLifecycleActionFormValues = z.infer<typeof tradeLifecycleActionSchema>;
-export type UpdatePortfolioBaselineFormValues = z.infer<typeof updatePortfolioBaselineSchema>;
-export type AddPortfolioFundingFormValues = z.infer<typeof addPortfolioFundingSchema>;
+export type SetTrackedCapitalFormValues = z.infer<typeof setTrackedCapitalSchema>;
+export type AddCapitalAdjustmentFormValues = z.infer<typeof addCapitalAdjustmentSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;

@@ -5,15 +5,13 @@ import { useRouter } from "next/navigation";
 
 import { readMutationError } from "@/lib/client/mutation-feedback";
 import type { FundingRow, PortfolioCapacitySnapshot } from "@/lib/domain/types";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { DatePicker } from "@/components/ui/date-picker";
 import { FieldError } from "@/components/ui/field-error";
 import { FormMessage } from "@/components/ui/form-message";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 
 export function PortfolioCapitalPanel({
   capacity,
@@ -25,64 +23,65 @@ export function PortfolioCapitalPanel({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ text: string; tone: "error" | "success" } | null>(null);
-  const [baselineErrors, setBaselineErrors] = useState<Record<string, string>>({});
-  const [fundingErrors, setFundingErrors] = useState<Record<string, string>>({});
-  const [baselineValue, setBaselineValue] = useState(capacity.baselineValue.toString());
-  const [baselineAt, setBaselineAt] = useState<Date | undefined>(capacity.baselineAt ?? new Date());
-  const [fundAmount, setFundAmount] = useState("");
-  const [fundDate, setFundDate] = useState<Date | undefined>(new Date());
-  const [fundNotes, setFundNotes] = useState("");
+  const [capitalErrors, setCapitalErrors] = useState<Record<string, string>>({});
+  const [adjustmentErrors, setAdjustmentErrors] = useState<Record<string, string>>({});
+  const [trackedCapital, setTrackedCapital] = useState(capacity.fundedCapital.toString());
+  const [adjustmentAmount, setAdjustmentAmount] = useState("");
 
-  function saveBaseline() {
+  const parsedAdjustmentAmount = Number(adjustmentAmount);
+  const hasValidAdjustmentAmount =
+    adjustmentAmount.trim().length > 0 &&
+    Number.isFinite(parsedAdjustmentAmount) &&
+    parsedAdjustmentAmount > 0;
+
+  function saveTrackedCapital() {
     startTransition(async () => {
       setMessage(null);
-      setBaselineErrors({});
+      setCapitalErrors({});
       const response = await fetch("/api/portfolio", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          portfolioBaselineValue: baselineValue,
-          portfolioBaselineAt: baselineAt,
+          trackedCapital,
         }),
       });
 
       if (!response.ok) {
-        const error = await readMutationError(response, "Unable to update portfolio baseline.");
-        setBaselineErrors(error.fieldErrors);
+        const error = await readMutationError(response, "Unable to update tracked capital.");
+        setCapitalErrors(error.fieldErrors);
         setMessage({ text: error.message, tone: "error" });
         return;
       }
 
-      setMessage({ text: "Portfolio baseline updated.", tone: "success" });
+      setMessage({ text: "Tracked capital updated.", tone: "success" });
       router.refresh();
     });
   }
 
-  function addFunds() {
+  function submitAdjustment(direction: "deposit" | "withdrawal") {
     startTransition(async () => {
       setMessage(null);
-      setFundingErrors({});
+      setAdjustmentErrors({});
       const response = await fetch("/api/portfolio", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: fundAmount,
-          occurredAt: fundDate,
-          notes: fundNotes || undefined,
+          amount: direction === "deposit" ? parsedAdjustmentAmount : -parsedAdjustmentAmount,
         }),
       });
 
       if (!response.ok) {
-        const error = await readMutationError(response, "Unable to add funds.");
-        setFundingErrors(error.fieldErrors);
+        const error = await readMutationError(response, "Unable to update capital.");
+        setAdjustmentErrors(error.fieldErrors);
         setMessage({ text: error.message, tone: "error" });
         return;
       }
 
-      setFundAmount("");
-      setFundDate(new Date());
-      setFundNotes("");
-      setMessage({ text: "Funds added.", tone: "success" });
+      setAdjustmentAmount("");
+      setMessage({
+        text: direction === "deposit" ? "Funds added." : "Withdrawal recorded.",
+        tone: "success",
+      });
       router.refresh();
     });
   }
@@ -92,7 +91,7 @@ export function PortfolioCapitalPanel({
       <CardHeader>
         <CardTitle>Portfolio Capital</CardTitle>
         <CardDescription>
-          Set the tracked portfolio value, record added funds, and keep open asset exposure below the portfolio value.
+          Set the tracked capital once, then add or withdraw capital with a single amount field.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
@@ -106,77 +105,92 @@ export function PortfolioCapitalPanel({
           </div>
         )}
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Tracked Capital</p>
+            <p className="mt-2 font-mono text-xl text-slate-50">{formatCurrency(capacity.fundedCapital)}</p>
+          </div>
+          <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Portfolio Value</p>
+            <p className="mt-2 font-mono text-xl text-slate-50">{formatCurrency(capacity.currentPortfolioValue)}</p>
+          </div>
           <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
             <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Open Assets</p>
             <p className="mt-2 font-mono text-xl text-slate-50">{formatCurrency(capacity.openAssetValue)}</p>
           </div>
           <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
-            <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Added Funds</p>
-            <p className="mt-2 font-mono text-xl text-slate-50">{formatCurrency(capacity.contributedFunds)}</p>
+            <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Net Adjustments</p>
+            <p className={`mt-2 font-mono text-xl ${capacity.contributedFunds >= 0 ? "text-slate-50" : "text-rose-300"}`}>
+              {capacity.contributedFunds >= 0 ? "" : "-"}{formatCurrency(Math.abs(capacity.contributedFunds))}
+            </p>
           </div>
         </div>
 
         <div className="space-y-3 rounded-2xl border border-white/8 bg-white/[0.03] p-4">
-          <p className="text-sm font-semibold text-slate-50">Set portfolio value</p>
-          <div className="grid gap-3 md:grid-cols-2">
+          <div>
+            <p className="text-sm font-semibold text-slate-50">Current tracked capital</p>
+            <p className="mt-1 text-sm text-slate-400">
+              This is the total capital you want the app to treat as contributed to the portfolio.
+            </p>
+          </div>
+          <div className="grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
             <div className="space-y-2">
-              <Label htmlFor="portfolio-baseline-value">Tracked portfolio value</Label>
+              <Label htmlFor="tracked-capital">Tracked capital</Label>
               <Input
-                id="portfolio-baseline-value"
+                id="tracked-capital"
                 type="number"
                 step="0.01"
-                value={baselineValue}
-                onChange={(event) => setBaselineValue(event.target.value)}
+                value={trackedCapital}
+                onChange={(event) => setTrackedCapital(event.target.value)}
               />
-              <FieldError message={baselineErrors.portfolioBaselineValue} />
+              <FieldError message={capitalErrors.trackedCapital} />
             </div>
-            <div className="space-y-2">
-              <Label>As of</Label>
-              <DatePicker value={baselineAt} onChange={setBaselineAt} />
-              <FieldError message={baselineErrors.portfolioBaselineAt} />
-            </div>
-          </div>
-          <div className="flex justify-end">
-            <Button disabled={pending || !baselineAt} onClick={saveBaseline}>
-              Save portfolio value
+            <Button disabled={pending || !trackedCapital.trim()} onClick={saveTrackedCapital}>
+              Save capital
             </Button>
           </div>
         </div>
 
         <div className="space-y-3 rounded-2xl border border-white/8 bg-white/[0.03] p-4">
-          <p className="text-sm font-semibold text-slate-50">Add funds</p>
-          <div className="grid gap-3 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="fund-amount">Amount</Label>
-              <Input id="fund-amount" type="number" step="0.01" value={fundAmount} onChange={(event) => setFundAmount(event.target.value)} />
-              <FieldError message={fundingErrors.amount} />
-            </div>
-            <div className="space-y-2">
-              <Label>Date</Label>
-              <DatePicker value={fundDate} onChange={setFundDate} />
-              <FieldError message={fundingErrors.occurredAt} />
-            </div>
+          <div>
+            <p className="text-sm font-semibold text-slate-50">Quick capital adjustment</p>
+            <p className="mt-1 text-sm text-slate-400">
+              Enter an amount once, then choose whether it was a deposit or a withdrawal.
+            </p>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="fund-notes">Notes</Label>
-            <Textarea id="fund-notes" value={fundNotes} onChange={(event) => setFundNotes(event.target.value)} />
-            <FieldError message={fundingErrors.notes} />
-          </div>
-          <div className="flex justify-end">
-            <Button disabled={pending || !fundDate || !fundAmount} onClick={addFunds}>
+          <div className="grid gap-3 md:grid-cols-[1fr_auto_auto] md:items-end">
+            <div className="space-y-2">
+              <Label htmlFor="capital-adjustment-amount">Amount</Label>
+              <Input
+                id="capital-adjustment-amount"
+                type="number"
+                step="0.01"
+                value={adjustmentAmount}
+                onChange={(event) => setAdjustmentAmount(event.target.value)}
+                placeholder="2500"
+              />
+              <FieldError message={adjustmentErrors.amount} />
+            </div>
+            <Button disabled={pending || !hasValidAdjustmentAmount} onClick={() => submitAdjustment("deposit")}>
               Add funds
+            </Button>
+            <Button
+              variant="outline"
+              disabled={pending || !hasValidAdjustmentAmount}
+              onClick={() => submitAdjustment("withdrawal")}
+            >
+              Withdraw
             </Button>
           </div>
         </div>
 
         <div className="space-y-3">
           <div>
-            <p className="text-sm font-semibold text-slate-50">Recent funding</p>
-            <p className="text-sm text-slate-400">Most recent deposits added to tracked capital.</p>
+            <p className="text-sm font-semibold text-slate-50">Recent capital changes</p>
+            <p className="text-sm text-slate-400">Auto-timestamped deposits and withdrawals applied to tracked capital.</p>
           </div>
           {!funding.length ? (
-            <p className="text-sm text-slate-400">No funding entries recorded.</p>
+            <p className="text-sm text-slate-400">No capital changes recorded yet.</p>
           ) : (
             funding
               .slice()
@@ -185,9 +199,10 @@ export function PortfolioCapitalPanel({
               .map((entry) => (
                 <div key={entry.id} className="flex items-center justify-between rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3">
                   <div>
-                    <p className="font-mono text-sm text-slate-50">{formatCurrency(entry.amount)}</p>
-                    <p className="text-xs text-slate-500">{formatDate(entry.occurredAt)}</p>
-                    {entry.notes ? <p className="mt-1 text-sm text-slate-400">{entry.notes}</p> : null}
+                    <p className={`font-mono text-sm ${entry.amount >= 0 ? "text-emerald-300" : "text-rose-300"}`}>
+                      {entry.amount >= 0 ? "+" : "-"}{formatCurrency(Math.abs(entry.amount))}
+                    </p>
+                    <p className="text-xs text-slate-500">{formatDateTime(entry.occurredAt)}</p>
                   </div>
                 </div>
               ))

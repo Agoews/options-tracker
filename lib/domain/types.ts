@@ -214,13 +214,10 @@ export type CloseHoldingInput = {
   notes?: string;
 };
 
-export type UpdatePortfolioBaselineInput = {
-  portfolioBaselineValue: number;
-  portfolioBaselineAt: Date;
+export type SetTrackedCapitalInput = {
+  trackedCapital: number;
 };
 
-export type AddPortfolioFundingInput = {
+export type AddCapitalAdjustmentInput = {
   amount: number;
-  occurredAt: Date;
-  notes?: string;
 };
