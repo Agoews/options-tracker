@@ -1,21 +1,12 @@
 import type { ReactNode } from "react";
-import type { Route } from "next";
 import Link from "next/link";
-import { BookOpen, ChartCandlestick, History, LayoutDashboard, LogOut, User, Wallet } from "lucide-react";
+import { ChartCandlestick, LogOut } from "lucide-react";
 
 import type { AppUser } from "@/lib/domain/types";
 import { getTimezoneLabel } from "@/lib/domain/timezones";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-
-const navigation: Array<{ href: Route; label: string; icon: typeof ChartCandlestick }> = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/trades", label: "Trades", icon: ChartCandlestick },
-  { href: "/holdings", label: "Holdings", icon: Wallet },
-  { href: "/history", label: "History", icon: History },
-  { href: "/resources", label: "Resources", icon: BookOpen },
-  { href: "/profile", label: "Profile", icon: User },
-];
+import { SidebarNav } from "@/components/layout/sidebar-nav";
 
 export function WorkspaceShell({
   user,
@@ -37,22 +28,7 @@ export function WorkspaceShell({
               <p className="text-base font-semibold text-white">Options Journal</p>
             </div>
           </Link>
-          <nav className="mt-8 space-y-2">
-            {navigation.map((item) => {
-              const Icon = item.icon;
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-400 transition hover:bg-white/5 hover:text-white"
-                >
-                  <Icon className="h-4 w-4" />
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
+          <SidebarNav />
           <div className="mt-8 rounded-2xl border border-white/8 bg-[#11161f] p-4">
             <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Account</p>
             <p className="mt-3 font-semibold text-slate-50">{user.displayName ?? user.email}</p>
