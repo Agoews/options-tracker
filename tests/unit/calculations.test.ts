@@ -1,5 +1,3 @@
-import { TradeEventType, TradeStatus } from "@prisma/client";
-
 import {
   calculateAvailableShares,
   aggregateTradeState,
@@ -24,20 +22,20 @@ describe("trade calculations", () => {
   it("aggregates contract, share, premium, fee, and realized state", () => {
     const result = aggregateTradeState([
       {
-        type: TradeEventType.SELL_TO_OPEN,
+        type: "SELL_TO_OPEN",
         occurredAt: new Date("2026-01-01"),
         contractsDelta: 1,
         premium: 220,
         fees: 1.25,
       },
       {
-        type: TradeEventType.ASSIGNMENT,
+        type: "ASSIGNMENT",
         occurredAt: new Date("2026-02-01"),
         sharesDelta: 100,
         premium: 220,
       },
       {
-        type: TradeEventType.ROLL,
+        type: "ROLL",
         occurredAt: new Date("2026-02-15"),
         contractsDelta: 1,
         premium: 50,
@@ -54,11 +52,11 @@ describe("trade calculations", () => {
   });
 
   it("infers open, assigned, and closed states", () => {
-    expect(inferStatus(1, 0)).toBe(TradeStatus.OPEN);
-    expect(inferStatus(-1, 0)).toBe(TradeStatus.OPEN);
-    expect(inferStatus(-2, 100)).toBe(TradeStatus.PARTIAL);
-    expect(inferStatus(0, 100)).toBe(TradeStatus.ASSIGNED);
-    expect(inferStatus(0, 0)).toBe(TradeStatus.CLOSED);
+    expect(inferStatus(1, 0)).toBe("OPEN");
+    expect(inferStatus(-1, 0)).toBe("OPEN");
+    expect(inferStatus(-2, 100)).toBe("PARTIAL");
+    expect(inferStatus(0, 100)).toBe("ASSIGNED");
+    expect(inferStatus(0, 0)).toBe("CLOSED");
   });
 
   it("calculates unrealized holding pnl from current price and basis", () => {
@@ -119,9 +117,9 @@ describe("trade calculations", () => {
 
   it("tracks premium basis for the still-open option contracts", () => {
     const result = calculateOpenOptionPremiumBasis([
-      { type: TradeEventType.SELL_TO_OPEN, contractsDelta: 2, premium: 400 },
-      { type: TradeEventType.BUY_TO_CLOSE, contractsDelta: -1, premium: 80 },
-      { type: TradeEventType.ROLL, contractsDelta: 0, premium: 30 },
+      { type: "SELL_TO_OPEN", contractsDelta: 2, premium: 400 },
+      { type: "BUY_TO_CLOSE", contractsDelta: -1, premium: 80 },
+      { type: "ROLL", contractsDelta: 0, premium: 30 },
     ]);
 
     expect(result.openContracts).toBe(1);
