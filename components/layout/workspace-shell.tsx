@@ -7,6 +7,7 @@ import { getTimezoneLabel } from "@/lib/domain/timezones";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SidebarNav } from "@/components/layout/sidebar-nav";
+import { WorkspaceHeader } from "@/components/layout/workspace-header";
 
 export function WorkspaceShell({
   user,
@@ -47,22 +48,7 @@ export function WorkspaceShell({
           </div>
         </aside>
         <div className="flex min-h-screen flex-col">
-          <header className="border-b border-white/6 px-6 py-5 lg:px-8">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Trading Journal</p>
-                <h1 className="mt-1 text-2xl font-semibold tracking-tight text-white">Options lifecycle tracking without losing the audit trail.</h1>
-              </div>
-              <div className="flex gap-3">
-                <Button asChild variant="secondary">
-                  <Link href="/trades/new">Log trade</Link>
-                </Button>
-                <Button asChild>
-                  <Link href="/resources">Study workflows</Link>
-                </Button>
-              </div>
-            </div>
-          </header>
+          <WorkspaceHeader />
           <main className="flex-1 p-6 lg:p-8">{children}</main>
         </div>
       </div>
