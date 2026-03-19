@@ -38,11 +38,11 @@ export function calculateAdjustedCostBasis(strikePrice: number, premiumApplied: 
 }
 
 export function inferStatus(openContracts: number, shareExposure: number): TradeStatusValue {
-  if (openContracts > 0 && shareExposure > 0) {
+  if (openContracts !== 0 && shareExposure > 0) {
     return "PARTIAL";
   }
 
-  if (openContracts > 0) {
+  if (openContracts !== 0) {
     return "OPEN";
   }
 

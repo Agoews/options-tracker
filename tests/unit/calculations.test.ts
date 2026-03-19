@@ -55,6 +55,8 @@ describe("trade calculations", () => {
 
   it("infers open, assigned, and closed states", () => {
     expect(inferStatus(1, 0)).toBe(TradeStatus.OPEN);
+    expect(inferStatus(-1, 0)).toBe(TradeStatus.OPEN);
+    expect(inferStatus(-2, 100)).toBe(TradeStatus.PARTIAL);
     expect(inferStatus(0, 100)).toBe(TradeStatus.ASSIGNED);
     expect(inferStatus(0, 0)).toBe(TradeStatus.CLOSED);
   });
