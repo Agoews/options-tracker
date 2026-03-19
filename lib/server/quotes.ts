@@ -1,5 +1,7 @@
 import "server-only";
 
+const QUOTE_TIMEOUT_MS = 4_000;
+
 export async function getCurrentPrices(tickers: string[]) {
   const uniqueTickers = [...new Set(tickers.map((ticker) => ticker.toUpperCase()))];
   const apiKey = process.env.TWELVE_DATA_API_KEY;
@@ -14,6 +16,7 @@ export async function getCurrentPrices(tickers: string[]) {
         const response = await fetch(
           `https://api.twelvedata.com/price?symbol=${encodeURIComponent(ticker)}&apikey=${encodeURIComponent(apiKey)}`,
           {
+            signal: AbortSignal.timeout(QUOTE_TIMEOUT_MS),
             next: { revalidate: 60 },
           },
         );

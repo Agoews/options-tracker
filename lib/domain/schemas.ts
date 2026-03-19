@@ -22,8 +22,8 @@ export const createTradeSchema = z
     expiration: z.coerce.date().optional(),
     strikePrice: z.coerce.number().positive().optional(),
     contracts: z.coerce.number().int().min(1),
-    entryPer: z.coerce.number(),
-    exitPer: z.coerce.number().optional(),
+    entryPer: z.coerce.number().nonnegative(),
+    exitPer: z.coerce.number().nonnegative().optional(),
     closedAt: z.coerce.date().optional(),
     thesis: z.string().max(500).optional(),
     holdingLotId: z.string().optional(),
@@ -35,6 +35,47 @@ export const createTradeSchema = z
   .refine((data) => !data.closedAt || data.exitPer !== undefined, {
     message: "Exit price is required when closed at is provided",
     path: ["exitPer"],
+  })
+  .superRefine((data, ctx) => {
+    if (data.strategy !== "STOCK" && data.strikePrice === undefined) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["strikePrice"],
+        message: "Strike price is required for option strategies.",
+      });
+    }
+
+    if (data.strategy !== "STOCK" && !data.expiration) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["expiration"],
+        message: "Expiration is required for option strategies.",
+      });
+    }
+
+    if (data.strategy === "COVERED_CALL" && !data.holdingLotId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["holdingLotId"],
+        message: "Covered calls must be linked to a holding lot.",
+      });
+    }
+
+    if (data.closedAt && data.closedAt < data.openedAt) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["closedAt"],
+        message: "Closed date cannot be earlier than the opened date.",
+      });
+    }
+
+    if (data.expiration && data.expiration < data.openedAt) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["expiration"],
+        message: "Expiration cannot be earlier than the opened date.",
+      });
+    }
   });
 
 export const appendTradeEventSchema = z.object({
@@ -127,6 +168,12 @@ export const addPortfolioFundingSchema = z.object({
   notes: z.string().max(1000).optional(),
 });
 
+export const updateProfileSchema = z.object({
+  displayName: z.string().min(2).max(60),
+  timezone: z.enum(usTimezones.map((entry) => entry.value) as [string, ...string[]]),
+  baseCurrency: z.string().length(3),
+});
+
 export type OnboardingInput = z.infer<typeof onboardingSchema>;
 export type CreateTradeFormValues = z.infer<typeof createTradeSchema>;
 export type AppendTradeEventFormValues = z.infer<typeof appendTradeEventSchema>;
@@ -137,3 +184,4 @@ export type DeleteEntityFormValues = z.infer<typeof deleteEntitySchema>;
 export type TradeLifecycleActionFormValues = z.infer<typeof tradeLifecycleActionSchema>;
 export type UpdatePortfolioBaselineFormValues = z.infer<typeof updatePortfolioBaselineSchema>;
 export type AddPortfolioFundingFormValues = z.infer<typeof addPortfolioFundingSchema>;
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;

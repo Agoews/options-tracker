@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## First Read
+
+Read `ARCHITECTURE.md` before making any non-trivial change. It is the shared architecture and style guide for both Claude and Codex, and it takes precedence over duplicated structural guidance here.
+
 ## Commands
 
 ```bash
@@ -20,6 +24,8 @@ pnpm prisma:seed       # Seed demo data
 ## Architecture Overview
 
 **TradeTracker** is an options trading journal built with Next.js 16 App Router, PostgreSQL/Prisma, and Firebase Auth.
+
+The live structural rules for this repository are documented in `ARCHITECTURE.md`. Use the summary below for context, but keep the shared guide as the source of truth when deciding where code belongs or how layers may depend on each other.
 
 ### Auth Flow
 

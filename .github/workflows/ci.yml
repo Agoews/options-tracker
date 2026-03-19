@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/tradetracker
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/tradetracker
+      FIREBASE_PROJECT_ID: demo-project
+      FIREBASE_CLIENT_EMAIL: demo@example.com
+      FIREBASE_PRIVATE_KEY: "-----BEGIN PRIVATE KEY-----\\nTEST\\n-----END PRIVATE KEY-----\\n"
+      NEXT_PUBLIC_FIREBASE_API_KEY: demo-api-key
+      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: demo.firebaseapp.com
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID: demo-project
+      NEXT_PUBLIC_FIREBASE_APP_ID: 1:1234567890:web:demo
+      NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "1234567890"
+      NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: demo.appspot.com
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      SESSION_COOKIE_NAME: trade_tracker_session
+      SESSION_COOKIE_EXPIRES_DAYS: "5"
+      TWELVE_DATA_API_KEY: ""
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build

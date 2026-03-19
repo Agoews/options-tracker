@@ -19,6 +19,46 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 
 const OPTION_STRATEGIES = STRATEGY_TYPES.filter((s) => s !== "STOCK");
+const STRATEGY_DETAILS: Record<
+  StrategyTypeValue,
+  {
+    description: string;
+    entryLabel: string;
+  }
+> = {
+  WHEEL: {
+    description: "Use this for cash-secured put entries that may later assign into stock and continue into covered calls.",
+    entryLabel: "Credit received per contract",
+  },
+  CASH_SECURED_PUT: {
+    description: "Short put entry backed by cash collateral. Strike and expiration are required to track exposure correctly.",
+    entryLabel: "Credit received per contract",
+  },
+  COVERED_CALL: {
+    description: "Covered calls should usually be opened from a holding lot so the trade can reserve shares automatically.",
+    entryLabel: "Credit received per contract",
+  },
+  SHORT_CALL: {
+    description: "Short calls carry naked call exposure unless separately collateralized. Enter strike and expiration carefully.",
+    entryLabel: "Credit received per contract",
+  },
+  SHORT_PUT: {
+    description: "Short puts should include strike and expiration so portfolio capacity stays accurate.",
+    entryLabel: "Credit received per contract",
+  },
+  LONG_CALL: {
+    description: "Long calls track premium paid and optional exit data. Strike and expiration are required for lifecycle reporting.",
+    entryLabel: "Premium paid per contract",
+  },
+  LONG_PUT: {
+    description: "Long puts track premium paid and optional exit data. Strike and expiration are required for lifecycle reporting.",
+    entryLabel: "Premium paid per contract",
+  },
+  STOCK: {
+    description: "Stock entries should be created from the holdings workflow instead of the trade form.",
+    entryLabel: "Price paid per share",
+  },
+};
 
 export function TradeEntryWorkbench() {
   const router = useRouter();
@@ -36,9 +76,11 @@ export function TradeEntryWorkbench() {
       entryPer: 0,
     },
   });
+  const strategy = useWatch({ control: form.control, name: "strategy" }) ?? "WHEEL";
   const expiration = useWatch({ control: form.control, name: "expiration" });
   const openedAt = useWatch({ control: form.control, name: "openedAt" });
   const closedAt = useWatch({ control: form.control, name: "closedAt" });
+  const strategyDetails = STRATEGY_DETAILS[strategy];
 
   const submit = form.handleSubmit((values) => {
     startTransition(async () => {
@@ -73,6 +115,11 @@ export function TradeEntryWorkbench() {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="mb-5 rounded-2xl border border-white/8 bg-white/[0.02] p-4">
+          <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Strategy context</p>
+          <p className="mt-2 font-medium text-slate-100">{STRATEGY_LABELS[strategy]}</p>
+          <p className="mt-2 text-sm leading-6 text-slate-400">{strategyDetails.description}</p>
+        </div>
         <form className="grid gap-5 md:grid-cols-2" onSubmit={submit}>
           {/* Row 1 */}
           <div className="space-y-2">
@@ -90,8 +137,10 @@ export function TradeEntryWorkbench() {
           <div className="space-y-2">
             <Label>Strategy</Label>
             <Select
-              defaultValue="WHEEL"
-              onValueChange={(value: StrategyTypeValue) => form.setValue("strategy", value)}
+              value={strategy}
+              onValueChange={(value: StrategyTypeValue) =>
+                form.setValue("strategy", value, { shouldDirty: true, shouldValidate: true })
+              }
             >
               <SelectTrigger>
                 <SelectValue />
@@ -104,6 +153,7 @@ export function TradeEntryWorkbench() {
                 ))}
               </SelectContent>
             </Select>
+            <p className="text-xs leading-5 text-slate-500">{strategyDetails.description}</p>
             <FieldError message={form.formState.errors.strategy?.message} />
           </div>
           <div className="space-y-2">
@@ -114,23 +164,27 @@ export function TradeEntryWorkbench() {
 
           {/* Row 3 */}
           <div className="space-y-2">
-            <Label htmlFor="strikePrice">Strike</Label>
-            <Input id="strikePrice" type="number" step="0.01" placeholder="Optional" {...form.register("strikePrice")} />
+            <Label htmlFor="strikePrice">
+              Strike <span className="text-xs font-normal text-white/40">(required)</span>
+            </Label>
+            <Input id="strikePrice" type="number" step="0.01" placeholder="Required" {...form.register("strikePrice")} />
             <FieldError message={form.formState.errors.strikePrice?.message} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="entryPer">Entry per contract</Label>
+            <Label htmlFor="entryPer">{strategyDetails.entryLabel}</Label>
             <Input id="entryPer" type="number" step="0.01" {...form.register("entryPer")} />
             <FieldError message={form.formState.errors.entryPer?.message} />
           </div>
 
           {/* Row 4 */}
           <div className="space-y-2">
-            <Label>Expiration</Label>
+            <Label>
+              Expiration <span className="text-xs font-normal text-white/40">(required)</span>
+            </Label>
             <DatePicker
               value={expiration ?? undefined}
               onChange={(date) => form.setValue("expiration", date, { shouldValidate: true })}
-              placeholder="Optional"
+              placeholder="Required"
             />
             <FieldError message={form.formState.errors.expiration?.message} />
           </div>

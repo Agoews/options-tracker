@@ -1,29 +1,47 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
-This repository is a small Next.js 16 App Router project. Keep route files under `app/`, with `app/layout.tsx` for shared layout, `app/page.tsx` for the home route, and `app/globals.css` for global Tailwind v4 styles. Place static assets in `public/` and reference them by root-relative paths such as `/next.svg`.
+## First Read
 
-There is no `src/` directory yet. If the app grows, keep new route segments, colocated components, and route-specific utilities close to the route that owns them.
+For any non-trivial change, read `ARCHITECTURE.md` first. It is the shared source of truth for project structure, layering, style, and consistency rules for both Codex and Claude.
+
+## Project Structure
+
+This is a Next.js 16 App Router application with stable top-level layers:
+
+- `app/`: pages, layouts, route groups, and API handlers
+- `components/`: UI primitives and feature components
+- `lib/auth/`: auth and runtime session utilities
+- `lib/domain/`: schemas, models, and pure business logic
+- `lib/server/`: Prisma-backed queries and mutation services
+- `prisma/`: schema, migrations, and seeds
+- `tests/`: unit, component, and e2e coverage
+
+Do not treat this repo like a minimal scaffold anymore. Preserve these layers and extend them intentionally.
 
 ## Build, Test, and Development Commands
+
 Prefer `pnpm` because the repository includes `pnpm-lock.yaml`.
 
-- `pnpm dev`: starts the local development server on `http://localhost:3000`.
-- `pnpm build`: creates the production build.
-- `pnpm start`: serves the production build locally.
-- `pnpm lint`: runs ESLint with the Next.js core-web-vitals and TypeScript rules.
+- `pnpm dev`: starts the local development server
+- `pnpm build`: creates the production build
+- `pnpm start`: serves the production build locally
+- `pnpm lint`: runs ESLint
+- `pnpm test`: runs Vitest
+- `pnpm test:e2e`: runs Playwright tests
 
-## Coding Style & Naming Conventions
-Use TypeScript, functional React components, and the existing App Router patterns. Follow the current style: double quotes, semicolons, and 2-space indentation in JSX/TSX blocks as formatted by the existing files. Name route files with Next.js conventions (`page.tsx`, `layout.tsx`) and use PascalCase for extracted component files such as `PositionTable.tsx`.
+## Coding Style
 
-Keep styling in Tailwind utility classes or `app/globals.css` when a shared global token is required.
+- Use TypeScript and functional React components.
+- Follow the existing code style: double quotes, semicolons, and concise component bodies.
+- Keep route handlers thin and business logic out of `app/`.
+- Keep pure calculations and schemas in `lib/domain/`.
+- Keep Prisma access and mutation orchestration in `lib/server/`.
 
-## Testing Guidelines
-There is no test framework configured yet. For any non-trivial feature, add tests in the same change set and document the command used to run them. Until a framework is introduced, use `pnpm lint` and `pnpm build` as the minimum verification steps before opening a pull request.
+## Verification
 
-If tests are added later, prefer naming patterns like `*.test.ts` or `*.test.tsx` and keep them close to the code they verify.
+- Docs-only changes: run `pnpm lint`
+- Non-trivial product changes: run `pnpm lint`, `pnpm test`, and `pnpm build`
 
-## Commit & Pull Request Guidelines
-The current history starts with a simple seed commit (`Initial commit from Create Next App`). Continue with short, imperative commit messages such as `Add position summary card` or `Wire up portfolio form`.
+## Pull Requests
 
-Pull requests should include a brief summary, testing notes, and screenshots for visible UI changes. Link the relevant issue when one exists, and keep PRs scoped to a single change so review stays straightforward.
+Use short, imperative commit messages. Keep pull requests scoped, include testing notes, and add screenshots for visible UI changes.

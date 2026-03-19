@@ -10,25 +10,23 @@ import {
 } from "@prisma/client";
 
 import {
-  calculateHoldingUnrealizedPnl,
   calculateOpenOptionPremiumBasis,
   calculateOptionCloseRealizedPnl,
   calculateOptionExpirationRealizedPnl,
+  calculateReservedShares,
   calculatePortfolioCapacitySnapshot,
   deriveHoldingFromAssignment,
   inferStatus,
 } from "@/lib/domain/calculations";
 import type {
-  AddPortfolioFundingInput,
   AppendTradeEventInput,
   AppUser,
   CloseHoldingInput,
   CreateTradeInput,
-  HoldingRow,
   TradeLifecycleActionInput,
   TradeWithEvents,
-  UpdatePortfolioBaselineInput,
 } from "@/lib/domain/types";
+import { buildHoldingRows } from "@/lib/server/holding-rows";
 import { getCurrentPrices } from "@/lib/server/quotes";
 import { prisma } from "@/lib/server/db";
 import { MutationError } from "@/lib/server/mutation-response";
@@ -70,10 +68,6 @@ function closingRealizedPnl(strategy: StrategyType, entryPer: number, exitPer: n
   return SHORT_STRATEGIES.has(strategy)
     ? (entryPer - exitPer) * multiplier
     : (exitPer - entryPer) * multiplier;
-}
-
-function getCoveredCallReservedShares(openContractCount: number) {
-  return Math.max(openContractCount, 0) * 100;
 }
 
 function getOpeningExposure(input: CreateTradeInput) {
@@ -142,49 +136,7 @@ async function getPortfolioCapacityState(tx: Prisma.TransactionClient, userId: s
     holdings.filter((holding) => holding.status === HoldingStatus.OPEN).map((holding) => holding.ticker),
   );
 
-  const holdingRows = holdings.map<HoldingRow>((holding) => {
-    const ccPremiumCollected = holding.coveredCalls.reduce((sum, trade) => sum + toNumber(trade.premiumCollected), 0);
-    const effectiveCostBasis =
-      holding.remainingQuantity > 0
-        ? toNumber(holding.costBasisPerShare) - ccPremiumCollected / holding.remainingQuantity
-        : toNumber(holding.costBasisPerShare);
-    const currentPrice =
-      holding.status === HoldingStatus.OPEN ? currentPrices.get(holding.ticker.toUpperCase()) ?? null : null;
-
-    const row: HoldingRow = {
-      id: holding.id,
-      ticker: holding.ticker,
-      quantity: holding.quantity,
-      remainingQuantity: holding.remainingQuantity,
-      costBasisPerShare: toNumber(holding.costBasisPerShare),
-      effectiveCostBasis,
-      ccPremiumCollected,
-      acquiredVia: holding.acquiredVia === TradeEventType.STOCK_BUY ? "STOCK_BUY" : "ASSIGNMENT",
-      activeCoveredCalls: holding.coveredCalls
-        .filter((trade) => trade.status !== TradeStatus.CLOSED)
-        .map((trade) => ({
-          tradeId: trade.id,
-          status: trade.status,
-          premiumCollected: toNumber(trade.premiumCollected),
-          openContracts: trade.openContractCount,
-        })),
-      reservedShares: holding.coveredCalls
-        .filter((trade) => trade.status !== TradeStatus.CLOSED)
-        .reduce((total, trade) => total + getCoveredCallReservedShares(trade.openContractCount), 0),
-      currentPrice,
-      unrealizedPnl: null,
-      realizedPnl: toNumber(holding.realizedPnl),
-      status: holding.status,
-      archivedAt: holding.archivedAt,
-      openedAt: holding.openedAt,
-      closedAt: holding.closedAt,
-    };
-
-    return {
-      ...row,
-      unrealizedPnl: calculateHoldingUnrealizedPnl(row),
-    };
-  });
+  const holdingRows = buildHoldingRows(holdings, currentPrices);
 
   return calculatePortfolioCapacitySnapshot(
     toNumber(user.portfolioBaselineValue),
@@ -297,7 +249,7 @@ async function adjustHoldingLotShares(
   const reservedShares = openLot.coveredCalls
     .filter((coveredCall) => coveredCall.id !== trade.id)
     .filter((coveredCall) => coveredCall.status !== TradeStatus.CLOSED)
-    .reduce((total, coveredCall) => total + getCoveredCallReservedShares(coveredCall.openContractCount), 0);
+    .reduce((total, coveredCall) => total + calculateReservedShares(coveredCall.openContractCount), 0);
 
   const sharesAvailable = Math.max(openLot.remainingQuantity - reservedShares, 0);
   if (sharesToReduce > openLot.remainingQuantity || sharesToReduce > sharesAvailable) {
@@ -396,7 +348,7 @@ export async function createTrade(user: AppUser, input: CreateTradeInput) {
 
       const reservedShares = holding.coveredCalls
         .filter((coveredCall) => coveredCall.status !== TradeStatus.CLOSED)
-        .reduce((total, coveredCall) => total + getCoveredCallReservedShares(coveredCall.openContractCount), 0);
+        .reduce((total, coveredCall) => total + calculateReservedShares(coveredCall.openContractCount), 0);
       const availableShares = Math.max(holding.remainingQuantity - reservedShares, 0);
 
       if (input.contracts * 100 > availableShares) {
@@ -642,7 +594,7 @@ export async function closeHolding(user: AppUser, holdingLotId: string, input: C
 
     const reservedShares = holding.coveredCalls
       .filter((trade) => trade.status !== TradeStatus.CLOSED)
-      .reduce((total, trade) => total + Math.max(trade.openContractCount, 0) * 100, 0);
+      .reduce((total, trade) => total + calculateReservedShares(trade.openContractCount), 0);
     const maxSellableShares = Math.max(holding.remainingQuantity - reservedShares, 0);
 
     if (input.quantityToSell > maxSellableShares) {
@@ -709,27 +661,6 @@ export async function archiveTrade(user: AppUser, tradeId: string, archived: boo
     where: { id: trade.id },
     data: {
       archivedAt: archived ? new Date() : null,
-    },
-  });
-}
-
-export async function updatePortfolioBaseline(user: AppUser, input: UpdatePortfolioBaselineInput) {
-  return prisma.user.update({
-    where: { id: user.id },
-    data: {
-      portfolioBaselineValue: input.portfolioBaselineValue,
-      portfolioBaselineAt: input.portfolioBaselineAt,
-    },
-  });
-}
-
-export async function addPortfolioFunding(user: AppUser, input: AddPortfolioFundingInput) {
-  return prisma.portfolioFunding.create({
-    data: {
-      userId: user.id,
-      amount: input.amount,
-      occurredAt: input.occurredAt,
-      notes: input.notes,
     },
   });
 }
@@ -925,7 +856,7 @@ export async function applyTradeLifecycleAction(
       const sharesDelta = -(input.contracts * 100);
       const linkedReservedShares = trade.holdingLot.coveredCalls
         .filter((coveredCall) => coveredCall.id === trade.id)
-        .reduce((total, coveredCall) => total + getCoveredCallReservedShares(coveredCall.openContractCount), 0);
+        .reduce((total, coveredCall) => total + calculateReservedShares(coveredCall.openContractCount), 0);
 
       if (Math.abs(sharesDelta) > linkedReservedShares) {
         throw new MutationError("Assignment quantity exceeds the linked covered-call exposure.", {

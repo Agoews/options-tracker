@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
+import { logServerError } from "@/lib/server/logger";
+
 export type MutationSuccessResponse = {
   ok: true;
   message?: string;
@@ -75,6 +77,13 @@ export function mutationFailure(error: unknown, fallback: string) {
     );
   }
 
-  const message = error instanceof Error ? error.message : fallback;
-  return NextResponse.json({ error: message } satisfies MutationErrorResponse, { status: 400 });
+  logServerError("Unexpected mutation failure", error, { fallback });
+
+  return NextResponse.json(
+    {
+      error: fallback,
+      code: "internal_error",
+    } satisfies MutationErrorResponse,
+    { status: 500 },
+  );
 }

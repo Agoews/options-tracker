@@ -1,4 +1,5 @@
 import { closeHoldingSchema } from "@/lib/domain/schemas";
+import { assertTrustedOrigin } from "@/lib/server/request-origin";
 import { requireAppUser } from "@/lib/server/auth-user";
 import { mutationFailure, mutationSuccess } from "@/lib/server/mutation-response";
 import { closeHolding } from "@/lib/server/trade-service";
@@ -8,6 +9,7 @@ export async function POST(
   { params }: { params: Promise<{ holdingLotId: string }> },
 ) {
   try {
+    assertTrustedOrigin(request);
     const user = await requireAppUser();
     const payload = closeHoldingSchema.parse(await request.json());
     const { holdingLotId } = await params;

@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 
 import { createSessionCookie, clearSessionCookie, setSessionCookie } from "@/lib/auth/session";
+import { assertTrustedOrigin } from "@/lib/server/request-origin";
 import { mutationFailure, mutationSuccess, MutationError } from "@/lib/server/mutation-response";
 
 export async function POST(request: Request) {
   try {
+    assertTrustedOrigin(request);
     const contentType = request.headers.get("content-type") ?? "";
 
     if (contentType.includes("application/json")) {
@@ -32,7 +34,8 @@ export async function POST(request: Request) {
   }
 }
 
-export async function DELETE() {
+export async function DELETE(request: Request) {
+  assertTrustedOrigin(request);
   await clearSessionCookie();
   return mutationSuccess({}, { message: "Session cleared." });
 }

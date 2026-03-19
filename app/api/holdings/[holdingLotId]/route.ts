@@ -1,4 +1,5 @@
 import { archiveEntitySchema, deleteEntitySchema } from "@/lib/domain/schemas";
+import { assertTrustedOrigin } from "@/lib/server/request-origin";
 import { requireAppUser } from "@/lib/server/auth-user";
 import { mutationFailure, mutationSuccess } from "@/lib/server/mutation-response";
 import { archiveHolding, deleteHolding } from "@/lib/server/trade-service";
@@ -8,6 +9,7 @@ export async function PATCH(
   { params }: { params: Promise<{ holdingLotId: string }> },
 ) {
   try {
+    assertTrustedOrigin(request);
     const user = await requireAppUser();
     const payload = archiveEntitySchema.parse(await request.json());
     const { holdingLotId } = await params;
@@ -26,6 +28,7 @@ export async function DELETE(
   { params }: { params: Promise<{ holdingLotId: string }> },
 ) {
   try {
+    assertTrustedOrigin(request);
     const user = await requireAppUser();
     deleteEntitySchema.parse(await request.json());
     const { holdingLotId } = await params;
